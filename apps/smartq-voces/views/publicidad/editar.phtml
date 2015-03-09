@@ -1,0 +1,28 @@
+<div id='mainContent'>
+
+    <?php //echo View::getContent();
+    //echo Tag::form('publicidad/guardar/true');
+    View::renderPartial("toolbarform");
+    echo Tag::form("publicidad/guardar/true","enctype: multipart/form-data");
+    ?>
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend><label style="color:red"><b>Ayuda</b></label></legend>
+        <p><label>Los archivos a subir deben ser de extensión <b>.swf</b></label></p>
+        <p><label>Estos archivos se publican en las pantallas</label></p>
+    </fieldset>
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend>Datos de Publicidad</legend>
+        <!--<p><label class='labelform' ><span for='archivo_publicidad'><b>Archivo Publicidad</b>:</span></label><?php //echo Tag::textField("archivo_publicidad", "size: 25", "maxlength: 100","class:  required") ?></p>-->
+
+        <p><label class='labelform' ><span for='archivo_publicidad'><b>Archivo Publicidad</b>:</span></label>
+            <?php echo Tag::textField("archivo_publicidad_aux", "size: 20", "maxlength: 100","class: ") ?>
+            <?php echo Tag::fileField("archivo_publicidad", "size: 25", "maxlength: 100","class: ") ?></p>
+
+
+    </fieldset>
+    <!--<div class='ui-corner-all ui-widget-content'>
+    <?php //echo Tag::submitButton("Grabar"); echo Tag::button("Cancelar","onclick: window.location='../index';"); ?>
+	</div>
+    <?php //echo Tag::endForm(); ?>-->
+
+</div>

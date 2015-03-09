@@ -1,0 +1,66 @@
+<style type="text/css">
+    #div_publicidad {
+        position: absolute;
+        left: 161px;
+        top: 115px;
+        width:523px;
+        height:362px;
+        z-index:5;
+    }
+</style>
+
+<?php
+$arrayPane[]=array('position'=>'middle','options'=>'resizable: false','partial'=>'plantilla_calificacion');
+Tag::pane($arrayPane);
+?>
+<div id="div_numero_encabezado" class="encabezado" ></div>
+<div id="div_publicidad"></div>
+<div id="div_publicidad222" class="encabezado"></div>
+<script>
+    //var carpeta=String($("#carpeta").val());
+    document.getElementById("div_numero_encabezado").innerHTML = modulo;
+    document.getElementById("div_publicidad").innerHTML =
+        "<object width='523' height='362' attr1='attrValue1' attr2='attrValue2'"+
+        "codebase='http://www.apple.com/qtactivex/qtplugin.cab'"+
+        "classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'>"+
+        "<param name='src'      value='../../img/publicidad.swf'>"+
+        "<param name='autoplay' value='true'>"+
+        "<param name='param1'   value='paramValue1'>"+
+        "<param name='param2'   value='paramValue2'>"+
+        "<embed wmode='transparent' width='523' height='362' src='../../img/"+carpeta+"/publicidad/publicidad.swf' autoplay='true'"+
+        "attr1='attrValue1' attr2='attrValue2' param1='paramValue1' param2='paramValue2'"+
+        "pluginspage='http://www.apple.com/quicktime/download/' > </embed>"+
+        "</object>";
+</script>
+<script>
+//_________________________________________________________________
+    function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+var letra = getUrlVars()["letra"];
+//alert(letra);
+var numero = getUrlVars()["numero"];
+//alert(numero);
+function numeros(num){
+	numtmp='"'+num+'"';
+	largo=numtmp.length-2;
+	numtmp=numtmp.split('"').join('');
+	if(largo==3)return numtmp;
+	ceros='';
+	pendientes=3-largo;
+	for(i=0;i<pendientes;i++)ceros+='0';
+	return ceros+numtmp;
+}
+document.getElementById("div_publicidad222").innerHTML = letra + ' ' + numeros(numero);
+//alert(document.getElementById("div_publicidad222").innerHTML) ;
+//_________________________________________________________________
+</script>

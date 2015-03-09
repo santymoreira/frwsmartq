@@ -1,0 +1,339 @@
+<!-- Para publicar segun el horario -->
+<?php
+//__________________________INICIO
+$ventana = '';
+$db = DbBase::rawConnect();
+$result2 = $db->query("SELECT 	ventana	FROM configuracionsistema ;");
+while($row = $db->fetchArray($result2)) 
+{
+$ventana=$row['ventana'];
+}
+if($ventana==1)
+	{//$tipo_pantalla = 'vertical';
+	?>
+	<script>
+	var marquee_ancho_valor = 690; //esta variable se utiliza mas abajo para saber el tipo de pantalla (horizontal o vertical)
+
+	</script>
+	<?php
+	$tipo_pantalla = 'contentv';
+	}
+else if($ventana==0)
+	{//$tipo_pantalla = 'horizontal';
+	?>
+	<script>
+	var marquee_ancho_valor = 890;
+
+	</script>
+	<?php
+	$tipo_pantalla = 'contenth';
+	}
+//__________________________FIN
+
+$arrayPane[]=array('position'=>'middle','options'=>'resizable: false','partial'=>$tipo_pantalla);
+Tag::pane($arrayPane);
+//$horariopublicidad= new Horariopublicidad();
+//echo Tag::textField('txt_aux',"value: $colorReloj");
+echo Tag::hiddenField('tipo');  //para el tipo de publicacion V/D/P
+?>
+
+<!-- ***** DIFUNDIR NOTICIAS RSS ***** -->
+<script>
+    verNoticias();
+    setInterval('verNoticias()',1*60*60*1000); //Ver noticias cada hora
+    function verNoticias(){
+        $.post("<?php echo Utils::getKumbiaUrl("display/verNoticiasRss")?>", {
+            marquee_direccion:  'left',
+            marquee_ancho:      marquee_ancho_valor,
+            marquee_alto:       46,
+            marquee_font_size:  35,
+            marquee_alineacion: 'middle'
+        },function(data){
+            document.getElementById("div_noticias").innerHTML = data;
+			
+        },'ajax');
+    }
+</script>
+
+<!-- ***** DIFUNDIR SEGUN HORARIO ***** -->
+<script>
+    //setInterval('verHorario()',10000); //Ver horario de publicidad cada 10 segundos
+    setInterval('verHorario()',1000); //Ver horario de publicidad cada 1 minuto
+    var tipo="";
+    var recargarV="";
+
+    verHorario();
+    function verHorario(){
+
+        $.post("<?php echo Utils::getKumbiaUrl("display/verHorario")?>",{
+
+        }, function(json){
+            tipo=json.tipo;
+            tipo_aux=$("#tipo").val();
+            if (tipo!=tipo_aux){
+                $("#tipo").val(tipo)
+                if (tipo=='D'){
+                    vertv();
+                    clearInterval(recargarV);
+                }else if (tipo=='P'){
+                    verPublicidad(json.archivo);        //con direccion carpeta
+                    clearInterval(recargarV);
+                } else if (tipo=='V'){
+                    /*$.post("<?php //echo Utils::getKumbiaUrl("display/actualizarOrdenPantalla")?>",{
+                    }, function(json){
+                    },"json");*/
+                    recargarV=setInterval('recargar()',1000); //Recargar en pantalla el video
+                }
+            }
+        },"json");
+    }
+
+    //INICIO PASAR TV
+    function vertv(){
+        alto:screen.height  //esta variable si utilizo
+        document.getElementById("midiv").innerHTML = "<EMBED type='application/x-mplayer2' pluginspage='http://www.microsoft.com/windows/windowsmedia/intl/download/default.asp?DispLang=br' SRC='http://<?php echo $pc_difusion;?>:<?php echo $puerto;?>' name='MediaPlayer1' AutoStart=true width='640px' height='500px' showControls='0' ShowStatusBar='0' volume='1'></EMBED>";
+    }
+    //FIN PASAR TV
+
+    //INICIO PASAR PUBLICIDAD
+    function verPublicidad(archivo){
+        document.getElementById("midiv").innerHTML = "<object width='640' height='500' attr1='attrValue1' attr2='attrValue2'"+
+            "codebase='http://www.apple.com/qtactivex/qtplugin.cab'"+
+            "classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'>"+
+            "<param name='src'      value='../../img/iess/publicidad/"+archivo+"'>"+
+            "<param name='autoplay' value='true'>"+
+            "<param name='param1'   value='paramValue1'>"+
+            "<param name='param2'   value='paramValue2'>"+
+            "<embed width='640' height='500' src='../../img/iess/publicidad/"+archivo+"' autoplay='true'"+
+            "attr1='attrValue1' attr2='attrValue2' param1='paramValue1' param2='paramValue2'"+
+            "pluginspage='http://www.apple.com/quicktime/download/' > </embed>"+
+            "</object>";
+    }
+    var t;
+    var nom_video;
+    function recargar(){
+        t=$('#tiempo').val();
+//_______________________________
+n=$('#nombre').val();
+var direccion=n;
+ultima=direccion.split('/');
+ nom_video = ultima[ultima.length - 1];
+//_______________________________
+        if (t==0){
+            recargarVideos();
+        } else {
+            t=t-1;
+            $('#tiempo').val(t);
+        }
+    }
+   recargarVideos();
+
+    function recargarVideos(){
+        $.post("<?php echo Utils::getKumbiaUrl("display/vervideo")?>",{
+            accion:'display',
+            alto:screen.height  //esta variable si utilizo
+        }, function(json){
+            $("#tiempo").val(json.tiempo);
+            $("#nombre").val(json.nombre);
+        },"json");
+
+var embeber_video = '<video id="sampleMovie" width="640" height="480" autoplay="autoplay">'+
+	'<source src="../../videos/' + nom_video +'"  />'+
+    	'</video>';
+        document.getElementById("midiv").innerHTML = embeber_video;
+		document.getElementById("sampleMovie").volume = 0.2;
+    }
+
+</script>
+
+<!-- ***** RECARGAR LOS TURNOS EN TABLA ***** -->
+<script>
+    setInterval('recargarTurnos()',1000); //Recargar en LCD los turnos luego de 1 segundo
+    function recargarTurnos(){
+	var turno='';
+	var modulo='';
+        $.post("<?php echo Utils::getKumbiaUrl("display/verturnos")?>",{
+            accion:'display'
+        }, function(json){
+		
+		 //alert(json.t1);
+		 turno = json.t1;
+		 modulo = json.ta1;
+		 
+			$("#t1").val(json.t1);
+            $("#t2").val(json.t2);
+            $("#t3").val(json.t3);
+            $("#t4").val(json.t4);
+            $("#t5").val(json.t5);
+            $("#t6").val(json.t6);
+
+			$("#ta1").val(json.ta1);
+            $("#ta2").val(json.ta2);
+            $("#ta3").val(json.ta3);
+            $("#ta4").val(json.ta4);
+            $("#ta5").val(json.ta5);
+            $("#ta6").val(json.ta6);
+
+            $("#turno").val(json.t1);
+            $("#modulo").val(json.ta1);
+			//alert(document.getElementById("tono").value);
+                        if(document.getElementById("tono").value == 1){
+			letra = turno.substr(0,1);
+			numero1 = turno.substr(1,1);
+			numero2 = turno.substr(2,1);
+			numero3 = turno.substr(3,1);
+			
+			if ($('#reproducir').val() == 1){
+				var sonidos='<audio autoplay>'+
+				'<source src="../../sonidos/sonido/turno.mp3" type="audio/mpeg" />'+
+				'</audio>'+
+				'<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 800)">'+
+				'<source src="../../sonidos/sonido/'+letra+'.mp3" type="audio/mpeg" />'+
+				'</audio>'+
+				'<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1300)">'+
+				'<source src="../../sonidos/sonido/'+numero1+'.mp3" type="audio/mpeg" />'+
+				'</audio>'+
+				'<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1900)">'+
+				'<source src="../../sonidos/sonido/'+numero2+'.mp3" type="audio/mpeg" />'+
+				'</audio>'+
+				'<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 2400)">'+
+				'<source src="../../sonidos/sonido/'+numero3+'.mp3" type="audio/mpeg" />'+
+				'</audio>'+
+				'<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 3200)">'+
+				'<source src="../../sonidos/sonido/modulo.mp3" type="audio/mpeg" />'+
+				'</audio>'+
+				'<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 4100)">'+
+				'<source src="../../sonidos/sonido/'+modulo+'.mp3" type="audio/mpeg" />'+
+				'</audio>';
+				$("#media1").html(sonidos);
+			}
+                        }
+			
+        },"json");
+		
+		
+		
+		
+    }
+</script>
+
+<!-- ***** FUNCIONES DE TIMBRE Y EFECTO DE LLAMADO ***** -->
+<script>
+    setInterval('recargarTimbre()',800); //Recargar el timbre luego de 1 segundo
+    function recargarTimbre(){
+        $.post("<?php echo Utils::getKumbiaUrl("display/timbrarTurno")?>",{
+            accion:'display'
+        }, function(json){
+            $("#reproducir").val(json.reproducir);
+			//alert(json.reproducir);
+			
+        },"json");
+        verificar();
+    }
+    function verificar(){
+        if ($('#reproducir').val()==1){
+            $('#duracion').val(10);
+			//alert(document.getElementById("tono").value);
+            if(document.getElementById("tono").value == 0){
+            empezar();
+            }
+        }
+        var a;
+        if ($('#duracion').val()!=0){
+            a=$('#duracion').val();
+            a=a-1;
+            $('#duracion').val(a);
+        }
+    }
+//__________________________________________________________________________________
+  function empezar(){
+  //alert('sssssssssssssssssssssss');
+        document.getElementById("media1").innerHTML = '<audio autoplay><source src="../../sonidos/timbre2.wav" type="audio/wav"></audio>';
+    }
+
+//__________________________________________________________________________________
+
+    //INICIO EFECTO DE COLOR EN TURNO
+    setInterval('colores()',500);
+    var color_turnos= "#<?php echo $colorTurnos?>";
+    i=0;
+    function colores() {
+        if ($('#duracion').val()!=0){
+            tabcolores = new Array ("#FFFFFF","#D41904");
+            if (i+1 == tabcolores.length) i=0;
+            else i++;
+            document.getElementById("t1").setAttribute("style", "color:"+tabcolores[i]+"; text-align:center; width:210px; font-family: Impact; font-size: 80px;background: transparent; border:0px;")
+            document.getElementById("ta1").setAttribute("style", "color:"+tabcolores[i]+"; text-align:center; width:142px; font-family: Impact; font-size: 80px;background: transparent; border:0px;")
+
+			
+			if(marquee_ancho_valor == 690){
+			document.getElementById("t1").setAttribute("style", "color:"+tabcolores[i]+"; text-align:center; width:375px; font-family: Impact; font-size: 180px;background: transparent; border:0px;")
+            document.getElementById("ta1").setAttribute("style", "color:"+tabcolores[i]+"; text-align:center; width:192px; font-family: Impact; font-size: 180px;background: transparent; border:0px;")
+			}
+            //$("#div_llamar").css("display", "inline");
+            //$("#div_slogan").css("display", "none");
+            //document.getElementById("turno").setAttribute("style", "color:"+tabcolores[i]+"; text-align:center; width:250px; font-family: Impact; font-size: 95px;background: transparent; border:0px;")
+            //document.getElementById("modulo").setAttribute("style", "color:"+tabcolores[i]+"; text-align:center; width:180px; font-family: Impact; font-size: 95px;background: transparent; border:0px;")
+        } else {
+            document.getElementById("t1").setAttribute("style", "text-align:center; width:210px; font-family: Impact; font-size: 80px;background: transparent;color: "+color_turnos+"; border:0px;")
+            document.getElementById("ta1").setAttribute("style", "text-align:center; width:142px; font-family: Impact; font-size: 80px;background: transparent;color: "+color_turnos+"; border:0px;")
+
+			if(marquee_ancho_valor == 690){
+            document.getElementById("t1").setAttribute("style", "text-align:center; width:375px; font-family: Impact; font-size: 180px;background: transparent;color: "+color_turnos+"; border:0px;")
+            document.getElementById("ta1").setAttribute("style", "text-align:center; width:192px; font-family: Impact; font-size: 180px;background: transparent;color: "+color_turnos+"; border:0px;")
+			}			
+            //$("#div_llamar").css("display", "none");
+            //$("#div_slogan").css("display", "inline");
+            //text-shadow: -2px 0 #000, 0 2px #000, 2px 0 #000, 0 -2px #000
+        }
+    }
+    //FIN EFECTO DE COLOR EN TURNO
+
+</script>
+
+<!-- ***** Restaurar pantalla ***** -->
+<script>
+    //INICIO RESTAURAR PANTALLA
+    function restaurar(){
+        window.innerWidth = screen.width;
+        window.innerHeight = screen.height;
+        window.screenX = 0;
+        window.screenY = 0;
+        alwaysLowered = false;
+        setTimeout("restaurar()",2000);
+    }
+    restaurar();
+    //FIN RESTAURAR PANTALLA
+</script>
+
+<!-- ***** Reloj ***** -->
+<script>
+    setInterval("reloj()",1000)
+    function reloj(){
+        momentoActual = new Date()
+        hora = momentoActual.getHours()
+        minuto = momentoActual.getMinutes()
+        segundo = momentoActual.getSeconds()
+        dia= momentoActual.getDate();
+        mes= momentoActual.getMonth()+1;
+        anio= momentoActual.getFullYear();
+        if (String(dia).length == 1)
+            dia="0"+dia;
+        if (String(mes).length == 1)
+            mes="0"+mes;
+        if (String(hora).length == 1)
+            hora="0"+hora;
+        if (String(minuto).length == 1)
+            minuto="0"+minuto;
+        if (String(segundo).length == 1)
+            segundo="0"+segundo;
+        horaImprimible = hora + " : " + minuto + " : " + segundo;
+        $("#hora").val(horaImprimible);
+        $("#fecha").val(dia + " / " + mes + " / " + anio);
+    }
+
+    document.title= "Pantalla";
+
+</script>
+
+

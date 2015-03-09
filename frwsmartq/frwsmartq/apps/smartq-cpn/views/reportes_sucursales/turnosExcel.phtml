@@ -1,0 +1,16 @@
+<div id='mainContent'>
+
+    <?php
+    View::renderPartial('toolbarformrefresh');
+    echo Tag::form('reportes_sucursales/reporteTurnosAtendidosModuloXls','name: fvalida');
+    ?>
+
+    <?php
+    View::renderPartial('desde_hasta');
+    View::renderPartial('sucursales');
+    ?>
+
+    <input type="button" value="Ver Reporte" class="fg-button ui-submit ui-state-default ui-corner-all" onclick="valida_envia()">
+    <?php //echo Tag::submitButton("Ver Cuadro","class: fg-button ui-submit ui-state-default ui-corner-all");?>
+    <?php echo Tag::endForm(); ?>
+</div>

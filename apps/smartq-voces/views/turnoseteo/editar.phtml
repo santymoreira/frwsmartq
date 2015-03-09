@@ -1,0 +1,125 @@
+<div id='mainContent'>
+    <?php
+    //echo View::getContent();
+    View::renderPartial("toolbarform");
+    echo Tag::form('turnoseteo/guardar/true');
+    ?>
+    <table border="2">
+        <tr>
+            <td>
+                <p><label class='labelform' ><span for='chkbienvenida'>Frase Inicial:</span></label>
+                    <?php
+                    echo Tag::checkboxField("chkbienvenida");?></p>
+                <p><label class='labelform' ><span for='chknombreservicio'>Nombre y Ubicación del servicio:</span></label>
+                    <?php
+                    echo Tag::checkboxField("chknombreservicio","value: ");?></p>
+                <p><label class='labelform' ><span for='chkfecha'>Fecha:</span></label>
+                    <?php
+                    echo Tag::checkboxField("chkfecha");?></p>
+                <p><label class='labelform' ><span for='chkturnoespera'>Clientes en espera:</span></label>
+                    <?php
+                    echo Tag::checkboxField("chkturnoespera");?></p>
+                <p><label class='labelform' ><span for='chktiempoespera'>Tiempo de espera:</span></label>
+                    <?php
+                    echo Tag::checkboxField("chktiempoespera");?></p>
+
+                    <p><label class='labelform' ><span for='chkpublicidad'>Publicidad:</span></label>
+                    <?php
+                    echo Tag::checkboxField("chkpublicidad");?></p>
+            </td>
+            <td>
+                <table width="100%" cellpadding="5">
+                    <tr>
+                        <td align="center">
+                            <?php
+                            echo Tag::image($carpeta."/sistema/logo_ticket.bmp", "width: 110px");
+                            ?>
+                        </td>
+                    </tr>
+                </table>
+
+                <div id="div_frase" align="center" style="font-size:14px"></div>
+                <div id="div_publicidad" style="width:12px; margin:10px; float:left;font-size:40px"></div>
+                <div id="div_publicidad1" style="width:12px; margin:10px; float:right;font-size:40px"></div>
+                <div id="div_turno" align="center" style="font-size:58px">A001</div> <!--Turno-->
+                <div id="div_servicio" style="font-size:14px"></div>
+                <div id="div_fecha" align="center" style="font-size:14px"></div>
+                <div id="div_turnos_espera" style="font-size:14px"></div>
+                <div id="div_tiempo_espera" style="font-size:14px"></div>
+            </td>
+        </tr>
+    </table>
+    <script>
+
+        verificar();
+        function verificar(){
+            if($('#chkbienvenida').is(':checked'))
+                document.getElementById("div_frase").innerHTML = "<input type='text' id='bienvenida1' name='bienvenida1' style='text-align:center' value='<?php echo $bienvenida; ?>'>";
+            if($('#chknombreservicio').is(':checked'))
+                document.getElementById("div_servicio").innerHTML = "Balcón de Servicios => Planta Baja";
+            if($('#chkfecha').is(':checked'))
+                document.getElementById("div_fecha").innerHTML = "aaaa-mm-dd hh:mm:ss";
+            if($('#chkturnoespera').is(':checked'))
+                document.getElementById("div_turnos_espera").innerHTML = "Clientes en espera: 2";
+            if($('#chktiempoespera').is(':checked'))
+                document.getElementById("div_tiempo_espera").innerHTML = "Tiempo de espera: 00:14:00";
+
+            if($('#chkpublicidad').is(':checked')){
+                document.getElementById("div_publicidad").innerHTML = "*";
+                document.getElementById("div_publicidad1").innerHTML = "*";
+                 }
+        }
+        $('#chkbienvenida').click(function(){
+            if($(this).is(':checked')){
+                document.getElementById("div_frase").innerHTML = "<input type='text' id='bienvenida1' name='bienvenida1' style='text-align:center' value='<?php echo $bienvenida; ?>'>";
+                this.focus;
+            }else{
+                document.getElementById("div_frase").innerHTML = "";
+            }
+        });
+
+        $('#chknombreservicio').click(function(){
+            if($(this).is(':checked')){
+                document.getElementById("div_servicio").innerHTML = "Balcón de Servicios => Planta Baja";
+            }else{
+                document.getElementById("div_servicio").innerHTML = "";
+            }
+        });
+
+        $('#chkfecha').click(function(){
+            if($(this).is(':checked')){
+                document.getElementById("div_fecha").innerHTML = "aaaa-mm-dd hh:mm:ss";
+            }else{
+                document.getElementById("div_fecha").innerHTML = "";
+            }
+        });
+
+        $('#chkturnoespera').click(function(){
+            if($(this).is(':checked')){
+                document.getElementById("div_turnos_espera").innerHTML = "Clientes en espera: 2";
+            }else{
+                document.getElementById("div_turnos_espera").innerHTML = "";
+            }
+        });
+
+        $('#chktiempoespera').click(function(){
+            if($(this).is(':checked')){
+                document.getElementById("div_tiempo_espera").innerHTML = "Tiempo de espera: 00:14:00";
+            }else{
+                document.getElementById("div_tiempo_espera").innerHTML = "";
+            }
+        });
+
+                $('#chkpublicidad').click(function(){
+            if($(this).is(':checked')){
+                document.getElementById("div_publicidad").innerHTML = "*";
+                document.getElementById("div_publicidad1").innerHTML = "*";
+            }else{
+                document.getElementById("div_publicidad").innerHTML = "";
+                document.getElementById("div_publicidad1").innerHTML = "";
+            }
+        });
+
+
+    </script>
+</div>

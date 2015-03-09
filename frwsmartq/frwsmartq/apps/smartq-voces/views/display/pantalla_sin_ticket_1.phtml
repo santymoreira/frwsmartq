@@ -1,0 +1,156 @@
+<?php
+$dataUsuario = SessionNamespace::get('datosUsuarioSMC');
+$idsesion = $dataUsuario->getId();
+$sql=new ActiveRecordJoin(array("entities"=>array ("Usuario","Pantalla","Userpantalla"),
+    "fields"=>array ("{#Pantalla}.id"),
+    "conditions"=>"{#Userpantalla}.usuario_id=$idsesion"));
+foreach ($sql->getResultSet() as $result) {
+    $id_pantalla= $result->getId();
+}
+
+$arrayPane[]=array('position'=>'middle','options'=>'resizable: false','partial'=>'contentcajeros');
+Tag::pane($arrayPane);
+?>
+
+<script>
+    //Recargar en pantalla el cajero que le llamó
+    setInterval('recargarLlamada()',500);
+    function recargarLlamada(){
+        $.post("<?php echo Utils::getKumbiaUrl("display/vercaja")?>",{
+            accion:'display'
+        }, function(json){
+            $("#mensaje").val(json.t1);
+            $("#reproducir").val(json.v);
+            $("#numcaja").val(json.numcaja);
+        },"json");
+        verificar();
+    }
+
+    <?php if ($difundir==1){ ?>
+        //INICIO PASAR TV
+        vertv();
+        function vertv(){
+            alto:screen.height  //esta variable si utilizo
+            document.getElementById("midiv").innerHTML = "<EMBED type='application/x-mplayer2' pluginspage='http://www.microsoft.com/windows/windowsmedia/intl/download/default.asp?DispLang=br' SRC='http://<?php echo $pc_difusion;?>:<?php echo $puerto;?>' name='MediaPlayer1' AutoStart=true width='640px' height='500px' showControls='0' ShowStatusBar='0' volume='1'></EMBED>";
+        }
+        //FIN PASAR TV
+    <?php } else { ?>
+        setInterval('recargar()',1000); //Recargar en pantalla el video
+    <?php } ?>
+
+    //Recargar en pantalla el video
+    setInterval('recargar()',1000);
+    var t;
+    function recargar(){
+        t=$('#tiempo').val();
+        if (t==0 || t==""){
+            recargarVideos();
+        } else {
+            t=t-1;
+            $('#tiempo').val(t);
+        }
+    }
+    function recargarVideos(){
+        $.post("<?php echo Utils::getKumbiaUrl("display/vervideo")?>",{
+            accion:'display',
+            alto:screen.height  //esta variable si utilizo
+        }, function(json){
+            $("#tiempo").val(json.tiempo);
+            $("#nombre").val(json.nombre);
+        },"json");
+        var embeber_video = '<object id="MediaPlayer1" CLASSID="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"'+
+            'standby="Loading Microsoft Windows� Media Player components..." type="application/x-oleobject" width="640" height="480">'+
+            '<param name="fileName" value="'+$('#nombre').val()+'">'+
+            '<param name="animationatStart" value="true">'+
+            '<param name="transparentatStart" value="true">'+
+            '<param name="autoStart" value="true">'+
+            '<param name="showControls" value="false">'+
+            '<param name="Volume" value="-500">'+
+            '<embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" src="'+$('#nombre').val()+'" name="MediaPlayer1" width=640px height=480px autostart=1 showcontrols=0 volume=-500>'+
+            '</object>';
+        document.getElementById("midiv").innerHTML = embeber_video;
+    }
+
+    //Recargar en pantalla el timbre hablado
+    function verificar(){ //es llamado desde recargarTurnos()
+        if ($('#reproducir').val()==1){
+            $('#duracion').val(8);
+            empezar();
+            verturnocaja();
+        }
+        var a;
+        if ($('#duracion').val()!=0){
+            a=$('#duracion').val();
+            a=a-1;
+            $('#duracion').val(a);
+        }
+        if ($('#duracion').val()==0)
+            $('#t1').val("Espere su turno");
+        else
+            $('#t1').val($('#mensaje').val());
+    }
+
+    function empezar(){ //es llamado desde verificar()
+        if ($('#numcaja').val()==1)
+            valor = "pase1.wav";
+        else if ($('#numcaja').val()==2)
+            valor = "pase2.wav";
+        else if ($('#numcaja').val()==3)
+            valor = "pase3.wav";
+        else if ($('#numcaja').val()==4)
+            valor = "pase4.wav";
+        else if ($('#numcaja').val()==5)
+            valor = "pase5.wav";
+        else if ($('#numcaja').val()==6)
+            valor = "pase6.wav";
+        else if ($('#numcaja').val()==7)
+            valor = "pase7.wav";
+        else if ($('#numcaja').val()==8)
+            valor = "pase8.wav";
+        else if ($('#numcaja').val()==9)
+            valor = "pase9.wav";
+        else if ($('#numcaja').val()==10)
+            valor = "pase10.wav";
+        //document.getElementById("media").innerHTML = "<Embed type='application/x-mplayer2' pluginspage='http://www.microsoft.com/Windows/MediaPlayer/download/default.asp' src='C:/videos/"+valor+"' Name=MMPlayer1 Autostart=1 ShowControls=1 ShowDisplay=0 ShowStatusBar=1 DefaultFrame='Slide' width=0 height=0 volume='0'></embed>";
+        document.getElementById("media").innerHTML = "<object type='audio/mpeg' width='0' height='0' data='c:/videos/"+valor+"' classid='CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95'id='mediaplayer1'>"+
+            "<param name='filename' value='c:/videos/"+valor+"' />"+
+            "<param name='autostart' value='true' /><param name='loop' value='false' />"+
+            "<embed type='application/x-mplayer2' pluginspage='http://www.microsoft.com/Windows/Downloads/Contents/MediaPlayer/'filename='c:/videos/"+valor+"' autostart='True' showcontrols='false' showstatusbar='False' showdisplay='False' autorewind='False' height='0' width='0' />"+
+            "</object>";
+    }
+
+    function verturnocaja(){ //es llamado desde verificar()
+        if ($('#t1').val()==0)
+            $('#t1').val("Espere su turno");
+        else
+            $('#t1').val($('#mensaje').val());
+    }
+
+    //INICIO EFECTO DE COLOR EN TURNO
+    setInterval('colores()',500);
+    i=0;
+    function colores()
+    {
+        if ($('#duracion').val()!=0){
+            tabcolores = new Array ("#1243A6","#D41904");
+            if (i+1 == tabcolores.length) i=0;
+            else i++;
+            document.getElementById("t1").setAttribute("style", "color:"+tabcolores[i]+"; text-align:center; width:100%; font-family: Arial Black; font-size: 60px;background: transparent; border:0px;")
+        } else {
+            document.getElementById("t1").setAttribute("style", "text-align:center; width:100%; font-family: Arial Black;font-size: 60px;background: transparent; border:0px; color: #D90000;")
+        }
+    }
+    //FIN EFECTO DE COLOR EN TURNO
+
+    //INICIO RESTAURAR PANTALLA
+    function restaurar(){
+        window.innerWidth = screen.width;
+        window.innerHeight = screen.height;
+        window.screenX = 0;
+        window.screenY = 0;
+        alwaysLowered = false;
+        setTimeout("restaurar()",2000);
+    }
+    restaurar();
+    //FIN RESTAURAR PANTALLA
+</script>

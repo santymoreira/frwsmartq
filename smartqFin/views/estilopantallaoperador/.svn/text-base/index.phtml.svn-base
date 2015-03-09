@@ -1,0 +1,7 @@
+<div id='mainContent'>
+
+<?php echo View::getContent();
+      //echo Tag::jqGrid("caption: 'Estilopantallaoperador'");
+      echo Tag::jqGrid("caption: 'Estilo de pantalla para operadores'","typewinedit: 'popup'","optwinedit: 'width=700,height=400,left=320,top=200,scrollbars=yes'","height: 300","multiselect: false","addbutton: false","editbutton: true","delbutton: false");
+?>
+</div>

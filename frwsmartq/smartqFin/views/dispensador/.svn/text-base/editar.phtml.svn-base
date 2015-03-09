@@ -1,0 +1,14 @@
+<div id='mainContent'>
+    <?php
+    View::renderPartial("toolbarform");
+    //echo View::getContent();
+    echo Tag::form('dispensador/guardar/true');
+    ?>
+    <?php
+    $tabs[]=array("caption"=>'Datos Generales','partial'=>'general');
+    $tabs[]=array("caption"=>'Asignacion de Servicios','partial'=>'servicio');
+    Tag::tab($tabs);
+    ?>
+    <?php echo Tag::endForm(); ?>
+
+</div>

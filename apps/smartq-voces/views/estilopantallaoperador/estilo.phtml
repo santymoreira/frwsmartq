@@ -1,0 +1,222 @@
+<input id="tiempo" type="hidden" value="" style="font-size: 12px"/> <!-- Tiempo de duracion del video -->
+<input id="nombre" type="hidden" value="" style="font-size: 12px"/> <!-- Se pone la direccion del video para embeber -->
+<input id="reproducir" type="hidden" value="" style="font-size: 12px"/> <!-- Se pone 1 para reproducir el timbre -->
+<input id="duracion" type="hidden" value="" style="font-size: 12px"/> <!-- Duración de efecto del mensaje -->
+
+<style type="text/css">
+    /*.parametros{background-color: #FFCC80; color:#000; padding:10px; top:10px; left:1040px; position:absolute}*/
+    .parametros{background-color: #FFCC80; color:#000; padding:10px; top:0px; left:0px; position:absolute}
+
+    .fondo{
+        background-image:url("../../img/FONDO.jpg");
+        height:766px;
+        background-repeat:no-repeat;
+    }
+
+    .borde{
+        background-image:url("../../img/borde.png");
+        background-repeat:no-repeat;
+    }
+
+    .turno_actual{
+        border:0;
+        background: transparent;
+        color: #fff;
+        font-size: 50px;
+        font-family: Impact;
+        text-align: center;
+    }
+    .turno_anterior{
+        border:0;
+        background: transparent;
+
+        color: #ffffff;
+        font-size: 44px;
+        font-family: Impact;
+        text-align: center;
+    }
+    .txtmensaje{
+        border:0;
+        background: transparent;
+        color: #000000;
+        font-size:35px;
+        font-family: arial, helvetica, sans-serif;
+        width:740px;
+    }
+
+    #borde{
+        top:111px;
+        left:26px;
+        background-repeat:no-repeat;
+        position:absolute;
+    }
+    #noticia{
+        top:684px;
+        left:23px;
+        background-repeat:no-repeat;
+        position:absolute;
+    }
+    #menu{
+        top:217px;
+        left:715px;
+        background-repeat:no-repeat;
+        position:absolute;
+    }
+    #logo{
+        top:20px;
+        left:710px;
+        background-repeat:no-repeat;
+        position:absolute;
+    }
+    .noticiavertical{
+        font-size:35px;
+    }
+    #div_fecha_hora{
+        top:80px;
+        left:20px;
+        position:absolute;
+    }
+    #hora{
+        font-size:25px;
+        background-color:transparent;
+        border:0;
+        color:#ffffff;
+        text-align: center;
+    }
+    #fecha{
+        font-size:25px;
+        background-color:transparent;
+        border:0;
+        color:#ffffff;
+        text-align: center;
+    }
+
+    #nombre_empresa{
+        font-size:40px;
+        background-color:transparent;
+        border:0;
+        color:#ffffff;
+        text-align: center;
+    }
+
+
+    /*Inicio drag*/
+    #draggable {
+        width: 150px;
+        height: 150px;
+        padding: 0.5em;
+    }
+    #div_logo_institucion{
+        width: 262px;
+        height: 156px;
+        padding: 0.5em;
+    }
+    #div_empresa{
+        width: 600px;
+        height: 40px;
+        padding: 0.5em;
+    }
+
+</style>
+
+<div  id='mainContent' class="fondo">
+    <div id="draggable" onmousemove="ver()">
+        <p>Nelson</p>
+    </div>
+
+
+
+
+
+    <div id="div_fecha_hora">
+        <?php echo Tag::textField("fecha","size: 11", "maxlength: 20","class:  numeric"); ?>
+        <?php echo Tag::textField("hora","size: 11", "maxlength: 20","class:  numeric"); ?>
+    </div>
+
+    <div class="media" id="media"></div> <!-- Div para el timbre -->
+
+    <div id="borde">
+        <?php echo Tag::image('borde.png', 'alt: Imagen', 'width: 680px') ?>
+    </div>
+
+    <div id="logo">
+        <?php echo Tag::image('logo.png', 'alt: Imagen', 'width: 297px') ?>
+    </div>
+
+    <div id="noticia">
+        <?php echo Tag::image('noticia.png', 'alt: Imagen', 'height: 56px') ?>
+    </div>
+
+    <div id="menu">
+        <?php echo Tag::image('menu.png', 'alt: Imagen', 'width: 294px') ?>
+    </div>
+
+    <div id="midiv" style="top:140px; left:50px; position:absolute"></div> <!-- Div para el video -->
+
+    <div id="t_actual" style="top:302px; left:720px; position:absolute">
+        <input id="t1" name="t1" value=" " class="turno_actual" readonly="readonly" style="width:180px">
+    </div>
+    <div id="m_actual" style="top:302px; left:890px; position:absolute">
+        <input id="ta1" name="ta1" value=" " class="turno_actual" readonly="readonly" style="width:100px">
+    </div>
+
+    <div id="t_anterior1" style="top:368px; left:720px; position:absolute">
+        <input id="t2" name="t2" value=" " class="turno_anterior" readonly="readonly" style="width:180px" >
+    </div>
+    <div id="m_anterior1" style="top:368px; left:890px; position:absolute">
+        <input id="ta2" name="ta2" value=" " class="turno_anterior" readonly="readonly" style="width:100px" >
+    </div>
+
+    <div id="t_anterior2" style="top:430px; left:720px; position:absolute">
+        <input id="t3" name="t3" value=" " class="turno_anterior" readonly="readonly" style="width:180px">
+    </div>
+    <div id="m_anterior2" style="top:430px; left:890px; position:absolute">
+        <input id="ta3" name="ta3" value=" " class="turno_anterior" readonly="readonly" style="width:100px">
+    </div>
+
+    <div id="t_anterior3" style="top:490px; left:720px; position:absolute">
+        <input id="t4" name="t4" value=" " class="turno_anterior" readonly="readonly" style="width:180px" >
+    </div>
+    <div id="m_anterior3" style="top:490px; left:890px; position:absolute">
+        <input id="ta4" name="ta4" value=" " class="turno_anterior" readonly="readonly" style="width:100px" >
+    </div>
+
+    <div id="t_anterior4" style="top:550px; left:720px; position:absolute">
+        <input id="t5" name="t5" value=" " class="turno_anterior" readonly="readonly" style="width:180px">
+    </div>
+    <div id="m_anterior4" style="top:550px; left:890px; position:absolute">
+        <input id="ta5" name="ta5" value=" " class="turno_anterior" readonly="readonly" style="width:100px">
+    </div>
+
+    <div id="logo_inferior" style="top:646px; left:822px; position:absolute">
+        <embed src="../../img/logoinferior.swf" width="180" height="92"> </embed>
+    </div>
+
+    <div style="top:690px; left:40px; position:absolute">
+        <!--<center>
+            <input name="MojiInput" class="txtmensaje" readonly="readonly" style="text-align:center; ">
+        </center>-->
+        <marquee direction="left" align="middle" scrollamount="<?php echo $velocidad_publicacion;?>" width="739" height="46" id="Marquesina" bgcolor="transparent">
+            <!--<marquee onmouseover=this.stop() onmouseout=this.start() direction="up" scrollAmount="2" style="width:200;height:250">-->
+            <font class="noticiavertical">
+                <?php
+                    $formarnoticias=""; 
+                    echo $formarnoticias;
+                ?>
+            </font>
+        </marquee>
+    </div>
+
+    <div id="div_logo_institucion" class="ui-widget-content" onmousemove="xy_logo_institucion()" onclick="ver_div_logo_institucion()">
+        <embed src="../../img/cubopantalla_CPN.swf" width="260" height="154"> </embed>
+    </div>
+
+
+    <div id="div_empresa" class="ui-widget-content" onmousemove="xy_nombre()" onclick="ver_div_nombre()">
+        <input type="text" style="font-size:30px; text-align:center" value="Nombre de la Empresa">
+    </div>
+
+
+</div>
+
+

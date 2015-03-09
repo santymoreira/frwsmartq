@@ -1,0 +1,122 @@
+<div id="div_prueba" class="encabezado" style="text-align: center">MODULO <?php echo $numero_modulo; ?></div>
+<div id="div_contenido" style="text-align: center"></div> <!--Se carga los botones de calificacion-->
+<script>
+    var tiempo = <?php echo $tiempoCalificador; ?>;
+    var cont = 1;
+
+//    window.onresize = Resize;
+//    Resize();
+//    function Resize() {
+        var ancho = screen.width  //esta variable si utilizo
+        //alert(ancho);
+        //var alto=screen.height  //esta variable si utilizo
+        if (ancho >= '400' & ancho <= '700') { //pantalla vertical peque�a
+            document.getElementById("div_contenido").innerHTML =
+                    "<table border='0' width='100%'>" +
+                    "   <tr align='center'>" +
+                    "       <td style='padding-bottom:10px'><br><br><br><input name='anular' id='excelente' type='button' value='' class='boton_calificacion1 boton_excelente' title='Calificación Excelente' onclick=calificar('Excelente') ><br><br><br><br><br></td>" +
+                    "   </tr>" +
+                    "   <tr align='center'>" +
+                    "       <td style='padding-bottom:10px'><input name='calificar' id='muy_bueno' type='button' value='' class='boton_calificacion1 boton_muy_bueno' title='Calificación Muy Bueno' onclick=calificar('Muy_Bueno')><br><br><br><br><br></td>" +
+                    "   </tr>" +
+                    "   <tr align='center'>" +
+                    "       <td style='padding-bottom:10px'><input name='atender' id='bueno' type='button' value='' class='boton_calificacion1 boton_bueno' title='Calificación Bueno' onclick=calificar('Bueno')><br><br><br><br><br></td>" +
+                    "   </tr>" +
+                    "   <tr align='center'>" +
+                    "       <td style='padding-bottom:10px'><input name='rellamar' id='regular' type='button' value='' class='boton_calificacion1 boton_regular' title='Calificación Regular' onclick=calificar('Regular')><br><br><br><br><br></td>" +
+                    "   </tr>" +
+                    "</table>"
+        } else if (ancho >= '800' & ancho <= '900') {  //pantalla horizontal peque�a
+            document.getElementById("div_contenido").innerHTML =
+                    "<table border='0' width='100%'>" +
+                    "   <tr align='center'>" +
+                    "       <td style='padding-bottom:10px'><input name='anular' id='excelente' type='button' value='' class='boton_calificacion2 boton_excelente' title='Calificación Excelente' onclick=calificar('Excelente') ><br></td>" +
+                    "   </tr>" +
+                    "   <tr align='center'>" +
+                    "       <td style='padding-bottom:10px'><input name='calificar' id='muy_bueno' type='button' value='' class='boton_calificacion2 boton_muy_bueno' title='Calificación Muy Bueno' onclick=calificar('Muy_Bueno')><br></td>" +
+                    "   </tr>" +
+                    "   <tr align='center'>" +
+                    "       <td style='padding-bottom:10px'><input name='atender' id='bueno' type='button' value='' class='boton_calificacion2 boton_bueno' title='Calificación Bueno' onclick=calificar('Bueno')><br></td>" +
+                    "   </tr>" +
+                    "   <tr align='center'>" +
+                    "       <td style='padding-bottom:10px'><input name='rellamar' id='regular' type='button' value='' class='boton_calificacion2 boton_regular' title='Calificación Regular' onclick=calificar('Regular')></td>" +
+                    "   </tr>" +
+                    "</table>"
+        } else {  //pantalla horizontal peque�a
+            document.getElementById("div_contenido").innerHTML =
+                    "<table border='0' width='100%'>" +
+                    "   <tr align='center'>" +
+                    "       <td style='padding-bottom:10px'><input name='anular' id='excelente' type='button' value='' class='boton_calificacion2 boton_excelente' title='Calificación Excelente' onclick=calificar('Excelente') ><br></td>" +
+                    "   </tr>" +
+                    "   <tr align='center'>" +
+                    "       <td style='padding-bottom:10px'><input name='calificar' id='muy_bueno' type='button' value='' class='boton_calificacion2 boton_muy_bueno' title='Calificación Muy Bueno' onclick=calificar('Muy_Bueno')><br></td>" +
+                    "   </tr>" +
+                    "   <tr align='center'>" +
+                    "       <td style='padding-bottom:10px'><input name='atender' id='bueno' type='button' value='' class='boton_calificacion2 boton_bueno' title='Calificación Bueno' onclick=calificar('Bueno')><br></td>" +
+                    "   </tr>" +
+                    "   <tr align='center'>" +
+                    "       <td style='padding-bottom:10px'><input name='rellamar' id='regular' type='button' value='' class='boton_calificacion2 boton_regular' title='Calificación Regular' onclick=calificar('Regular')></td>" +
+                    "   </tr>" +
+                    "</table>"
+        }
+//    }
+
+    //INICIO ABRIR ENVIAR CALIFICACION Y ABRIR PANTALLA INICIAL
+    //Funci�n que permite primero guardar la calificaci�n y luego abre la pantalla inicial
+    var calificado = 0;
+    function calificar(calificacion) {
+        //alert("Calificar. Ip_calificador:" + $("#ip_calificador").val() + " calif:" + calificacion + " turno_id:" + $("#turno_id").val());
+
+        //var msg_siguiente = "siguiente|" + $("#ip_calificador").val();
+        //socket.emit('send message', msg_siguiente);
+
+        var data_uri = Webcam.snap();
+
+        data = {
+            turno_id: $("#turno_id").val(),
+            calificacion: calificacion,
+            src: data_uri
+        }
+
+        if (calificacion == "Muy_Bueno")
+            calificacion = "Muy Bueno";
+
+        $.post("<?php echo Utils::getKumbiaUrl("calificador/subir_foto") ?>",
+                data
+                , function(json) {
+                    exito = json.exito;
+                    if (exito == 1) {
+                        //alert(1);
+                        var msg_siguiente = "siguiente|" + $("#ip_calificador").val() + "|" + calificacion;
+                        socket.emit('send message', msg_siguiente);
+                        cargar('cargarInicial');
+                    }
+                }, "json");
+
+    }
+
+    function regresar() {
+        if (cont == tiempo) {
+            terminaTurno();
+        }
+        cont++;
+    }
+    setInterval("regresar()", 1000);
+
+    function terminaTurno() {
+        if (calificado == 0) {
+            calificacion = "NO CALIFICADO";
+            $.post("<?php echo Utils::getKumbiaUrl("operador/terminaTurno") ?>", {
+                calificacion: calificacion
+            }, function(json) {
+                if (json.num_preguntas == json.cont_preguntas) {
+                    GuardarCookie('nombre', 1, 1);
+                    window.opener.parent.reIniciar();
+                    cargar('cargarInicial');
+                }
+            }, "json");
+        }
+    }
+
+    //INICIO ABRIR ENVIAR CALIFICACION Y ABRIR PANTALLA INICIAL
+</script>

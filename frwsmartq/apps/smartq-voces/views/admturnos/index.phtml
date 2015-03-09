@@ -1,0 +1,104 @@
+<?php echo Tag::javascriptBase() ?>
+<script type="text/javascript" src="../../js/administracion_cookies.js"></script>
+<style>
+    
+</style>
+
+<div  id='mainContent'>
+    <fieldset class='ui-corner-all ui-widget-content ui-state-default fondo_operador' >
+        <legend></legend>
+        <?php echo View::getContent(); ?>
+    </fieldset>
+    
+</div>
+
+<?php
+echo Tag::hiddenField("idcaja", "size: 1");
+?>
+<script>
+    //abre el div de los turnos clasificados por servicios
+    function abrir_div_turnos(val){
+        var chks=$("div[name^='div_servicio_']");
+        for (var x=0; x < chks.length; x++) {
+            nombre= chks[x].id;
+            $("#"+nombre).hide();
+        }
+        $("#div_servicio_"+val).show();
+    }
+
+    //cierra el div de los turnos clasificados por servicios
+    function cerrar_div_turnos(val){
+        $("#div_servicio_"+val).hide();
+    }
+
+    //abre el div de los operadores clasificados por ubicaci�n
+    function abrir_div_operadores(val){
+        var chks=$("div[name^='div_ubicacion_']");
+        for (var x=0; x < chks.length; x++) {
+            nombre= chks[x].id;
+            $("#"+nombre).hide();
+        }
+        $("#div_ubicacion_"+val).show();
+    }
+
+    //cierra el div de los operadores clasificados por ubicaci�n
+    function cerrar_div_operadores(val){
+        $("#div_ubicacion_"+val).hide();
+    }
+
+    //seleccionar los turnos respectivos del servicio
+    //cada turnos tiene la clase c_ seguido del id del servicio
+    function check_all(val){
+        var chks=$(".c_"+val);
+        chks.attr("checked","checked");
+    }
+
+    //deseleccionar los turnos respectivos del servicio
+    //cada turnos tiene la clase c_ seguido del id del servicio
+    function uncheck_all(val){
+        $("#turnos_id").val("");
+        var chks=$(".c_"+val);
+        chks.attr("checked","");
+    }
+
+    //selecciona todods los modulos respectivos de la ubicaci�n
+    //cada modulo tiene la clase c_todos seguido del id de la ubicaci�n
+    function check_all_modulos(val){
+        $("#ubicaciones_id").val(val);
+        var chks=$(".c_modulos_"+val);
+        chks.attr("checked","checked");
+        seleccionar(val);
+    }
+
+    //deselecciona todods los modulos respectivos de la ubicaci�n
+    //cada modulo tiene la clase c_todos seguido del id de la ubicaci�n
+    function uncheck_all_modulos(val){
+        $("#modulos_id").val("");
+        var chks=$(".c_modulos_"+val);
+        chks.attr("checked","");
+    }
+
+    //selecciona todods los modulos al transferir turno actual
+    function check_all_modulos_turno_actual(){
+        var chks=$(".c_modulos_turno_actual");
+        chks.attr("checked","checked");
+        seleccionar_turno_actual();
+    }
+
+    //deselecciona todods los modulos al transferir turno actual
+    function uncheck_all_modulos_turno_actual(){
+        var chks=$(".c_modulos_turno_actual");
+        chks.attr("checked","");
+    }
+
+    function caja_pausas_id(val){
+        $("#caja_pausas_id").val(val);
+    }
+</script>
+
+<!--Inicio-->
+<script>
+
+</script>
+
+

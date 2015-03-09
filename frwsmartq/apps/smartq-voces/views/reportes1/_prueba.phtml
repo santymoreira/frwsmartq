@@ -1,0 +1,29 @@
+<script type="text/javascript" src="http://localhost/pruebas/FusionCharts_Evaluation/Charts/FusionCharts.js"></script>
+
+
+
+
+
+<input type="button" id="btn_prueba" value="prueba" />
+<center>
+
+    <BR><BR>
+    <!-- adds button which will invoke managedPrint() function when Print Manager is ready -->
+    <button type="button" id="printButton" onClick="FusionCharts.printManager.managedPrint()">Print Page</button>
+</center>
+
+<div id="div_prueba">
+
+</div>
+
+<script>
+    $("#btn_prueba").click(function(){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/prueba")?>", {
+
+        }
+        ,function(json){
+            document.getElementById("div_prueba").innerHTML = json.html;
+
+        },'json');
+    })
+</script>

@@ -1,0 +1,446 @@
+<!-- Para publicar segun el horario -->
+
+<?php
+//__________________________INICIO
+$ventana = '';
+$db = DbBase::rawConnect();
+$result2 = $db->query("SELECT 	ventana	FROM configuracionsistema ;");
+while ($row = $db->fetchArray($result2)) {
+    $ventana = $row['ventana'];
+}
+if ($ventana == 1) {//$tipo_pantalla = 'vertical';
+    ?>
+    <script>
+        var tipoPantalla = 1;
+        var anchoFondo = screen.height;
+        var altoFondo = screen.width;
+        var marquee_ancho_valor = 690; //esta variable se utiliza mas abajo para saber el tipo de pantalla (horizontal o vertical)
+
+    </script>
+    <?php
+    $tipo_pantalla = 'contentv';
+} else if ($ventana == 0) {//$tipo_pantalla = 'horizontal';
+    ?>
+    <script>
+        var tipoPantalla = 0;
+        var anchoFondo = screen.width;
+        var altoFondo = screen.height;
+        var marquee_ancho_valor = 890;
+
+    </script>
+    <?php
+    $tipo_pantalla = 'contenth';
+}
+//__________________________FIN
+
+$arrayPane[] = array('position' => 'middle', 'options' => 'resizable: false', 'partial' => $tipo_pantalla);
+Tag::pane($arrayPane);
+//$horariopublicidad= new Horariopublicidad();
+//echo Tag::textField('txt_aux',"value: $colorReloj");
+echo Tag::hiddenField('tipo');  //para el tipo de publicacion V/D/P
+?>
+
+<script src="http://<?php echo $servidor_node; ?>/socket.io/socket.io.js"></script>
+<script>
+        setInterval('verificar_array()', 300);  //verificar la cola de turnos
+        var letra;
+        var numero;
+        var modulo;
+        var llamando = 0;
+        var array_turnos = Array();
+        var array_modulos = Array();
+        var tipo_voz = $("#tipo_voz").val();
+        jQuery(function($) {
+            var socket = io.connect("http://<?php echo $servidor_node; ?>");
+            var $chat = $('#chat');
+            socket.on('new message', function(data) {
+                //$chat.append(data + "<br/>");
+                $chat.text(data);   //envio a chat el msg
+                var smg_siguiente = $("#chat").text();
+                var res = smg_siguiente.split("|");
+                var turno = res[0].split(":"); //[turno][A/20]
+                if (turno[0] == 'turno') {
+                    //alert("turno");
+                    var mod = res[1].split(":"); //[modulo][1]
+                    var ubicacion = res[2].split(":");  //[ubicacion][1]
+
+                    if (ubicacion[1] == $("#ubicacion").val()) {
+                        //envio al array de colas
+                        array_modulos.push(mod[1]);
+                        array_turnos.push(turno[1]);
+                    }
+                }
+            });
+        });
+
+        function verificar_array() {    //se ejecuta por intervalo
+            $('#turnos').val(array_turnos);         //solo para mostrar los turnos en cola
+            $('#llamando').val(llamando);           //solo para comprobar el estado de la variable global llamando
+
+            if (array_turnos.length > 0) {  //si existe colas
+                if (llamando == 0) { //si no esta llamando entonces inicia el llamado
+                    llamando = 1;  //cambia de estado a llamando
+                    var letra_numero = array_turnos[0].split("/");
+                    letra = letra_numero[0];
+                    numero = letra_numero[1];
+                    var display_numero;
+                    if (numero.length==1)
+                        display_numero = "00"+numero;
+                    else if (numero.length==2)
+                        display_numero = "0"+numero;
+                    else
+                        display_numero= numero;
+                    modulo = array_modulos[0];
+                    /////
+                    if ((letra + display_numero) != $("#t1").val()) { //si es diferente al nuevo que se va apresentar => haga el cambio de posicione
+                        $("#t5").val($("#t4").val());
+                        $("#ta5").val($("#ta4").val());
+                        $("#t4").val($("#t3").val());
+                        $("#ta4").val($("#ta3").val());
+                        $("#t3").val($("#t2").val());
+                        $("#ta3").val($("#ta2").val());
+                        $("#t2").val($("#t1").val());
+                        $("#ta2").val($("#ta1").val());
+                        $("#t1").val(letra + display_numero);
+                        $("#ta1").val(array_modulos[0]);
+                    }
+                    if ($("#tono").val() == 0) {
+                        timbre();
+                    }
+                    if ($("#tono").val() == 1) {
+                        voz();
+                    }
+                    ////
+                    array_turnos.splice(0, 1);      //quito del array el turno que llamo en este momento
+                    array_modulos.splice(0, 1);      //quito del array el turno que llamo en este momento
+                    $('#duracion').val($("#tiempo_tono").val() * 4);
+                }
+            }
+            muestra_segundos(); //tiene que llamarse siempre para que vaya descontando los segundos
+        }
+
+        function muestra_segundos() {
+            var a;
+            if ($('#duracion').val() != 0) {
+                a = $('#duracion').val();
+                a = a - 1;
+                $('#duracion').val(a);
+            }
+            if ($('#duracion').val() == 0) {
+                llamando = 0;
+            }
+        }
+</script>
+<!-- ***** DIFUNDIR NOTICIAS RSS ***** -->
+<script>
+    verNoticias();
+    setInterval('verNoticias()', 1 * 60 * 60 * 1000); //Ver noticias cada hora
+    function verNoticias() {
+        $.post("<?php echo Utils::getKumbiaUrl("display/verNoticiasRss") ?>", {
+            marquee_direccion: 'left',
+            marquee_ancho: marquee_ancho_valor,
+            marquee_alto: 46,
+            marquee_font_size: 35,
+            marquee_alineacion: 'middle'
+        }, function(data) {
+            document.getElementById("div_noticias").innerHTML = data;
+
+        }, 'ajax');
+    }
+</script>
+
+<!-- ***** DIFUNDIR SEGUN HORARIO ***** -->
+<script>
+    setInterval('verHorario()', 60000); //Ver horario de publicidad cada 1 minuto
+    var tipo = "";
+    var recargarV = "";
+    verHorario();
+    function verHorario() {
+        $.post("<?php echo Utils::getKumbiaUrl("display/verHorario") ?>", {
+        }, function(json) {
+            tipo = json.tipo;
+            tipo_aux = $("#tipo").val();
+            if (tipo != tipo_aux) {
+                $("#tipo").val(tipo)
+                if (tipo == 'D') {
+                    vertv();
+                    clearInterval(recargarV);
+                } else if (tipo == 'P') {
+                    verPublicidad(json.archivo);        //con direccion carpeta
+                    clearInterval(recargarV);
+                } else if (tipo == 'V') {
+                    /*$.post("<?php //echo Utils::getKumbiaUrl("display/actualizarOrdenPantalla")                         ?>",{
+                     }, function(json){
+                     },"json");*/
+                    recargarV = setInterval('recargar()', 1000); //Recargar en pantalla el video
+                }
+            }
+        }, "json");
+    }
+
+    //INICIO PASAR TV
+    function vertv() {
+        alto:screen.height  //esta variable si utilizo
+        document.getElementById("midiv").innerHTML = "<EMBED type='application/x-mplayer2' pluginspage='http://www.microsoft.com/windows/windowsmedia/intl/download/default.asp?DispLang=br' SRC='http://<?php echo $pc_difusion; ?>:<?php echo $puerto; ?>' name='MediaPlayer1' AutoStart=true width='640px' height='500px' showControls='0' ShowStatusBar='0' volume='1'></EMBED>";
+    }
+    //FIN PASAR TV
+
+    //INICIO PASAR PUBLICIDAD
+    function verPublicidad(archivo) {
+        document.getElementById("midiv").innerHTML = "<object width='640' height='500' attr1='attrValue1' attr2='attrValue2'" +
+                "codebase='http://www.apple.com/qtactivex/qtplugin.cab'" +
+                "classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'>" +
+                "<param name='src'      value='../../img/" + archivo + "'>" +
+                "<param name='autoplay' value='true'>" +
+                "<param name='param1'   value='paramValue1'>" +
+                "<param name='param2'   value='paramValue2'>" +
+                "<embed width='640' height='500' src='../../img/" + archivo + "' autoplay='true'" +
+                "attr1='attrValue1' attr2='attrValue2' param1='paramValue1' param2='paramValue2'" +
+                "pluginspage='http://www.apple.com/quicktime/download/' > </embed>" +
+                "</object>";
+    }
+    var t;
+    function recargar() {
+        t = $('#tiempo').val();
+        if (t == 0) {
+            recargarVideos();
+        } else {
+            t = t - 1;
+            $('#tiempo').val(t);
+        }
+    }
+    function recargarVideos() {
+        $.post("<?php echo Utils::getKumbiaUrl("display/vervideo") ?>", {
+            accion: 'display',
+            alto: screen.height  //esta variable si utilizo
+        }, function(json) {
+            $("#tiempo").val(json.tiempo);
+            $("#nombre").val(json.nombre);
+        }, "json");
+        var embeber_video = '<object id="MediaPlayer1" CLASSID="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"' +
+                'standby="Loading Microsoft Windows? Media Player components..." type="application/x-oleobject" width="640" height="490">' +
+                '<param name="fileName" value="' + $('#nombre').val() + '">' +
+                '<param name="animationatStart" value="true">' +
+                '<param name="transparentatStart" value="true">' +
+                '<param name="autoStart" value="true">' +
+                '<param name="showControls" value="false">' +
+                '<param name="Volume" value="-500">' +
+                '<embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" src="' + $('#nombre').val() + '" name="MediaPlayer1" width=640 height=500 autostart=1 showcontrols=0 volume=-500>' +
+                '</object>';
+        document.getElementById("midiv").innerHTML = embeber_video;
+    }
+</script>
+
+<!-- ***** FUNCIONES DE TIMBRE Y EFECTO DE LLAMADO ***** -->
+<script>
+    var duracion_medio = 0;
+    var bandera_ciento = 0;
+    function timbre() {
+        document.getElementById("media1").innerHTML = '<audio autoplay><source src="../../sonidos/timbre2.wav" type="audio/wav"></audio>';
+    }
+
+    function multiplo_100(numero, duracion) {
+        var medio;
+        if (bandera_ciento == 1)
+            numero = "ciento";
+        medio = '<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 1300)">' +
+                '<source src="../../sonidos/' + tipo_voz + '/' + numero + '.wav" type="audio/mpeg" />' +
+                '</audio>';
+        duracion_medio = duracion_medio + duracion;
+        return medio;
+    }
+
+    function multiplo_10(numero, duracion) {
+        var medio;
+        duracion_medio = duracion_medio + duracion;
+        medio = '<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, ' + duracion_medio + ')">' +
+                '<source src="../../sonidos/' + tipo_voz + '/' + numero + '.wav" type="audio/mpeg" />' +
+                '</audio>';
+        return medio;
+    }
+    //ejemplo 53 = 50+i+3
+    function decena(numero1, numero2, duracion) {
+        var medio;
+        duracion_medio = duracion_medio + duracion;
+        medio = '<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, ' + duracion_medio + ')">' +
+                '<source src="../../sonidos/' + tipo_voz + '/' + numero1 + '.wav" type="audio/mpeg" />' +
+                '</audio>';
+        duracion_medio = duracion_medio + 700;
+        medio = medio + '<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, ' + duracion_medio + ')">' +
+                '<source src="../../sonidos/' + tipo_voz + '/i.wav" type="audio/mpeg" />' +
+                '</audio>';
+        duracion_medio = duracion_medio + 300;
+        medio = medio + '<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, ' + duracion_medio + ')">' +
+                '<source src="../../sonidos/' + tipo_voz + '/' + numero2 + '.wav" type="audio/mpeg" />' +
+                '</audio>';
+        return medio;
+    }
+
+    function voz() {
+        duracion_medio = 0;
+        bandera_ciento = 0;
+        var inicio = '<audio autoplay>' +
+                '<source src="../../sonidos/' + tipo_voz + '/turno.wav" type="audio/mpeg" />' +
+                '</audio>' +
+                '<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, 800)">' +
+                '<source src="../../sonidos/' + tipo_voz + '/' + letra + '.wav" type="audio/mpeg" />' +
+                '</audio>';
+        var fin = "";
+        var medio = "";
+        var n = numero.length;
+        var numero1;
+        var numero2;
+        var numero3;
+        //alert("caracteres"+ numero.length);
+        if (n == 2) {
+            numero1 = numero.charAt(0) * 10;        //10,20,30,40,50,60
+            numero2 = numero.charAt(1);
+        } else if (n == 3) {
+            numero1 = numero.charAt(0) * 100;
+            numero2 = numero.charAt(1) * 10;
+            numero3 = numero.charAt(2);
+            if (numero1 == 100 & numero2 == 0 & numero3 == 0) //es solo 100
+                bandera_ciento = 0;
+            else if (numero1 == 100) //es 101,102,...,109,110,120
+                bandera_ciento = 1;
+        }
+
+        if (numero % 100 == 0) {
+            //alert(numero + " multiplo de 100");
+            medio = multiplo_100(numero, 1300);
+        } else if (n == 2 & numero1 % 10 == 0 & numero2 == 0) {
+            //alert(numero + " multiplo de 10");
+            medio = multiplo_10(numero, 1500);
+        } else if (numero >= 11 & numero <= 15) {
+            //alert(numero + " >=11 y <=15");
+            medio = multiplo_10(numero, 1500);
+        } else if (n == 2) {
+            //alert(numero1 + "-" + numero2);
+            medio = decena(numero1, numero2, 1500);
+        } else if (n == 3) { //para decir 100...999
+            var d = numero - numero1;
+            if (numero2 % 10 == 0 & numero3 == 0) { //si el numero2=10,20,...,90
+                //alert(numero + ":" + numero1 + "-" + numero2 + " como 220");
+                medio = multiplo_100(numero1, 1110) + multiplo_10(numero2, 1500); //1500 es lo que dura en decir 10,20,30
+            } else if (numero2 == 0) {
+                //alert(numero + ":" + numero1 + "-" + numero3 + "como 201");
+                medio = multiplo_100(numero1, 1110) + multiplo_10(numero3, 1300); //1500 es lo que dura en decir 1,2,...,9
+            } else if (d >= 11 & d <= 15) {
+                //alert(numero + ":" + numero1 + "-" + d);
+                medio = multiplo_100(numero1, 1110) + multiplo_10(d, 1300); //1500 es lo que dura en decir 11,12,..,15
+            } else {
+                //alert(numero + ":" + numero1 + "-" + numero2 + "-" + numero3);
+                medio = multiplo_100(numero1, 1110) + decena(numero2, numero3, 1500);
+            }
+        } else {
+            //alert(numero);
+            medio = multiplo_10(numero, 1500);
+        }
+
+        var duracion = duracion_medio + 1000; //1000 es lo que dura la palabra modulo
+        //alert(duracion_medio);
+        fin = '<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, ' + duracion + ')">' +
+                '<source src="../../sonidos/' + tipo_voz + '/modulo.wav" type="audio/mpeg" />' +
+                '</audio>';
+        duracion = duracion + 800; //800 es lo que dura el numero
+        fin = fin + '<audio onloadeddata="var audioPlayer = this; setTimeout(function() { audioPlayer.play(); }, ' + duracion + ')">' +
+                '<source src="../../sonidos/' + tipo_voz + '/' + modulo + '.wav" type="audio/mpeg" />' +
+                '</audio>';
+
+        $("#media1").html(inicio + medio + fin);
+    }
+
+    //INICIO EFECTO DE COLOR EN TURNO
+    setInterval('colores()', 500);
+    var color_turnos = "#<?php echo $colorTurnos ?>";
+    i = 0;
+    function colores() {
+        if ($('#duracion').val() != 0) {
+            tabcolores = new Array("#FFFFFF", "#D41904");
+            if (i + 1 == tabcolores.length)
+                i = 0;
+            else
+                i++;
+            document.getElementById("t1").setAttribute("style", "color:" + tabcolores[i] + "; text-align:center; width:210px; font-family: Impact; font-size: 80px;background: transparent; border:0px;")
+            document.getElementById("ta1").setAttribute("style", "color:" + tabcolores[i] + "; text-align:center; width:142px; font-family: Impact; font-size: 80px;background: transparent; border:0px;")
+
+
+            if (marquee_ancho_valor == 690) {
+                document.getElementById("t1").setAttribute("style", "color:" + tabcolores[i] + "; text-align:center; width:375px; font-family: Impact; font-size: 180px;background: transparent; border:0px;")
+                document.getElementById("ta1").setAttribute("style", "color:" + tabcolores[i] + "; text-align:center; width:192px; font-family: Impact; font-size: 180px;background: transparent; border:0px;")
+            }
+            //$("#div_llamar").css("display", "inline");
+            //$("#div_slogan").css("display", "none");
+            //document.getElementById("turno").setAttribute("style", "color:"+tabcolores[i]+"; text-align:center; width:250px; font-family: Impact; font-size: 95px;background: transparent; border:0px;")
+            //document.getElementById("modulo").setAttribute("style", "color:"+tabcolores[i]+"; text-align:center; width:180px; font-family: Impact; font-size: 95px;background: transparent; border:0px;")
+        } else {
+            document.getElementById("t1").setAttribute("style", "text-align:center; width:210px; font-family: Impact; font-size: 80px;background: transparent;color: " + color_turnos + "; border:0px;")
+            document.getElementById("ta1").setAttribute("style", "text-align:center; width:142px; font-family: Impact; font-size: 80px;background: transparent;color: " + color_turnos + "; border:0px;")
+
+            if (marquee_ancho_valor == 690) {
+                document.getElementById("t1").setAttribute("style", "text-align:center; width:375px; font-family: Impact; font-size: 180px;background: transparent;color: " + color_turnos + "; border:0px;")
+                document.getElementById("ta1").setAttribute("style", "text-align:center; width:192px; font-family: Impact; font-size: 180px;background: transparent;color: " + color_turnos + "; border:0px;")
+            }
+            //$("#div_llamar").css("display", "none");
+            //$("#div_slogan").css("display", "inline");
+            //text-shadow: -2px 0 #000, 0 2px #000, 2px 0 #000, 0 -2px #000
+        }
+    }
+    //FIN EFECTO DE COLOR EN TURNO
+
+</script>
+
+<!-- ***** Restaurar pantalla ***** -->
+<script>
+    //INICIO RESTAURAR PANTALLA
+    function restaurar() {
+        if (tipoPantalla == 1) {
+            $("#imgFondo").attr("width", anchoFondo - 5);
+            $("#imgFondo").attr("height", altoFondo - 5);
+            $("#imgFondoNoticia").attr("width", anchoFondo - 30);
+            $("#div_fondo_turnos").css("top", 150);
+            $("#imgFondoTurno").attr("width", anchoFondo - 50);
+            $("#imgFondoTurno").attr("height", altoFondo - 300);
+            $("#div_fondo_noticias").css("top", altoFondo - 145);
+            $("#div_noticias").css("top", altoFondo - 100);
+        }
+        window.innerWidth = screen.width;
+        window.innerHeight = screen.height;
+        window.screenX = 0;
+        window.screenY = 0;
+        alwaysLowered = false;
+        setTimeout("restaurar()", 2000);
+    }
+    restaurar();
+    //FIN RESTAURAR PANTALLA
+</script>
+
+<!-- ***** Reloj ***** -->
+<script>
+    setInterval("reloj()", 1000)
+    function reloj() {
+        momentoActual = new Date()
+        hora = momentoActual.getHours()
+        minuto = momentoActual.getMinutes()
+        segundo = momentoActual.getSeconds()
+        dia = momentoActual.getDate();
+        mes = momentoActual.getMonth() + 1;
+        anio = momentoActual.getFullYear();
+        if (String(dia).length == 1)
+            dia = "0" + dia;
+        if (String(mes).length == 1)
+            mes = "0" + mes;
+        if (String(hora).length == 1)
+            hora = "0" + hora;
+        if (String(minuto).length == 1)
+            minuto = "0" + minuto;
+        if (String(segundo).length == 1)
+            segundo = "0" + segundo;
+        horaImprimible = hora + " : " + minuto + " : " + segundo;
+        $("#hora").val(horaImprimible);
+        $("#fecha").val(dia + " / " + mes + " / " + anio);
+    }
+    document.title = "Pantalla";
+</script>
+
+

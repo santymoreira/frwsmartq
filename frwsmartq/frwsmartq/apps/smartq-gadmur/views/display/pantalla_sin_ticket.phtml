@@ -1,0 +1,239 @@
+<?php
+$arrayPane[]=array('position'=>'middle','options'=>'resizable: false','partial'=>'contentcajeros');
+Tag::pane($arrayPane);
+echo Tag::hiddenField('tipo');  //para el tipo de publicacion V/D/P
+?>
+
+<!-- ***** DIFUNDIR NOTICIAS RSS ***** -->
+<script>
+    verNoticias();
+    setInterval('verNoticias()',300000); //Ver noticias cada 5 minuto
+    //setInterval('verNoticias()',60000); //Ver noticias cada 5 minuto
+    function verNoticias(){
+        $.post("<?php echo Utils::getKumbiaUrl("display/verNoticiasRss")?>", {
+            marquee_direccion:  'up',
+            marquee_ancho:      330,
+            marquee_alto:       490,
+            marquee_font_size:  35,
+            marquee_alineacion: 'middle'
+        },function(data){
+            document.getElementById("div_noticias").innerHTML = data;
+        },'ajax');
+    }
+</script>
+
+<!-- ***** DIFUNDIR SEGUN HORARIO ***** -->
+<script>
+   verHorario();
+    setInterval('verHorario()',60000); //Ver horario de publicidad cada 1 minuto
+    var tipo="";
+    var recargarV="";
+
+    function verHorario(){
+        $.post("<?php echo Utils::getKumbiaUrl("display/verHorario")?>",{
+
+        }, function(json){
+            tipo=json.tipo;
+            tipo_aux=$("#tipo").val();
+            if (tipo!=tipo_aux){
+                $("#tipo").val(tipo)
+                if (tipo=='D'){
+                    vertv();
+                    clearInterval(recargarV);
+                }else if (tipo=='P'){
+                    verPublicidad(json.archivo);        //con direccion carpeta
+                    clearInterval(recargarV);
+                } else if (tipo=='V'){
+                    /*$.post("<?php //echo Utils::getKumbiaUrl("display/actualizarOrdenPantalla")?>",{
+                    }, function(json){
+                    },"json");*/
+                    recargarV=setInterval('recargar()',1000); //Recargar en pantalla el video
+                }
+            }
+        },"json");
+    }
+
+    //INICIO PASAR TV
+    function vertv(){
+        alto:screen.height  //esta variable si utilizo
+        document.getElementById("midiv").innerHTML = "<EMBED type='application/x-mplayer2' pluginspage='http://www.microsoft.com/windows/windowsmedia/intl/download/default.asp?DispLang=br' SRC='http://<?php echo $pc_difusion;?>:<?php echo $puerto;?>' name='MediaPlayer1' AutoStart=true width='640px' height='480px' showControls='0' ShowStatusBar='0' volume='1'></EMBED>";
+    }
+    //FIN PASAR TV
+
+    //INICIO PASAR PUBLICIDAD
+    function verPublicidad(archivo){
+        document.getElementById("midiv").innerHTML = "<object width='640' height='480' attr1='attrValue1' attr2='attrValue2'"+
+            "codebase='http://www.apple.com/qtactivex/qtplugin.cab'"+
+            "classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'>"+
+            "<param name='src'      value='../../img/"+archivo+"'>"+
+            "<param name='autoplay' value='true'>"+
+            "<param name='param1'   value='paramValue1'>"+
+            "<param name='param2'   value='paramValue2'>"+
+            "<embed width='640' height='480' src='../../img/"+archivo+"' autoplay='true'"+
+            "attr1='attrValue1' attr2='attrValue2' param1='paramValue1' param2='paramValue2'"+
+            "pluginspage='http://www.apple.com/quicktime/download/' > </embed>"+
+            "</object>";
+    }
+    var t;
+    function recargar(){
+        t=$('#tiempo').val();
+        if (t==0){
+            recargarVideos();
+        } else {
+            t=t-1;
+            $('#tiempo').val(t);
+        }
+    }
+    function recargarVideos(){
+        $.post("<?php echo Utils::getKumbiaUrl("display/vervideo")?>",{
+            accion:'display',
+            alto:screen.height  //esta variable si utilizo
+        }, function(json){
+            $("#tiempo").val(json.tiempo);
+            $("#nombre").val(json.nombre);
+        },"json");
+        var embeber_video = '<object id="MediaPlayer1" CLASSID="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"'+
+            'standby="Loading Microsoft Windows� Media Player components..." type="application/x-oleobject" width="640" height="480">'+
+            '<param name="fileName" value="'+$('#nombre').val()+'">'+
+            '<param name="animationatStart" value="true">'+
+            '<param name="transparentatStart" value="true">'+
+            '<param name="autoStart" value="true">'+
+            '<param name="showControls" value="false">'+
+            '<param name="Volume" value="-500">'+
+            '<embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" src="'+$('#nombre').val()+'" name="MediaPlayer1" width=640 height=480 autostart=1 showcontrols=0 volume=-500>'+
+            '</object>';
+        document.getElementById("midiv").innerHTML = embeber_video;
+    }
+</script>
+
+<!-- ***** LLAMAR A CLIENTE ***** -->
+<script>
+    setInterval('recargarLlamada()',500);
+    function recargarLlamada(){
+        $.post("<?php echo Utils::getKumbiaUrl("display/vercaja")?>",{
+            //tiempo: $("#tiempo_timbre").val()
+        }, function(json){
+            if ($('#reproduciendo').val()==0)
+            $("#mensaje").val(json.t1);
+            $("#reproducir").val(json.v);
+            $("#numcaja").val(json.numcaja);
+        },"json");
+        verificar();
+    }
+
+    //Recargar en pantalla el timbre hablado
+    function verificar(){ //es llamado desde recargarTurnos()
+        if ($('#reproduciendo').val()==0){
+            $('#reproduciendo').val(1);
+            if ($('#reproducir').val()==1){
+                $('#duracion').val(8);
+                empezar();
+                verturnocaja();
+            }
+        }
+        var a;
+        if ($('#duracion').val()!=0){
+            a=$('#duracion').val();
+            a=a-1;
+            $('#duracion').val(a);
+        }
+        if ($('#duracion').val()==0){
+            $('#reproduciendo').val(0);
+            $('#t1').val("Espere su turno");
+        }
+        else
+            $('#t1').val($('#mensaje').val());
+
+    }
+
+    function empezar(){ //es llamado desde verificar()
+        if ($('#numcaja').val()==1)
+            valor = "pase1.wav";
+        else if ($('#numcaja').val()==2)
+            valor = "pase2.wav";
+        else if ($('#numcaja').val()==3)
+            valor = "pase3.wav";
+        else if ($('#numcaja').val()==4)
+            valor = "pase4.wav";
+        else if ($('#numcaja').val()==5)
+            valor = "pase5.wav";
+        else if ($('#numcaja').val()==6)
+            valor = "pase6.wav";
+        else if ($('#numcaja').val()==7)
+            valor = "pase7.wav";
+        else if ($('#numcaja').val()==8)
+            valor = "pase8.wav";
+        else if ($('#numcaja').val()==9)
+            valor = "pase9.wav";
+        else if ($('#numcaja').val()==10)
+            valor = "pase10.wav";
+        //document.getElementById("media").innerHTML = "<Embed type='application/x-mplayer2' pluginspage='http://www.microsoft.com/Windows/MediaPlayer/download/default.asp' src='C:/videos/"+valor+"' Name=MMPlayer1 Autostart=1 ShowControls=1 ShowDisplay=0 ShowStatusBar=1 DefaultFrame='Slide' width=0 height=0 volume='0'></embed>";
+        document.getElementById("media").innerHTML = "<object type='audio/mpeg' width='0' height='0' data='c:/videos/"+valor+"' classid='CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95'id='mediaplayer1'>"+
+            "<param name='filename' value='c:/videos/"+valor+"' />"+
+            "<param name='autostart' value='true' /><param name='loop' value='false' />"+
+            "<embed type='application/x-mplayer2' pluginspage='http://www.microsoft.com/Windows/Downloads/Contents/MediaPlayer/'filename='c:/videos/"+valor+"' autostart='True' showcontrols='false' showstatusbar='False' showdisplay='False' autorewind='False' height='0' width='0' />"+
+            "</object>";
+    }
+
+    function verturnocaja(){ //es llamado desde verificar()
+        if ($('#t1').val()==0)
+            $('#t1').val("Espere su turno");
+        else
+            $('#t1').val($('#mensaje').val());
+    }
+
+    //INICIO EFECTO DE COLOR EN TURNO
+    setInterval('colores()',500);
+    i=0;
+    function colores()
+    {
+        if ($('#duracion').val()!=0){
+            tabcolores = new Array ("#1243A6","#D41904");
+            if (i+1 == tabcolores.length) i=0;
+            else i++;
+            document.getElementById("t1").setAttribute("style", "color:"+tabcolores[i]+"; text-align:center; width:100%; font-family: Arial Black; font-size: 60px;background: transparent; border:0px;")
+        } else {
+            document.getElementById("t1").setAttribute("style", "text-align:center; width:100%; font-family: Arial Black;font-size: 60px;background: transparent; border:0px; color: #D90000;")
+        }
+    }
+    //FIN EFECTO DE COLOR EN TURNO
+
+    //INICIO RESTAURAR PANTALLA
+    function restaurar(){
+        window.innerWidth = screen.width;
+        window.innerHeight = screen.height;
+        window.screenX = 0;
+        window.screenY = 0;
+        alwaysLowered = false;
+        setTimeout("restaurar()",2000);
+    }
+    restaurar();
+    //FIN RESTAURAR PANTALLA
+</script>
+
+<!-- ***** Reloj ***** -->
+<script>
+    setInterval("reloj()",1000)
+    function reloj(){
+        momentoActual = new Date()
+        hora = momentoActual.getHours()
+        minuto = momentoActual.getMinutes()
+        segundo = momentoActual.getSeconds()
+        dia= momentoActual.getDate();
+        mes= momentoActual.getMonth()+1;
+        anio= momentoActual.getFullYear();
+        if (String(dia).length == 1)
+            dia="0"+dia;
+        if (String(mes).length == 1)
+            mes="0"+mes;
+        if (String(hora).length == 1)
+            hora="0"+hora;
+        if (String(minuto).length == 1)
+            minuto="0"+minuto;
+        if (String(segundo).length == 1)
+            segundo="0"+segundo;
+        horaImprimible = hora + " : " + minuto + " : " + segundo;
+        $("#hora").val(horaImprimible);
+        $("#fecha").val(dia + " / " + mes + " / " + anio);
+    }
+</script>

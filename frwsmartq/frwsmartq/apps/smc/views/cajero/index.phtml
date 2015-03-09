@@ -1,0 +1,102 @@
+<style>
+    .boton_operador {
+        background: #28597A;
+        /*background-image:url("../img/boton.png");*/
+        background: -webkit-gradient(linear, left top, left bottom, from(#93BDD9), to(#384954));
+        background: -moz-linear-gradient(top, #93BDD9, #384954);
+        border-top: 1px solid #96D1F8;
+        color: #fff;
+        font-size: 22px;
+        /*font-family: Helvetica, Arial, Sans-Serif;*/
+        /*padding: 13px 26px;*/
+        text-decoration: none;
+        vertical-align: text-bottom;
+        -moz-border-radius: 14px;
+        -webkit-border-radius: 14px;
+        border-radius: 14px;
+        -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+        -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+        box-shadow: rgba(0,0,0,1) 0 1px 0;
+        text-shadow: rgba(0,0,0,.4) 0 1px 0;
+        width: 150px;
+        height: 40px;
+    }
+    .bloquear{
+        background: #ccc;
+    }
+    .fondo_operador{
+        background-image:url("../../img/fondo.png");
+        background-repeat:repeat-x;
+        height:100%;
+    }
+</style>
+
+<div  id='mainContent'  title="Operador">
+    <fieldset class='ui-corner-all ui-widget-content ui-state-default fondo_operador'>
+        <legend></legend>
+        <table border="0">
+            <tr>
+                <td align="center">
+                    <?php
+                    echo Tag::image($carpeta."/sistema/logo_operador.png", "height: 50px");
+                    ?>
+                </td>
+                <td align="center"><a href="salir" title="Salir" style="border:0px;text-decoration:none;color:transparent;"><span id="btnexit"></span></a></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input name="pausar" id="pausar" type="button" value="pausar" class="boton_operador" ></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input name="siguiente" id="siguiente" type="button" value="SIGUIENTE" class="boton_operador" style="width:264px" title="Llamar siguiente turno"></td>
+            </tr>
+            <tr>
+                <td colspan="2">Módulo: <?php echo Tag::textField("numcaja", "size: 2", "style: border:none; background-color:transparent; font-size: 12px", "readonly: readonly");?> 
+                Usuario: <?php echo Tag::textField("usuario", "size: 15", "style: border:none;  background-color:transparent; font-size: 12px", "readonly: readonly");?></td>
+            </tr>
+        </table>
+    </fieldset>
+</div>
+<?php echo Tag::hiddenField("idcaja", "size: 1");?>
+<script>
+    $("#siguiente").click(function(){
+        $.post("<?php echo Utils::getKumbiaUrl("cajero/siguientecaja")?>",{
+            caja:$("#numcaja").val(),
+            idcaja:$("#idcaja").val()
+        }, function(json){
+        },"json");
+        $("#pausar").attr('disabled','');   $('#pausar').removeClass('bloquear');
+    });
+
+    $("#pausar").click(function(){
+        $.post("<?php echo Utils::getKumbiaUrl("cajero/terminarcola")?>", {
+            caja:$("#numcaja").val(),
+            idcaja:$("#idcaja").val()
+        }, function(json){
+        }, "json");
+        $("#pausar").attr('disabled','disabled');   $('#pausar').addClass('bloquear');
+    });
+</script>
+
+<!--****** RESTAURAR VENTANA ****** -->
+<script>
+    function restaurar(){
+        var w = screen.width * 0.78;
+        var h = screen.height * 0.60;
+        window.statusbar.visible = false;
+        window.scrollbars.visible = false;
+        window.menubar.visible = false;
+        window.toolbar.visible = false;
+        window.locationbar.visible = false;
+        window.personalbar.visible = false;
+        window.directories.visible = false;
+        window.innerWidth = 310;
+        window.innerHeight = 220;
+        window.screenX = w;
+        window.screenY = h;
+        //alwaysLowered = false;
+        setTimeout("restaurar()",2000);
+    }
+    //restaurar();
+</script>
+
+

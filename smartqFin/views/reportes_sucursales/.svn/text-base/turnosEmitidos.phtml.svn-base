@@ -1,0 +1,81 @@
+<!--<script type='text/javascript' src='../../js/tablecloth.js'></script>-->
+<div id='mainContent'>
+    <?php    //View::renderPartial('toolbarform');
+    echo Tag::form('reportes/verCuadroTurnosEmitidos');
+    ?>
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend><b>Fecha</b></legend>
+        <table id="tbl_menu" border="0" width="100%" class="empty">
+            <tr>
+                <td class="empty">
+                    <p><label class='labelform' ><span for='desde'>Desde:</span></label><?php echo Tag::textField("desde", "size: 12", "maxlength: 12","class:  dateISO") ?></p>
+                </td><td class="empty">
+                    <p><label class='labelform' ><span for='hasta'>Hasta:</span></label><?php echo Tag::textField("hasta", "size: 12", "maxlength: 12","class:  dateISO") ?></p>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <fieldset class="ui-corner-all ui-widget-content">
+        <legend><b>Opciones</b></legend>
+        <?php
+        $opcion= array(1=>'Por servicio',2=>'Por Grupo de servicio');
+        ?>
+        <p><label class='labelform' ><span for='usuarios'>Ver cuadro por:</span></label><?php echo Tag::selectStatic("opciones", $opcion,"useDummy: yes","class: required") ?></p>
+    </fieldset>
+    <div id="div_opcion" align="center">
+    </div>
+    <center><input id='chk_all_servicios' type='checkbox'/><label style='color:#3366FF; font-size:12px; font-weight:bold'>Marcar/desmarcar todos</label><br/></center>
+    <!--<center><input id='chk_all_grupos' type='checkbox'/><label style='color:#3366FF; font-size:12px; font-weight:bold'>Marcar/desmarcar todos los grupos</label><br/></center>-->
+    <?php echo Tag::submitButton("Ver Cuadro");?>
+    <?php echo Tag::endForm(); ?>
+</div>
+
+
+<script>
+    $(function() {
+        $("#desde").datepicker({ dateFormat: 'yy-mm-dd' });
+    });
+    $(function() {
+        $("#hasta").datepicker({ dateFormat: 'yy-mm-dd' });
+    });
+
+    $("#opciones").change(function(){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/listaOpcion")?>", {
+            opcion: $("#opciones").val()
+        }
+        ,function(data){
+            document.getElementById("div_opcion").innerHTML = data;
+        },'ajax');
+    });
+
+    //Selecciona todos los servicios luego de la selección en el combo
+    $("#chk_all_servicios").click(function(){
+        var chks=$("input:checkbox[name^='chk']");
+        chks.attr("checked",$(this).is(":checked"))
+    })
+
+    $('#desde').click(function(){
+        document.getElementById("div_cuadro").innerHTML="";
+    });
+    $('#hasta').click(function(){
+        document.getElementById("div_cuadro").innerHTML="";
+    });
+    $('#cajas').click(function(){
+        document.getElementById("div_cuadro").innerHTML="";
+    });
+    $('#opciones').click(function(){
+        document.getElementById("div_opcion").innerHTML="";
+    });
+
+    /*function cargarPagina(url,tipo){
+        if(tipo=='popup'){
+            var Xpos=(screen.width/2)-285;
+            var Ypos=(screen.height/2)-220;
+            $("#content-center").html('');
+            window.open(url,'popup','width=600,height=480,scrollbars=yes,left='+Xpos+',top='+Ypos);
+        }else{
+            $("#content-center").load(url,function(){
+            });
+        }
+    }*/
+</script>

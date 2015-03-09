@@ -1,0 +1,18 @@
+<!--
+Configurar Noticias
+-->
+
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Configurar Noticias</legend>
+    <label class='labelform' ><span for='chk_activar_noticias'><b>Publicar Noticias</b>:</span></label>
+    <?php echo Tag::checkboxField("publicar_noticias");?>
+    <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+            <td rowspan="2"><p><label class='labelform' ><span for='velocidad_publicacion'><b>Velocidad de Publicación</b>:</span></label><?php echo Tag::numericField("velocidad_publicacion", "size: 4", "maxlength: 4","class: ") ?></p></td>
+            <td><input type="button" value=" /\ " onclick="this.form.velocidad_publicacion.value++" style="font-size:7px;margin:0;padding:0;width:20px;height:13px;" ></td>
+        </tr>
+        <tr>
+            <td><input type=button value=" \/ " onclick="this.form.velocidad_publicacion.value--;" style="font-size:7px;margin:0;padding:0;width:20px;height:12px;" ></td>
+        </tr>
+    </table>
+</fieldset>

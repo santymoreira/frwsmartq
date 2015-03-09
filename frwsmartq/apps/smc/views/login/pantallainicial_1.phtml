@@ -1,0 +1,188 @@
+<style>
+    .fondo_calificacion{
+        background-image:url("../../img/fondo horizontal7.png");
+        background-repeat:no-repeat;
+
+        height:100%;
+    }
+    .noticiavertical{
+        font-size:35px;
+    }
+</style>
+
+<div  id='mainContent'>
+    <?php //echo View::getContent();
+    //echo Tag::jqGrid("caption: 'Counter'");
+    ?>
+    <!--<fieldset class='ui-corner-all ui-widget-content ui-state-default fondo_calificacion' height="680px" width="800px">
+        <legend></legend>
+        <div id="div_contenido"></div>
+    </fieldset>-->
+    <div id="fondo" class="fondo_calificacion">
+        <div id="div_contenido"></div>
+    </div>
+
+</div>
+<?php
+echo Tag::hiddenField("numcaja", "style: border:none; background-color:transparent; font-size: 22px; width:30px; text-align:left");
+echo Tag::hiddenField("cubo", "style: border:none; background-color:transparent; font-size: 22px; width:30px; text-align:left");
+echo Tag::hiddenField("usuario", "style: border:none; background-color:transparent; font-size: 22px; width:30px; text-align:left");
+?>
+<script>
+    function restaurar(){
+        var w = screen.width;
+        var h = screen.height;
+        window.statusbar.visible = false;
+        window.scrollbars.visible = false;
+        window.menubar.visible = false;
+        window.toolbar.visible = false;
+        window.locationbar.visible = false;
+        window.personalbar.visible = false;
+        window.directories.visible = false;
+        window.screenX = w+300 ;
+        window.screenY = 0;
+        window.innerWidth = w;
+        window.innerHeight = h;
+        //alwaysLowered = false;
+        setTimeout("restaurar()",2000);
+    }
+    //restaurar();
+
+    //document.getElementById("modulo").style.fontSize = '80px';
+    //document.getElementById("logo_institucion").innerHTML = "<embed src='../../img/cubopantalla_CPN.swf' width='120' height='120'> </embed>";
+    //document.getElementById("logo_smartq").innerHTML = "<embed src='../../img/logoinferior.swf' width='120' height='120'> </embed>";
+    //document.getElementById("div_modulo").innerHTML = "<img src='../../img/modulo.png'>";
+    //document.getElementById("div_numero").innerHTML = "<img src='../../img/1.png' height='490px'>";
+    //document.getElementById("div_modulo").style.fontSize = document.body.clientWidth/50 + 'px';
+    var modulo=String($("#numcaja").val());
+    var cubo=String($("#cubo").val());
+    var usuario=String($("#usuario").val());
+    function Resize()
+    {
+        var ancho=screen.width;  //esta variable si utilizo
+        var alto=screen.height;  //esta variable si utilizo
+        /*var ancho_inferior_array= ['400','700','1000','1200'];
+        var ancho_superior_array= ['600','900','1100','1600'];
+        var modulo_array= ['100px','100px','150px','150px'];        //palabra m�dulo
+        var numero_modulo_array= ['490px','390px','480px','480px']; //numero de modulo
+        var cubo_logo_array= ['120px','130px','1100','1600'];*/
+        if (ancho>='400' & ancho<='600'){ //pantalla vertical peque�a
+            document.getElementById("div_contenido").innerHTML =
+                "<table border='0' width='100%'>"+
+                "    <tr align='center' >"+
+                "        <td align='center'>"+
+                "            <img src='../../img/modulo.png'>"+
+                "        </td>"+
+                "    </tr>"+
+                "    <tr align='center'>"+
+                "        <td align='center'>"+
+                "            <img src='../../img/"+modulo+".png' height='490px'>"+
+                "        </td>"+
+                "    </tr>"+
+                "</table>"+
+                "<table width='100%'>"+
+                "    <tr>"+
+                "        <td align='left' >"+
+                "            <embed wmode='transparent' src='../../img/"+cubo+"' width='140' height='140'> </embed>"+
+                "        </td>"+
+                "        <td align='right'>"+
+                "            <embed wmode='transparent' src='../../img/logoinferior.swf' width='110' height='110'> </embed>"+
+                "        </td>"+
+                "    </tr>"+
+                "</table>"
+        }
+        else if (ancho>='700' & ancho<='900'){  //pantalla horizontal peque�a
+            document.getElementById("div_contenido").innerHTML =
+                "<table border='0' width='100%'>"+
+                "   <tr align='center' >"+
+                "       <td align='center'>"+
+                "           <table border='0' width='100%'>"+
+                "               <tr>"+
+                "                   <td align='left' >"+
+                "                       <embed wmode='transparent' src='../../img/"+cubo+"' width='120' height='140'> </embed>"+
+                "                   </td>"+
+                "                   <td align='center' >"+
+                "                       <img src='../../img/modulo.png' height='70px'>"+
+                "                   </td>"+
+                "               </tr>"+
+                "               <tr>"+
+                "                   <td style='font-size:70px' align='center' colspan='2'>"+usuario+
+                "                   </td>"+
+                "               </tr>"+
+                "               <tr>"+
+                "                   <td align='left' colspan='2'>"+
+                "                       <embed wmode='transparent' src='../../img/logoinferior.swf' width='110' height='120'> </embed>"+
+                "                   </td>"+
+                "               </tr>"+
+                "           </table>"+
+                "       </td>"+
+                "       <td align='center'>"+
+                "           <img src='../../img/"+modulo+".png' height='390px'>"+
+                "       </td>"+
+                "   </tr>"+
+                "</table>"
+        }
+        else if (ancho>='1000' & ancho<='1100'){  //pantalla horizontal grande
+            document.getElementById("div_contenido").innerHTML =
+                "<table border='0' width='100%'>"+
+                "   <tr align='center' >"+
+                "       <td align='center'>"+
+                "           <table border='0' width='100%'>"+
+                "               <tr>"+
+                "                   <td align='left'>"+
+                "                       <embed wmode='transparent' src='../../img/"+cubo+"' width='130' height='130'> </embed>"+
+                "                   </td>"+
+                "               </tr>"+
+                "               <tr>"+
+                "                   <td align='center'>"+
+                "                       <img src='../../img/modulo.png' height='150px'>"+
+                "                   </td>"+
+                "               </tr>"+
+                "               <tr>"+
+                "                   <td align='left'>"+
+                "                       <embed wmode='transparent' src='../../img/logoinferior.swf' width='130' height='130'> </embed>"+
+                "                   </td>"+
+                "               </tr>"+
+                "           </table>"+
+                "       </td>"+
+                "       <td align='center'>"+
+                "           <img src='../../img/"+modulo+".png' height='480px'>"+
+                "       </td>"+
+                "   </tr>"+
+                "</table>"
+        }
+        else {  //pantalla horizontal grande
+            document.getElementById("div_contenido").innerHTML =
+                "<table border='0' width='100%'>"+
+                "   <tr align='center' >"+
+                "       <td align='center'>"+
+                "           <table border='0' width='100%'>"+
+                "               <tr>"+
+                "                   <td align='left'>"+
+                "                       <embed wmode='transparent' src='../../img/"+cubo+"' width='130' height='130'> </embed>"+
+                "                   </td>"+
+                "               </tr>"+
+                "               <tr>"+
+                "                   <td align='center'>"+
+                "                       <img src='../../img/modulo.png' height='150px'>"+
+                "                   </td>"+
+                "               </tr>"+
+                "               <tr>"+
+                "                   <td align='left'>"+
+                "                       <embed wmode='transparent' src='../../img/logoinferior.swf' width='130' height='130'> </embed>"+
+                "                   </td>"+
+                "               </tr>"+
+                "           </table>"+
+                "       </td>"+
+                "       <td align='center'>"+
+                "           <img src='../../img/"+modulo+".png' height='480px'>"+
+                "       </td>"+
+                "   </tr>"+
+                "</table>"
+        }
+    }
+    window.onresize=Resize;
+    Resize();
+
+
+</script>

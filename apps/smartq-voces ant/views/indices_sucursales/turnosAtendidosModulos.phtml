@@ -1,0 +1,15 @@
+<div id='mainContent'>
+    <?php
+    View::renderPartial('toolbarformrefresh');
+    echo Tag::form('indices_sucursales/indicesTurnosAtendidosModulos','name: fvalida');
+    ?>
+
+    <?php
+    View::renderPartial('desde_hasta');
+    View::renderPartial('sucursales');
+    ?> 
+
+    <input type="button" value="Procesar" class="fg-button ui-submit ui-state-default ui-corner-all" onclick="valida_envia()">
+    <?php //echo Tag::submitButton("Ver Cuadro","class: fg-button ui-submit ui-state-default ui-corner-all");?>
+    <?php echo Tag::endForm(); ?>
+</div>

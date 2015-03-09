@@ -1,0 +1,44 @@
+<link href="<?php echo Core::getInstancePath(); ?>public/css/themes/ui.jqgrid.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="<?php echo Core::getInstancePath(); ?>public/javascript/core/framework/jQuery/jqGrid/len/grid.locale-sp.js"></script>
+<script type="text/javascript" src="<?php echo Core::getInstancePath(); ?>public/javascript/core/framework/jQuery/jqGrid/jquery.jqGrid.min.js"></script>
+<script src="http://<?php echo $servidor_node; ?>/socket.io/socket.io.js"></script>
+<?php
+$instancePath = Core::getInstancePath();
+//echo Tag::image("src: $instancePath/css/themes/redmond/images/toolbar/exit.png");
+Tag::image("src: $instancePath/css/themes/redmond/images/sort_descBlack.gif");
+?>
+<div id="iconuser">
+    <div>
+        <?php
+        $datosUsuario = SessionNamespace::get("datosUsuarioSMC");
+        //  echo $datosUsuario->getNombre();
+        ?>
+        <table>
+            <tr>
+                <td>
+                    <a href="javascript: void(0)" class="optionuser" style="text-decoration: none;"><font style="padding-right: 5px;"><?php echo Utils::ucwords($datosUsuario->getNombre()); ?></font></a>
+                </td>
+                <td>
+                    <?php echo Tag::image("src: " . $instancePath . "css/themes/redmond/images/sort_descBlack.gif", "valign: top", "class: optionuser", "style: cursor: pointer;"); ?>
+                </td>
+                <td>
+                    <?php
+                    //echo Tag::themeUI();
+                    ?>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <?php
+                    if (Session::issetData("funcionUsuario"))
+                        echo $datosUsuario->getFuncionUsuario();
+                    ?>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<a href="grupo/seleccionargrupo" title="Página inicial" style="right:60px;top: 9px; position:absolute;border:0px;text-decoration:none;color:transparent;"><span id="btnhome"></span></a>
+<a href="login/salir" title="Salir" style="right:20px;top: 9px; position:absolute;border:0px;text-decoration:none;color:transparent;"><span id="btnexit"></span></a>
+

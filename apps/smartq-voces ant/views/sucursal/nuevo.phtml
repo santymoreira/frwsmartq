@@ -1,0 +1,44 @@
+<div id='mainContent'>
+
+    <?php
+    ////echo View::getContent();
+    //echo Tag::form('sucursal/guardar');
+    View::renderPartial("toolbarform");
+    echo Tag::form("sucursal/guardar");
+    ?>
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend>Datos de Sucursal</legend>
+        <p><label class='labelform' ><span for='alias_sucursal'><b>Alias Sucursal</b>:</span></label><?php echo Tag::textField("alias_sucursal", "size: 50", "maxlength: 100","class:  required") ?></p>
+        <p><label class='labelform' ><span for='host'><b>Host</b>:</span></label><?php echo Tag::textField("host", "size: 50", "maxlength: 100","class:  required") ?></p>
+        <p><label class='labelform' ><span for='nombre_bd'><b>Nombre Base de Datos</b>:</span></label><?php echo Tag::textField("nombre_bd", "size: 50", "maxlength: 100","class:  required") ?></p>
+        <p><label class='labelform' ><span for='usuario_bd'><b>Usuario Base de Datos</b>:</span></label><?php echo Tag::textField("usuario_bd", "size: 50", "maxlength: 100","class:  required") ?></p>
+        <p><label class='labelform' ><span for='password_bd'><b>Password Base de Datos</b>:</span></label><?php echo Tag::textField("password_bd", "size: 50", "maxlength: 100","class:  required") ?></p>
+    </fieldset>
+    <?php //echo "<td>".Tag::button("Comprobar sucursal", "onclick: conectar_sucursal()")."</td>"; ?>
+
+    <div id="cargando" style="display:none; color: green;">Comprobando...<?php echo "<td>".Tag::image("cargando.gif","width: 30px","height: 30px"); ?></div>
+
+    <div id="div_mensaje"></div>
+    <!--<div class='ui-corner-all ui-widget-content'>
+    <?php //echo Tag::submitButton("Crear"); echo Tag::button("Cancelar","onclick: window.location='index';"); ?>
+	</div>-->
+    <?php echo Tag::endForm(); ?>
+
+</div>
+<script>
+    function conectar_sucursal(){
+        $("#cargando").css("display", "inline");
+
+        $.post("<?php echo Utils::getKumbiaUrl("sucursal/probarSucursal")?>", {
+            alias_sucursal: $("#alias_sucursal").val(),
+            host: $("#host").val(),
+            nombre_bd: $("#nombre_bd").val(),
+            usuario_bd: $("#usuario_bd").val(),
+            password_bd: $("#password_bd").val()
+        }
+        ,function(data){
+            document.getElementById("div_mensaje").innerHTML = data;
+            $("#cargando").css("display", "none");
+        },'ajax');
+    }
+</script>

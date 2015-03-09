@@ -1,0 +1,110 @@
+ <style type="text/css">
+  div.fixedHeaderTable2 {
+      position: inherit;
+  }
+  div.fixedHeaderTable2 table {
+      width:100%;
+  }
+  div.fixedHeaderTable2 tbody {
+      height: 400px;
+     overflow-y: auto;
+     overflow-x: hidden;
+ }
+ div.fixedHeaderTable2 table th {
+     background-color:transparent;
+ }
+ div.fixedHeaderTable2 table td {
+     background-color:transparent;
+ }
+ div.fixedHeaderTable2 thead td, div.fixedHeaderTable2 thead th {
+     position:inherit;
+ }
+
+ /* IE7 hacks */
+ div.fixedHeaderTable2 {
+     *position: relative;
+     *height: 500px;
+     *overflow-y: scroll;
+     *overflow-x: hidden;
+     *padding-right:16px;
+ }
+
+ div.fixedHeaderTable2 thead tr {
+     *position: relative;
+     _position: fixed;
+     *top: expression(this.offsetParent.scrollTop-2);
+     *background:none;
+     background-color:#FFFFFF
+ }
+
+ div.fixedHeaderTable2 tbody {
+     *height: 20px;
+     *position:relative;
+     *top:50px;
+ }
+
+ /* IE6 hacks */
+ div.fixedHeaderTable2 {
+     _width:expression(this.offsetParent.clientWidth-20);
+     _overflow: auto;
+     _overflow-y: scroll;
+     _overflow-x: scroll;
+ }
+ div.fixedHeaderTable2 thead tr {
+     _position: relative
+ }
+ </style>
+<div id="div_reporte_grafico">
+    <div class="ocultar">
+        <table align="center">
+            <tr>
+                <td>
+                    <input id="chk_barraspausas" type="checkbox" checked /><label style="color:#3366FF; font-size:12px; font-weight:bold">BARRAS</label>
+                    <input id="chk_pastelpausas" type="checkbox"/><label style="color:#3366FF; font-size:12px; font-weight:bold">PASTEL</label>
+                </td>
+                <td>
+                    <?php
+                    //$fun = new Funciones();
+                    //echo $fun->imprimir();
+                    ?>
+                    <!--<button type="button" id="printButton" onClick="FusionCharts.printManager.managedPrint()">Print Page</button>-->
+                </td>
+            </tr>
+        </table>
+    </div>
+    <table style="height: 100%; width: 100%; background-color: #E5F1F4"  align="center">
+        <tr><th colspan="2"> <div id="div_cabecerapausas" style="height: 100%; width: 100%"></div></th></tr>
+        <tr>
+            <td>
+                <table style="height: 100%;width: 100%" align="center">
+                    <tr>
+                        <td>
+                            <div id="div_barraspausas" style="width: 100%; height: 100%" align="center">
+                            </div>
+                        </td>
+                        <td>
+                            <div id="div_pastelpausas" style="width: 100%; height: 100%" align="center"></div>
+                            <!--   <div id="detalle_chart" style="display:none;" align="center"></div>-->
+                        </td>
+                    <tr>
+                        <td colspan="2">
+                            <div id="div_estadisticapausas" class="fixedHeaderTable2">
+
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <div id="div_detallepausas" style="width: 100%; height: 100%" align="center">
+                                Haga click en ver Detalle!!!
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div id="div_imp" >
+    </div>
+</div>

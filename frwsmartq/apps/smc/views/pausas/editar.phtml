@@ -1,0 +1,24 @@
+<div id='mainContent'>
+
+    <?php
+    //echo View::getContent();
+    //echo Tag::form('pausas/guardar/true');
+    View::renderPartial("toolbarform");
+    echo Tag::form("pausas/guardar/true");
+    ?>
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend>Datos de Pausas</legend>
+        <p><label class='labelform' ><span for='nombre_pausa'><b>Nombre Pausa</b>:</span></label><?php echo Tag::textField("nombre_pausa", "size: 25", "maxlength: 25","class:  required") ?></p>
+        <p><label class='labelform' ><span for='maximo_permitido'><b>Maximo Permitido</b>:</span></label><?php echo Tag::textField("maximo_permitido", "size: 5", "maxlength: 0","class: ") ?></p>
+    </fieldset>
+    <!--<div class='ui-corner-all ui-widget-content'>
+    <?php //echo Tag::submitButton("Grabar"); echo Tag::button("Cancelar","onclick: window.location='../index';"); ?>
+	</div>-->
+    <?php echo Tag::endForm(); ?>
+
+</div>
+<script>
+    $(function() {
+        $("#maximo_permitido").timepicker({ timeFormat: 'hh:mm:ss' });
+    })
+</script>

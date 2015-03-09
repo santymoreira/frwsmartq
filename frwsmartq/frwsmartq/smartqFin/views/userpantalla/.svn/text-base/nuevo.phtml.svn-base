@@ -1,0 +1,18 @@
+<div id='mainContent'>
+
+	<?php echo View::getContent();
+		 echo Tag::form('userpantalla/guardar');
+	?>
+	<fieldset class='ui-corner-all ui-widget-content'>
+		<legend>Datos de Userpantalla</legend>
+		<p><label class='labelform' ><span for='id'><b>Id</b>:</span></label><?php echo Tag::textField("id", "size: 11", "maxlength: 11","class:  required numeric") ?></p>
+		<p><label class='labelform' ><span for='usuario_id'><b>Usuario</b>:</span></label><?php echo Tag::select("usuario_id", $Usuario->find("order: id"), "using: id,id", "use_dummy: yes","dummyValue: ''","class: ") ?></p>
+		<p><label class='labelform' ><span for='pantalla_id'><b>Pantalla</b>:</span></label><?php echo Tag::select("pantalla_id", $Pantalla->find("order: id"), "using: id,descripcion", "use_dummy: yes","dummyValue: ''","class: ") ?></p>
+		<p><label class='labelform' ><span for='creacion_at'><b>Creacion At</b>:</span></label><?php echo Tag::textField("creacion_at", "size: 0", "maxlength: 0","class:  dateISO") ?></p>
+	</fieldset>
+	<div class='ui-corner-all ui-widget-content'>
+		<?php echo Tag::submitButton("Crear"); echo Tag::button("Cancelar","onclick: window.location='index';"); ?>
+	</div>
+	<?php echo Tag::endForm(); ?>
+
+</div>

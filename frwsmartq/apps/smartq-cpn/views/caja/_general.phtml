@@ -1,0 +1,165 @@
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Datos Generales</legend>
+    <p><label class='labelform' ><span for='numero'><b>Número de Módulo</b>:</span></label><?php echo Tag::numericField("numero", "size: 2", "maxlength: 2", "class:  required") ?></p>
+    <p><label class='labelform' ><span for='descripcion'><b>Descripción</b>:</span></label><?php echo Tag::textField("descripcion", "size: 80", "maxlength: 145", "class: required") ?></p>
+    <p><label class='labelform' ><span for='ubicacion_id'><b>Ubicación</b>:</span></label><?php echo Tag::select("ubicacion_id", $Ubicacion->find("order: nombre_ubicacion"), "using: id,nombre_ubicacion", "use_dummy: yes", "dummyValue: ''", "class: required") ?></p>
+    <p><label class='labelform' ><span for='ip'><b>IP</b>:</span></label><?php echo Tag::textField("ip", "size: 20", "maxlength: 15", "class: required") ?></p>
+</fieldset>
+
+<?php
+//SELECT u.nombres FROM usuario u, caja c, usercaja uc
+//WHERE u.id=uc.usuario_id AND c.id=uc.caja_id  AND c.id=29;
+$listausuarios = array();
+$condicion = "{#Caja}.id = $id";
+$query = new ActiveRecordJoin(array(
+            "entities" => array("Usuario", "Caja", "Usercaja"),
+            "fields" => array(
+                "{#Usuario}.id",
+                "{#Usuario}.nombres"),
+            "conditions" => $condicion
+        ));
+foreach ($query->getResultSet() as $result) {
+    $listausuarios[$result->getId()] = $result->getNombres();
+}
+
+$condicion = "{#Grupo}.id = 5"; //operadores
+$query = new ActiveRecordJoin(array(
+            "entities" => array("Usuario", "Grupo", "Grupousuario"),
+            "fields" => array(
+                "{#Usuario}.id",
+                "{#Usuario}.nombres"),
+            "conditions" => $condicion
+        ));
+foreach ($query->getResultSet() as $result) {
+    $listausuarios[$result->getId()] = $result->getNombres();
+}
+
+$condicion = "{#Grupo}.id = 7"; //cajeros
+$query = new ActiveRecordJoin(array(
+            "entities" => array("Usuario", "Grupo", "Grupousuario"),
+            "fields" => array(
+                "{#Usuario}.id",
+                "{#Usuario}.nombres"),
+            "conditions" => $condicion
+        ));
+foreach ($query->getResultSet() as $result) {
+    $listausuarios[$result->getId()] = $result->getNombres();
+}
+?>
+<!--<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Usuario</legend>
+    <p><label class='labelform' ><span for='usuarios'><b>Asignar a Usuario</b>:</span></label><?php echo Tag::selectStatic("usuarios", $listausuarios, "class:  required") ?></p>
+    <p><label class='labelform' ><span for='ubicacion_id'><b>Ubicacion</b>:</span></label><?php echo Tag::select("ubicacion_id", $Ubicacion->find("order: nombre_ubicacion"), "using: id,nombre_ubicacion", "use_dummy: yes", "dummyValue: ''", "class: required") ?></p>
+</fieldset>-->
+
+<fieldset class='ui-corner-all ui-widget-content'>
+    <legend>Tipo de Calificación</legend>
+    <input id='radio_tipo_calificacion' type='radio' name='radio_tipo_calificacion' value='D' checked onclick='seleccionarGrupoPreguntas(1,"D")'> Ninguno
+    <?php
+    $empresa = new empresa;
+    $buscaEmpresa = $empresa->findFirst();
+    $calif_4botones_teclado = $buscaEmpresa->getCalif4botonesTeclado();
+    $calif_4botones_pantalla = $buscaEmpresa->getCalif4botonesPantalla();
+    $calif_matriz_pantalla = $buscaEmpresa->getCalifMatrizPantalla();
+    $array_op_calificacion = array(
+        'A' => array('activo' => $calif_4botones_teclado, 'etiqueta' => 'Calificación con teclado de 4 botones', 'accion' => "onclick=\"seleccionarGrupoPreguntas(1,'A')\" "),
+        'B' => array('activo' => $calif_4botones_pantalla, 'etiqueta' => 'Calificación con pantalla touch de 4 botones', 'accion' => "onclick=\"seleccionarGrupoPreguntas(1,'B')\" "),
+        'C' => array('activo' => $calif_matriz_pantalla, 'etiqueta' => 'Calificación con pantalla touch de multipreguntas', 'accion' => "onclick=\"seleccionarGrupoPreguntas(1,'C')\" ")
+    );
+    
+    $id_grupo_pregunta = 0;
+    if ($calif_4botones_teclado != 0 | $calif_4botones_pantalla != 0 | $calif_matriz_pantalla != 0) {
+        echo "<br>";
+        $caja = new Caja();
+        $letra = '';
+        $buscaCaja = $caja->find("id=$id");
+        foreach ($buscaCaja as $serv) {
+            $letra = $serv->getTipoCalificacionOperador();
+        }
+        if (strlen($letra) > 1) {
+            $id_grupo_pregunta = substr($letra, 2);
+            $letra = substr($letra, 0, 1);
+            
+        }
+        
+        foreach ($array_op_calificacion as $key => $val) {
+            $tipo_calificar = $key;
+            if ($val['activo'] != 0)  //key es el value
+                if ($tipo_calificar == $letra) {
+                    echo "<input type='radio' id='radio_tipo_calificacion' name='radio_tipo_calificacion' value='$key' class='c_unico_1' " . $val['accion'] . " checked='checked' />" . $val['etiqueta'] . "<br>";
+                } else {
+                    echo "<input type='radio' id='radio_tipo_calificacion' name='radio_tipo_calificacion' value='$key' class='c_unico_1' " . $val['accion'] . " />" . $val['etiqueta'] . "<br>";
+                }
+
+            //echo Tag::radioField("radio_tipo_calificacion",array ($key=>$val['etiqueta'])) ;
+        }
+    }
+    ?>
+    <div id="div_grupo_preguntas">
+        <?php
+        echo "<fieldset class='ui-corner-all ui-widget-content'>
+                <legend>Grupo de preguntas</legend>";
+        $Grupopregunta = new Grupopregunta();
+        $servicio1 = $Grupopregunta->find("nom_grupo != ''");
+        foreach ($servicio1 as $serv) {
+            if($id_grupo_pregunta == $serv->getId() ){
+                echo "<input type='radio' id='radio_grupo_pregunta' name='radio_grupo_pregunta' 
+                value='" . $serv->getId() . "' class='c_unico_1' checked='checked' />" . $serv->getNomGrupo() . "<br>";
+            }else{
+                echo "<input type='radio' id='radio_grupo_pregunta' name='radio_grupo_pregunta' 
+                value='" . $serv->getId() . "' class='c_unico_1' />" . $serv->getNomGrupo() . "<br>";
+            }
+            
+        }
+        echo "</fieldset>";
+        ?>
+    </div>
+</fieldset>
+
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Permisos de transferencia de turnos</legend>
+    <p><label class='labelform' ><span for='transferir_uno'><b>Transferir Uno</b>:</span></label><?php echo Tag::checkboxField("transferir_uno"); ?></p>
+    <p><label class='labelform' ><span for='transferir_todos'><b>Transferir Todos</b>:</span></label><?php echo Tag::checkboxField("transferir_todos"); ?></p>
+</fieldset>
+
+<script>
+
+    $("#div_grupo_preguntas").hide("");
+
+    function seleccionarGrupoPreguntas(val, v){
+        if (v=='C'){
+            $("#div_grupo_preguntas").show(1000);
+        }else{
+            $("#div_grupo_preguntas").hide("slow");
+        }
+            
+        var chks1=$("input:checkbox[name^='chk_grupo']");
+        var nombre="";
+        for (var x=0; x < chks1.length; x++) {
+            nombre= chks1[x].id;
+            var clase = chks1[x].className;
+            var nom_clase="c_unico_"+val;
+            if (clase==nom_clase){
+                //$("#"+nombre).attr("checked", "checked");
+            } else {
+                $("#"+nombre).attr("checked", "");
+            }
+        }
+
+        var chks1=$("input:checkbox[name^='chk_grupo']");
+        var nombre="";
+        for (var x=0; x < chks1.length; x++) {
+            value= chks1[x].value;
+            nombre= chks1[x].id;
+            var clase = chks1[x].className;
+            //alert (clase);
+            //var nom_clase="c_modulos_"+val;
+            if (clase=="c_unico_1"){
+                if (v!=value){
+                    $("#"+nombre).attr("checked", "");
+                }
+
+            }
+        }
+    }
+</script>

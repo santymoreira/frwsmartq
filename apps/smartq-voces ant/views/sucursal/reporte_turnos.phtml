@@ -1,0 +1,17 @@
+<iframe id="if_datos" src=""></iframe>
+<script>
+    ver_iframe('<?php echo $url_iframe;?>');
+    function ver_iframe(url){
+        $('#if_datos').attr('src', url)
+    }
+    $(function() {
+//        var w = screen.width;
+//        var h = screen.height;
+        var w = $( ".ui-layout-center" ).width();
+        var h = $( ".ui-layout-center" ).height();
+        //alert(w);
+        $("#if_datos").css("width", w - 20);
+        $("#if_datos").css("height", h - 20);
+    })
+
+</script>

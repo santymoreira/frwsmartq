@@ -1,0 +1,33 @@
+<?php
+
+$arrayPane[]=array('position'=>'top','class'=>'ui-widget-header ui-corner-all','options'=>'resizable: false, size: 50','partial'=>'header');
+//$arrayPane[]=array('position'=>'right','caption'=>'Prueba','pin-button'=>true,'close-button'=>true,'options'=>'slideTrigger_open: "mouseover"');
+$arrayPane[]=array('position'=>'left','caption'=>'Menu','pin-button'=>true,'close-button'=>true,'options'=>'slideTrigger_open: "mouseover",fxName: "drop",resizable: true','partial'=>'menu');
+$arrayPane[]=array('position'=>'bottom','class'=>'ui-widget-header ui-corner-all','options'=>'resizable: false, size: 50','partial'=>'footer');
+
+if(View::getContent(true)!="")
+  $arrayPane[]=array('position'=>'middle','options'=>'resizable: false','content'=>View::getContent());
+else
+  $arrayPane[]=array('position'=>'middle','options'=>'resizable: false','partial'=>'content');
+Tag::pane($arrayPane);
+
+
+
+?>
+<div id="optionsuser" style="display:none" class="ui-state-default ui-corner-all ui-widget-content ui-default-state">
+   <ul>
+         <li><?php echo Tag::linkTo("login/salir","Cerrar sesion")?></li>
+        <!-- <li><?php echo Tag::linkTo("login","Cerrar sesion")?></li>
+         <li><?php echo Tag::linkTo("login","Cerrar sesion")?></li>
+         <li><?php echo Tag::linkTo("login","Cerrar sesion")?></li>-->
+
+   </ul>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $(".optionuser").click(function(){
+            $("#optionsuser").toggle("slow");
+        });
+    });
+</script>
+

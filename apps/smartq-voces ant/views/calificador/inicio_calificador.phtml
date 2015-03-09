@@ -1,0 +1,324 @@
+<?php echo Tag::javascriptBase() ?>
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <script type="text/javascript" src="<?php echo Core::getInstancePath(); ?>public/js/webcam.js"></script>
+        <script src="http://<?php echo $servidor_node; ?>/socket.io/socket.io.js"></script>
+        <title>Calificador</title>
+        <style type="text/css">
+            #div_camara{ position:absolute; z-index:0;}
+
+            #div_fondo {
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index:1;
+            }
+
+            #div_contenido { /*para los botones*/
+                position: absolute;
+                /*                left: 161px;*/
+                top: 215px;
+                width:100%;
+                z-index:3;
+            }
+
+            //*contenido*/
+            #div_encabezado {
+                position: absolute;
+                left: 244px;
+                top: 30px;
+                z-index:3;
+            }
+            #div_numero_grande {
+                position: absolute;
+                width: 100%;
+                z-index:3;
+            }
+            #div_foto {
+                position: absolute;
+                width: 100%;
+                top: 800px;
+                z-index:3;
+            }
+            .fondo{
+                background: #c9de96; /* Old browsers */
+                background: -moz-linear-gradient(top,  #c9de96 0%, #8ab66b 44%, #398235 100%); /* FF3.6+ */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#c9de96), color-stop(44%,#8ab66b), color-stop(100%,#398235)); /* Chrome,Safari4+ */
+                background: -webkit-linear-gradient(top,  #c9de96 0%,#8ab66b 44%,#398235 100%); /* Chrome10+,Safari5.1+ */
+                background: -o-linear-gradient(top,  #c9de96 0%,#8ab66b 44%,#398235 100%); /* Opera 11.10+ */
+                background: -ms-linear-gradient(top,  #c9de96 0%,#8ab66b 44%,#398235 100%); /* IE10+ */
+                background: linear-gradient(to bottom,  #c9de96 0%,#8ab66b 44%,#398235 100%); /* W3C */
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#c9de96', endColorstr='#398235',GradientType=0 ); /* IE6-9 */
+            }
+
+            #div_nombre {
+                position: absolute;
+                width: 100%;
+                top: 1200px;
+                z-index:3;
+            }
+            #div_prueba {
+                position: absolute;
+                /*left: 244px;*/
+                top: 40px;
+                width: 100%;
+                z-index:3;
+            }
+            .nombre {
+                font-family: Arial, Helvetica, sans-serif;
+                font-size: 38px;
+                font-style: normal;
+                background-color:transparent;
+                border:none;
+                text-align:center;
+                width: 481px;
+            }
+
+            /*segunda*/
+
+            #div_cenefa {
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index:3;
+            }
+            #div_logo_institucion {
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                z-index:3;
+            }
+            #div_logo_pw {
+                position: absolute;
+                left: 710px;
+                top: 425px;
+                z-index:3;
+            }
+
+            #div_publicidad222 {
+                position: absolute;
+                width:100%;
+                top: 240px;
+                z-index:3;
+            }	
+            .encabezado{
+                font-family: Garamond, serif;
+                line-height: 1em;
+                color: #ec1c23;
+                font-weight:bold;
+                font-size: 134px;
+                text-shadow:0px 0px 0 rgb(212,4,11),1px 1px 0 rgb(197,-11,-4),2px 2px 0 rgb(183,-25,-18),3px 3px 0 rgb(168,-40,-33),4px 4px 0 rgb(154,-54,-47),5px 5px 0 rgb(139,-69,-62), 6px 6px 0 rgb(125,-83,-76),7px 7px 6px rgba(0,0,0,0.6),7px 7px 1px rgba(0,0,0,0.5),0px 0px 6px rgba(0,0,0,.2);
+            }
+            #div_publicidad {
+                position: absolute;
+                top: 450px;
+                width:100%;
+                z-index:3;
+            }
+
+            /*pantalla calificado 4 botones*/
+            .fondo_operador{
+                background-image:url("../img/fondo.png");
+                background-repeat:repeat-x;
+                height:100%;
+            }
+            .boton_calificacion1{
+                color:#fff;
+                font-weight:bold;
+                font-size: 45pt;
+                width: 550px;
+                height: 235px;
+            }
+            .boton_calificacion2{
+                font-size: 45pt;
+                width: 350px;
+                height: 75px;
+            }
+            .boton_excelente{
+                background-color:transparent;
+                border: transparent;		background-image:url("<?php echo Core::getInstancePath(); ?>/public/img/<?php echo $carpeta; ?>/sistema/excelente.png");
+                background-size: 100% 100%;
+            }
+            .boton_muy_bueno{
+                background-color:transparent;
+                border: transparent;		background-image:url("<?php echo Core::getInstancePath(); ?>/public/img/<?php echo $carpeta; ?>/sistema/muybueno.png");
+                background-size: 100% 100%;		
+            }
+            .boton_bueno{
+                background-color:transparent;
+                border: transparent;		background-image:url("<?php echo Core::getInstancePath(); ?>/public/img/<?php echo $carpeta; ?>/sistema/bueno.png");
+                background-size: 100% 100%;		
+            }
+            .boton_regular{
+                background-color:transparent;
+                border: transparent;		background-image:url("<?php echo Core::getInstancePath(); ?>/public/img/<?php echo $carpeta; ?>/sistema/regular.png");
+                background-size: 100% 100%;		
+            }
+
+            #div_pagina{
+                width: 100%;
+                height: 100%;
+                margin-bottom: 0;
+                margin:0;
+                position: absolute;
+                right: 0;
+                top: 0;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div id="div_pagina" class="fondo">
+            <div class="div_camara">
+                <div id="my_camera" style="width:320px; height:240px;"></div>
+                <!-- chat -->
+                CHAT
+                <div id="chat"></div>
+            </div>
+            <div id="div_fondo" class="fondo">
+                <?php echo Tag::image($carpeta . "/sistema/calificacion_fondo_horizontal7.jpg", 'id: img_fondo', 'width: 795px', 'height: 470px') ?>
+            </div>
+            <div id="div_content"> <!-- Aqui se reemplaza segun como cargue-->
+
+            </div>
+
+            <div id="div_publicidad222" class="encabezado" style="text-align: center"></div>
+
+            <input type="text" id="url" name="url" value="<?php echo Utils::getKumbiaUrl("calificador/ajax") ?>"/>
+            <input type="text" id="ip_calificador" name="ip_calificador" value="<?php echo $ip_calificador; ?>"/>
+            <input type="text" id="turno_id" name="turno_id" value=""/>
+            <input type="text" id="turno_atendiendo" name="turno_atendiendo" value=""/>
+        </div>
+<!--        <input type="button" value="enviar" onclick="enviar()"/>-->
+
+
+        <!-- Configure a few settings and attach camera -->
+        <script language="JavaScript">
+            Webcam.set({
+                image_format: 'jpeg',
+                jpeg_quality: 90
+            });
+            Webcam.attach('#my_camera');
+
+            function take_snapshot() {
+                var data_uri = Webcam.snap();
+                data = {
+                    src: data_uri
+                }
+                $.ajax({
+                    url: $("#url").val(),
+                    data: data,
+                    type: 'post',
+                    success: function(respuesta) {
+                        $('#fotoGuardada').attr('src', respuesta).show(500);
+                    }
+                });
+            }
+        </script>
+
+
+
+        <script>
+            try {
+                var socket = io.connect("http://<?php echo $servidor_node; ?>");
+                $.unblockUI();
+            }
+            catch (err) {
+                alert("No se ha podido conectar con el servidor NODE correctamente.\nIntente nuevamente.\nSi el problema persiste comuníquese con Sistemas.\nCódigo de error: 101");
+                $.unblockUI();
+            }
+            var socket = io.connect("http://<?php echo $servidor_node; ?>");
+//            function enviar() {
+//                var msg_siguiente = "siguiente|192.168.1.6";
+//                socket.emit('send message', msg_siguiente);
+//            }
+        </script>
+
+
+        <!-- Code to handle taking the snapshot and displaying it locally -->
+        <script language="JavaScript">
+            cargar('cargarInicial');
+
+            window.onresize = Resize1;
+            Resize1();
+            function Resize1() {
+                var ancho_pagina = $(document).width();
+                var alto_pagina = $(document).height();
+                //alert(ancho_pagina);
+                $("#img_fondo").width(ancho_pagina);
+                $("#img_fondo").height(alto_pagina);
+            }
+
+            jQuery(function($) {
+                var socket = io.connect("http://<?php echo $servidor_node; ?>");
+                var $chat = $('#chat');
+                socket.on('new message', function(data) {
+                    //$("#div_publicidad222").prop('display',false);
+                    $("#div_publicidad222").css("display", "none");
+
+                    $chat.text(data);   //envio a chat el msg
+                    var smg_siguiente = $("#chat").text();
+                    var res = smg_siguiente.split("|");
+
+                    if (res.length >= 4) {  //si es >=5 dio siguiente
+                        var ip = res[3].split(":");
+                        //alert(ip[1]);
+                        if (ip[1] == $("#ip_calificador").val()) {
+
+                            //--busco que opcion sigue
+                            var op = res[4].split(":");
+                            //alert(op[1]);
+                            if (op[0] == 'op' & op[1] == 'siguiente') {
+                                var turno = res[5].split(":");
+                                //--muestra la pantalla de publicidad
+                                $("#turno_id").val(turno[1]);
+                                cargar('cargarPublicacion');
+                                $("#div_publicidad222").css("display", "inline");
+                                t = res[0].split(":");
+                                t2 = t[1].split("/");
+                                $("#div_publicidad222").html("Turno " + t2[0] + t2[1]);
+                                $("#div_publicidad222").val(t[1]);
+                            }
+                            if (op[0] == 'op' & op[1] == 'atender') {
+                                //--muestra la pantalla de publicidad
+                                cargar('cargarPublicacion');
+                                $("#div_publicidad222").css("display", "inline");
+                                t = $("#div_publicidad222").val();
+                                t2 = t.split("/");
+                                $("#div_publicidad222").html("Turno " + t2[0] + t2[1]);
+                            }
+                            if (op[0] == 'op' & op[1] == 'calificar') {
+                                //alert("cargar pantalla calificacion")
+//                            tipo_calificacion = "B";
+//                            if (tipo_calificacion == "A") {
+//                                //$("#valor1").focus();
+//                            } else if (tipo_calificacion == "B") {  //Pantalla Simple
+                                cargar('cargarCalificacion');
+//                            } else if (tipo_calificacion == "C") {   //Pantalla Matriz
+//                                cargar('cargarCalificacionMatriz')
+//                            }
+                            }
+                        }
+
+                    }
+                });
+            });
+
+            function cargar(pantalla) {
+                $.ajax({
+                    type: "POST",
+                    url: "<?php echo Utils::getKumbiaUrl("calificador/") ?>" + pantalla,
+                    beforeSend: function() {
+                        //$("#city").html("<option>Loading ...</option>");
+                    },
+                    data: "cartowner=1",
+                    success: function(msg) {
+                        $("#div_content").html(msg);
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,56 @@
+<!--
+Tiene un combo para los grupos de usuarios
+-->
+<?php
+//$id=Router::getId();
+//echo Tag::jqGrid("action: obtenerDatosGrid/".$id,"width: 500","caption: ''","delurl: 'grupousuario/eliminar/".$id."'","addurl: 'grupo/seleccionargrupo/$id'","typewinedit: 'popup'","optwinedit: 'width=500,height=345,top=200,left=270,scrollbars=yes'","filterToolbar: false","columnChooser: false","colNames: ['Grupo','Modulo']","colModel: [{index: 'grupo_id'},{index: 'modulo_id'}]","controller: grupousuario","sortname: 'grupo_id'","editbutton: false");
+//echo Tag::jqGrid("action: obtenerDatosGrid/".$id,"width: 500","caption: ''","filterToolbar: false","columnChooser: false","colNames: ['Grupo','Modulo']","colModel: [{index: 'grupo_id'},{index: 'modulo_id'}]","controller: grupousuario","sortname: 'grupo_id'","editbutton: false","addbutton: false","delbutton: false");
+?>
+<?php
+
+//SELECT g.id, nombre_largo FROM grupo g, usuario u, grupousuario gu
+//WHERE g.id= gu.grupo_id AND u.id=gu.usuario_id AND u.id=1;
+$listagrupo=array();
+$listagrupo1=array();
+//$condicion = "{#Usuario}.id = $id";
+$query = new ActiveRecordJoin(array(
+    "entities" => array("Usuario", "Grupo", "Grupousuario"),
+    "fields" => array(
+    "{#Grupo}.id",
+    "{#Grupo}.nombre_largo"),
+    "order"=> "{#Grupo}.nombre_largo ASC"
+    //"conditions" => $condicion
+));
+foreach($query->getResultSet() as $result){
+    $listagrupo[$result->getId()]=$result->getNombreLargo();
+}
+
+$grupo=new Grupo();
+$query= $grupo->find("order: nombre_largo");
+foreach($query as $result) {
+    $listagrupo[$result->getId()]=$result->getNombreLargo();
+}
+$grupos1 = array ('Configuradores','Administradores','Configuradores del sistema');
+//INICIO PREGUNTO SI TIENE PERMISO PARA USAR MODULO DE ATENCION DON TICKET O SIN TICKET
+$empresa= new Empresa();
+$buscaEmpresa=$empresa->findFirst();
+$moduloConTicket=$buscaEmpresa->getModuloOperadores();
+$moduloSinTicket=$buscaEmpresa->getModuloCajas();
+if ($moduloConTicket==0)
+    array_push($grupos1,'Operador con ticket');
+if ($moduloSinTicket==0)
+    array_push($grupos1,'Operador sin ticket'); 
+//FIN
+$listagrupo1 = array_diff($listagrupo, $grupos1);
+?>
+
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Grupo de Usuario</legend>
+    <!--<p><label class='labelform' ><span for='descripcion'><b>Grupo de usuario:</b>:</span></label><?php //echo Tag::textField("descripcion", "size: 45", "maxlength: 45","class: required") ?></p>-->
+    <!--<p><label class='labelform' ><span for='descripcion'><b>Letra</b>:</span></label><?php //echo Tag::selectStatic("grupo",$nombre_grupo,"class: required") ?></p>-->
+    <!--<p><label class='labelform' ><span for='grupo'><b>Grupo</b>:</span></label><?php //echo Tag::select("grupo", $grupo->find("order: nombre_largo"), "using: id,nombre_largo", "use_dummy: no","dummyValue: ''","class:  required") ?></p>-->
+    
+    <!--<p><label class='labelform' ><span for='grupo'><b>Grupo</b>:</span></label><?php echo Tag::select("grupo", $grupo->find("order: nombre_largo"), "using: id,nombre_largo", "use_dummy: no","dummyValue: ''","class:  required") ?></p>-->
+    <p><label class='labelform' ><span for='grupo'><b>Grupo</b>:</span></label><?php echo Tag::selectStatic("grupo", $listagrupo1,"use_dummy: no","dummyValue: ''","class:  required") ?></p>
+</fieldset>
+                            

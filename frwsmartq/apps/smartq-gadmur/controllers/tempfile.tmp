@@ -1,0 +1,700 @@
+<?php
+class ReportesController extends ApplicationController {
+
+    public $lista_cajas=array();
+    public $lista_modulos=array();
+    public $lista_servicios=array();
+    public $lista_grupo_servicios=array();
+    public $lista_modulos_tad=array();  //cuadro de turnos atendidos por dias
+    public $lista_servicios_tad=array();//cuadro de turnos atendidos por dias
+    public $lista_modulos_xls=array(); //modulos xls
+    public $lista_servicios_xls=array(); //modulos xls
+
+    public $id;
+    /**
+     * Inicializador del controlador/
+     *
+     */
+    public function initialize() {
+        $this->setPersistance(true);
+        $queryTotal=array();
+        $queryTotalCajas=array();
+        $arrayServicios=array();
+        //$this->setTemplateAfter("menu");
+
+    }
+
+    public function indexAction() {
+    }
+
+    /*
+     * Permite listas los servicios que corresponden al modulo
+    */
+    public function listaServiciosAction() {
+        $this->setResponse('ajax');
+        $lista_servicios=array();
+        $id_modulo=$this->getPostParam('id');
+        $lista_servicios[0]="Todos";
+        $condicion="{#Caja}.id=$id_modulo";
+        $query=new ActiveRecordJoin(array(
+                        "entities"=>array("Caja","Servicio","Serviciocaja"),
+                        "fields"=>array("{#Servicio}.id","{#Servicio}.nombre"),
+                        "conditions"=>$condicion,
+                        "order"=>"{#Caja}.numero_caja"
+                )
+        );
+        foreach ($query->getResultSet() as $result) {
+            $lista_servicios[$result->getId()]=$result->getNombre();
+        }
+        echo "<fieldset class='ui-corner-all ui-widget-content'>
+            <legend><b>Servicios</b></legend>
+            <p><label class='labelform' ><span for='usuarios'>Seleccione el servicio:</span></label>".Tag::selectStatic("servicios", $lista_servicios,"class:  required")."</p>
+        </fieldset>";
+    }
+
+    /*
+     * Inicio para el reporte de calificaciones por m�dulos
+    */
+    public $lista_modulos_calif=array();
+    public $lista_servicios_calif=array();
+    public $lista_preguntas_calif=array();
+    public function calificacionesAction() {
+        $lista=array();
+        $this->setResponse('ajax');
+//        Tag::displayTo('desde', date("Y-m-d"));
+//        Tag::displayTo('hasta', date("Y-m-d"));
+//        Tag::displayTo('hora_i', "08:00:00");
+//        Tag::displayTo('hora_f', "17:00:00");
+        //INICIO LISTA DE M�DULOS
+        //SELECT numero_caja FROM caja c, usercaja uc, usuario u, grupousuario gu
+        //WHERE c.id=uc.caja_id AND u.id=uc.usuario_id AND u.id=gu.usuario_id AND gu.grupo_id=5 ORDER BY numero_caja;
+        $condicion="grupousuario.grupo_id=5";
+        $query=new ActiveRecordJoin(
+                array(
+                        "entities"=>array("Caja","Usercaja","Usuario","Grupousuario"),
+                        "fields"=>array("{#Caja}.id","{#Caja}.numero_caja"),
+                        "conditions"=>$condicion,
+                        "order"=>"{#Caja}.numero_caja"
+                )
+        );
+        foreach ($query->getResultSet() as $result) {
+            $lista[$result->getId()]=$result->getNumeroCaja();
+        }
+        natsort($lista);
+        foreach ($lista as $key => $val) {
+            $this->lista_modulos_calif[$key]=$val;
+        }
+        //FIN LISTA DE M�DULOS
+
+        //INICIO LISTA DE SERVICIO
+        $servicio=new Servicio();
+        $buscaServicios=$servicio->find("conditions: estado= 1","order: nombre");
+        foreach($buscaServicios as $result) {
+            $this->lista_servicios_calif[$result->getId()]=$result->getNombre();
+        }
+        //FIN LISTA DE SERVICIO
+        //INICIO LISTA DE PREGUNTAS
+        $preguntas=new Preguntas();
+        $buscaPreguntas=$preguntas->find("conditions: publicar= 1","order: orden");
+        foreach($buscaPreguntas as $result) {
+            $this->lista_preguntas_calif[$result->getId()]=$result->getNomPregunta();
+        }
+        //FIN LISTA DE PREGUNTAS
+                   $html= "<table>";
+                    foreach($this->lista_preguntas_calif as $key=> $val) {
+//                        echo "hola".$val;
+                        $html.= "<tr><td>";
+                         $html.= Tag::checkboxField("chkpreguntas[]", "value: $key","checked: ").$val."&nbsp;&nbsp;";
+                        $html.= "</tr></td>";
+                    }
+                      $html.= "<tr><td><input type='button' value='Aceptar' id='btnAceptar' /></td></tr>";
+                      $html.= "</table>";
+                      echo $html;
+    }
+
+    /*
+     * Inicio para el reporte de los turnos emitidos por el dispensador
+    */
+    public $lista_servicios_te;
+    public $lista_grupo_servicios_te;
+    public function turnosEmitidosAction() {
+        $lista=array();
+        Tag::displayTo('desde', date("Y-m-d"));
+        Tag::displayTo('hasta', date("Y-m-d"));
+        //$lista_servicios[0]="Todos"; //Para combo si sirve
+        $servicios= new Servicio();
+        $buscaServicios= $servicios->find('conditions: estado=1');
+        foreach ($buscaServicios as $result) {
+            $this->lista_servicios_te[$result->getId()]=$result->getNombre();
+        }
+        $grupo_servicios= new Gruposervicio();
+        $buscaGrupoServicios= $grupo_servicios->find();
+        foreach ($buscaGrupoServicios as $result) {
+            $this->lista_grupo_servicios_te[$result->getId()]=$result->getNombreGrupoServicio();
+        }
+    }
+    /*
+     * Permite listas los servicios o los grupos de servicios seg�n la opci�n seleccionada en turnosEmitidos.html
+    */
+    public function listaOpcionAction() {
+        $this->setResponse('ajax');
+        $lista_servicios=array();
+        $opcion=$this->getPostParam('opcion');  //Si es por servicios o por Grupo de servicios
+        $html="";
+        if ($opcion==1) { //mostrar todos los servicios
+            //            $html.="<fieldset class='i-corner-all ui-widget-content'>";
+            //            $html.="<legend><b>Servicios</b></legend>";
+            //            foreach($this->lista_servicios as $key=> $val)
+            //                $html.= "   *".$val.Tag::checkboxField("chkservicios[]", "value: $key","checked: checked");
+            //            $html.="</fieldset>";
+
+            $html.="<fieldset class='ui-corner-all ui-widget-content'>
+        <legend><b>Servicios</b></legend>";
+            $col=0;
+            $array_valores=array();
+            foreach($this->lista_servicios_te as $key=> $val) {
+                $array_valores[]=Tag::checkboxField("chkservicios[]", "value: $key","checked: ").$val."&nbsp;&nbsp;";
+            }
+            $html.="<table>";
+            $cont_mod=count($this->lista_servicios_te);
+            $cont_filas=ceil($cont_mod/4);
+            $x=$cont_filas*4;
+            $y=$x-$cont_mod;
+            for ($z=1;$z<=$y;$z++)
+                $array_valores[]="";
+            $cont_key=0;
+            for ($f=1; $f<=$cont_filas; $f++) {
+                $html.= "<tr>";
+                for ($c=1;$c<=4;$c++) {
+                    $html.= "<td>".$array_valores[$cont_key]."</td>";
+                    $cont_key+=1;
+                }
+                $html.= "</tr>";
+            }
+            $html.= "</table>";
+            $html.="</fieldset>";
+
+        } else if ($opcion==2) {
+//                $html.="<fieldset class='i-corner-all ui-widget-content'>";
+//                $html.="<legend><b>Grupo de Servicios</b></legend>";
+//                foreach($this->lista_grupo_servicios as $key=> $val)
+//                    $html.= "   *".$val.Tag::checkboxField("chkgruposervicios[]", "value: $key","checked: checked");
+//                $html.="</fieldset>";
+
+
+            $html.="<fieldset class='ui-corner-all ui-widget-content'>
+        <legend><b>Servicios</b></legend>";
+            $col=0;
+            $array_valores=array();
+            foreach($this->lista_grupo_servicios_te as $key=> $val) {
+                $array_valores[]=Tag::checkboxField("chkgruposervicios[]", "value: $key","checked: ").$val."&nbsp;&nbsp;";
+            }
+            $html.="<table>";
+
+            $cont_mod=count($this->lista_grupo_servicios_te);
+            $cont_filas=ceil($cont_mod/4);
+            $x=$cont_filas*4;
+            $y=$x-$cont_mod;
+            for ($z=1;$z<=$y;$z++)
+                $array_valores[]="";
+            $cont_key=0;
+            for ($f=1; $f<=$cont_filas; $f++) {
+                $html.= "<tr>";
+                for ($c=1;$c<=4;$c++) {
+                    $html.= "<td>".$array_valores[$cont_key]."</td>";
+                    $cont_key+=1;
+                }
+                $html.= "</tr>";
+            }
+            $html.= "</table>";
+            $html.="</fieldset>";
+        }
+        echo $html;
+    }
+
+    /*
+     * Reporte de turnos emitidos por el turnero
+    */
+    public function verCuadroTurnosEmitidosAction() {
+        $this->setResponse('json');
+        $desde=$this->getPostParam('desde');
+        $hasta=$this->getPostParam('hasta');
+        $servicios=$this->getPostParam('chkservicios');
+        $grupo_servicios=$this->getPostParam('chkgruposervicios');
+        $lista_servicios=explode(',', $servicios);
+        $lista_grupo_servicios=explode(',',$grupo_servicios);
+        $arrayServicios= array();
+        $servicios= new Servicio();
+        if (!empty($lista_servicios)) {
+            $buscaServicios= $servicios->find("conditions: estado=1");
+            foreach ($buscaServicios as $result) {
+                $arrayServicios[$result->getId()]=$result->getNombre();
+            }
+
+        }
+
+        //Inicio c�lculo de dias entre fechas
+        $s = strtotime($hasta)-strtotime($desde);
+        $d = intval($s/86400) + 1;
+        $fun= new Funciones();
+        $reportes= new Reportes();
+        //fin calculo de dias entre fechas
+
+        $html="";
+        //INICIO ENCABEZADO
+        $html="<center><h2>Reporte de Turnos Emitidos por el Dispensador<br>Desde $desde hasta $hasta</h2></center>";
+        //FIN ENCABEZADO
+//        $html.="<script type='text/javascript' src='../../js/ventana_secundaria.js'></script>";
+//        $html.="<link href='../../css/tablecloth.css' rel='stylesheet' type='text/css' media='screen' />";
+        $fondo_titulo= "background-color:#328aa4; color:#fff";
+        $html.="<table align='center'>";
+
+        $array_encabezado_servicio=array(
+                'TE'=>array('etiqueta'=>'TE','titulo'=>'Turnos Emitidos'),
+                'TA'=>array('etiqueta'=>'TA','titulo'=>'Turnos Atendidos'),
+                'Ta'=>array('etiqueta'=>'Ta','titulo'=>'Turnos anulados'),
+                'Tn'=>array('etiqueta'=>'Tn','titulo'=>'Turnos no timbrados')
+        );
+        $cont_encabezado=count($array_encabezado_servicio);
+
+        $html.="<tr>";
+        $html.="<th style='$fondo_titulo'>Fecha</th>";
+        $html.="<th style='$fondo_titulo'>Dia</th>";
+        $html.="<th style='$fondo_titulo'>Primer Turno</th>";
+        $html.="<th style='$fondo_titulo'>Ultimo Turno</th>";
+        foreach ($arrayServicios as $key=> $nom_servicio) {
+            foreach($lista_servicios as $val) {
+                if ($key==$val) {
+                    $html.="<th colspan=$cont_encabezado style='$fondo_titulo'>$nom_servicio</th>";
+                }
+            }
+        }
+        $html.="<th style='$fondo_titulo' title='Total Turnos Emitidos'>TTE</th>";
+        $html.="<th style='$fondo_titulo' title='Total Turnos Atendidos'>TTA</th>";
+        $html.="<th style='$fondo_titulo' title='Total Turnos anulados'>TTa</th>";
+        $html.="<th style='$fondo_titulo' title='Total Turnos no timbrados'>TTn</th>";
+        $html.="</tr>";
+
+        $html.="<tr>";
+        $html.="<th style='$fondo_titulo'></th>
+            <th style='$fondo_titulo'></th>
+            <th style='$fondo_titulo'></th>
+            <th style='$fondo_titulo'></th>";
+        foreach ($lista_servicios as $nom_servicio) {
+            foreach ($array_encabezado_servicio as $valor)
+                $html.="<th style='$fondo_titulo' title='$valor[titulo]'>$valor[etiqueta]</th>";
+        }
+        $html.="<th style='$fondo_titulo'></th>";
+        $html.="<th style='$fondo_titulo'></th>";
+        $html.="<th style='$fondo_titulo'></th>";
+        $html.="<th style='$fondo_titulo'></th>";
+        $html.="</tr>";
+        $grantotal_turnos_emitidos=0;
+        $grantotal_turnos_atendidos=0;
+        $grantotal_turnos_anulados=0;
+        $grantotal_turnos_no_timbrados=0;
+        $suma_totales_turnos_emitidos=array();
+
+        //INICIO INICIALIZAR ARRAY PARA SUMA DE CADA SERVICIO
+        foreach ($lista_servicios as $key=>$nom_servicio) {
+            $suma_totales_turnos_emitidos[$key]=0;
+            $suma_totales_turnos_atendidos[$key]=0;
+            $suma_totales_turnos_anulados[$key]=0;
+            $suma_totales_turnos_no_timbrados[$key]=0;
+        }
+        //FIN INICIALIZAR ARRAY PARA SUMA DE CADA SERVICIO
+        $forma_array=array();
+        $fecha= $desde;
+        $fecha= date("Y-m-d", strtotime( "$fecha - 1 day")) ;
+        for ($i=1;$i<=$d;$i++) {
+            $fecha= date("Y-m-d", strtotime( "$fecha + 1 day"));
+            $separa = explode('-',$fecha);
+            $mes = $separa[1];
+            $dia = $separa[2];
+            $ano = $separa[0];
+            $dia= $fun->dia_semana($dia, $mes, $ano);
+            if ($dia!='S&aacute;bado' & $dia!='Domingo') {
+                $subtotal_turnos_emitidos=0;
+                $subtotal_turnos_atendidos=0;
+                $subtotal_turnos_anulados=0;
+                $subtotal_turnos_no_timbrados=0;
+                $html.="<tr>";
+                $html.="<td style='background-color:#e5f1f4;'>$fecha</td>";
+                $html.="<td style='background-color:#e5f1f4;'>$dia</td>"; //dia
+                $primer_turno= $reportes->primerTurno($fecha);
+                $ultimo_turno= $reportes->ultimoTurno($fecha);
+                $html.="<td style='background-color:#e5f1f4;'>$primer_turno</td>";
+                $html.="<td style='background-color:#e5f1f4;'>$ultimo_turno</td>";
+                //INICIO DATOS POR SERVICIO
+                $forma_array_fila=array();
+                foreach ($lista_servicios as $key=>$nom_servicio) {
+                    $id_servicio= $key;
+                    //$turnos_emitidos=0;
+                    $turnos_emitidos= $reportes->turnosEmitidos($id_servicio, $fecha);
+                    $turnos_atendidos= $reportes->turnosAtendidos($id_servicio, $fecha);
+                    $turnos_anulados= $reportes->turnosAnulados($id_servicio, $fecha);
+                    $turnos_no_timbrados= $reportes->turnosNoTimbrados($id_servicio, $fecha);
+                    $html.="<td align='right' style='background-color:#FEE1BA;'>$turnos_emitidos</td>";
+                    $html.="<td align='right' style='background-color:#e5f1f4;'>$turnos_atendidos</td>";
+                    $html.="<td align='right' style='background-color:#e5f1f4;'>$turnos_anulados</td>";
+                    $html.="<td align='right' style='background-color:#e5f1f4;'>$turnos_no_timbrados</td>";
+                    $subtotal_turnos_emitidos+=$turnos_emitidos;
+                    $subtotal_turnos_atendidos+=$turnos_atendidos;
+                    $subtotal_turnos_anulados+=$turnos_anulados;
+                    $subtotal_turnos_no_timbrados+=$turnos_no_timbrados;
+                    $suma_totales_turnos_emitidos[$key]=$suma_totales_turnos_emitidos[$key]+$turnos_emitidos;
+                    $suma_totales_turnos_atendidos[$key]=$suma_totales_turnos_atendidos[$key]+$turnos_atendidos;
+                    $suma_totales_turnos_anulados[$key]=$suma_totales_turnos_anulados[$key]+$turnos_anulados;
+                    $suma_totales_turnos_no_timbrados[$key]=$suma_totales_turnos_no_timbrados[$key]+$turnos_no_timbrados;
+                    $forma_array_fila[$key]=$turnos_emitidos;
+                }
+                //FIN DATOS POR SERVICIO
+                $html.="<td align='right' style='background-color:#bce774;'>$subtotal_turnos_emitidos</td>";
+                $html.="<td align='right' style='background-color:#e5f1f4;'>$subtotal_turnos_atendidos</td>";
+                $html.="<td align='right' style='background-color:#e5f1f4;'>$subtotal_turnos_anulados</td>";
+                $html.="<td align='right' style='background-color:#e5f1f4;'>$subtotal_turnos_no_timbrados</td>";
+                $html.="</tr>";
+                $forma_array[$fecha]=$forma_array_fila;
+            }
+        }
+        //FORMAR TOTALES EN LA ULTIMA FILA
+        $html.="<tr>";
+        $html.="<td style='background-color:#e5f1f4;'></td>";
+        $html.="<td style='background-color:#e5f1f4;'></td>";
+        $html.="<td style='background-color:#e5f1f4;'></td>";
+        $html.="<td style='background-color:#e5f1f4;'></td>";
+        foreach ($suma_totales_turnos_emitidos as $key=>$valor) {
+            $html.="<td align='right' style='background-color:#FEE1BA;'><b>$valor</b></td>";
+            $html.="<td align='right' style='background-color:#FEE1BA;'><b>$suma_totales_turnos_atendidos[$key]</b></td>";
+            $html.="<td align='right' style='background-color:#FEE1BA;'><b>$suma_totales_turnos_anulados[$key]</b></td>";
+            $html.="<td align='right' style='background-color:#FEE1BA;'><b>$suma_totales_turnos_no_timbrados[$key]</b></td>";
+            $grantotal_turnos_emitidos+=$suma_totales_turnos_emitidos[$key];
+            $grantotal_turnos_atendidos+=$suma_totales_turnos_atendidos[$key];
+            $grantotal_turnos_anulados+=$suma_totales_turnos_anulados[$key];
+            $grantotal_turnos_no_timbrados+=$suma_totales_turnos_no_timbrados[$key];
+        }
+        $html.="<td align='right' style='background-color:#bce774;'><b>$grantotal_turnos_emitidos</b></td>";
+        $html.="<td align='right' style='background-color:#e5f1f4;'><b>$grantotal_turnos_atendidos</b></td>";
+        $html.="<td align='right' style='background-color:#e5f1f4;'><b>$grantotal_turnos_anulados</b></td>";
+        $html.="<td align='right' style='background-color:#e5f1f4;'><b>$grantotal_turnos_no_timbrados</b></td>";
+        $html.="</tr>";
+        $mi_array= $forma_array;
+        $compactada=serialize($mi_array);
+        $compactada=urlencode($compactada);
+        //$html.="<a href=javascript:ventanaSecundaria('verGraficoTurnosEmitidos?array=".$compactada."')>Graficar Todos</a>";
+        $arrayTurno=array('turnos'=>$html);
+        return $arrayTurno;
+////        echo $html;
+    }
+    /*
+     * Graficar Todos servicios por fechas
+     * recibe un array multidimencional
+     * NOTA: no utilizo porque no se puede formar el array multidimencional
+    */
+    public function verGraficoTurnosEmitidosAction() {
+        $array=$_GET['array'];
+        $tmp = stripslashes($array);
+        $tmp = urldecode($tmp);
+        $tmp = unserialize($tmp);
+
+        $html= "";
+        $html.=" <!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01//EN' 'http://www.w3.org/TR/html4/strict.dtd'>";
+        $html.="<html>";
+        $html.="<head>";
+        $html.="<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>";
+        $html.="<title>Highcharts Example</title>";
+
+
+        $html.="<!-- 1. Add these JavaScript inclusions in the head of your page -->";
+        $html.="<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js'></script>";
+        $html.="<script type='text/javascript' src='../../js/highcharts.js'></script>";
+
+        $html.="<!-- 1a) Optional: the exporting module -->";
+        $html.="<script type='text/javascript' src='../../js/modules/exporting.js'></script>";
+
+
+        $html.="<!-- 2. Add the JavaScript to initialize the chart on document ready -->";
+        $html.="<script type='text/javascript'>";
+
+        $html.="var chart;";
+
+        $html.="$(document).ready(function() {";
+        $html.="chart = new Highcharts.Chart({";
+        $html.="chart: {";
+        $html.="renderTo: 'container',";
+        $html.="defaultSeriesType: 'line'";
+        $html.="},";
+        $html.="title: {";
+        $html.="text: 'Turnos atendidos por dias'";
+        $html.="},";
+        $html.="subtitle: {";
+        $html.="text: ''";
+        $html.="},";
+        $html.="xAxis: {";
+        $html.="categories: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie']";
+        $html.="},";
+        $html.="yAxis: {";
+        $html.="title: {";
+        $html.="text: 'Turnos'";
+        $html.="}";
+        $html.="},";
+        $html.="tooltip: {";
+        $html.="enabled: false,";
+        $html.="formatter: function() {";
+        $html.="return '<b>'+ this.series.name +'</b><br/>'+";
+        $html.="this.x +': '+ this.y +'�C';";
+        $html.="}";
+        $html.="},";
+        $html.="plotOptions: {";
+        $html.="line: {";
+        $html.="dataLabels: {";
+        $html.="enabled: true";
+        $html.="},";
+        $html.="enableMouseTracking: false";
+        $html.="}";
+        $html.="},";
+        $html.="series: [";
+        /*$html.="{";
+						$html.="name: 'Total turnos',";
+						//$html.="data: [".$lun.",".$mar.", ".$mie.", ".$jue.", ".$vie."]";
+                                                $html.="data: [7.0, 6.9, 9.5, 14.5, 18.4]";
+					$html.="},";*/
+        /*$html.="{";
+						$html.="name: 'Promedio',";
+                                                //$html.="data: [".$plun.",".$pmar.", ".$pmie.", ".$pjue.", ".$pvie."]";
+						$html.="data: [3.9, 4.2, 5.7, 8.5, 11.9]";
+					$html.="},";*/
+
+        foreach ($tmp as $indice1=> $valor) {
+            $html.="{";
+            $html.="name: 'Mod. $indice1',";
+            $html.="data: [";
+            //echo $indice1." = ".$valor."<br>";
+            foreach ($valor as $indice2 => $valor2) {
+                //echo $indice2." = ".$valor2."<br>";
+                $html.="$valor2,";
+            }
+            $html.="]";
+            $html.="},";
+        }
+
+        $html.="]";
+        $html.="});";
+
+
+        $html.="});";
+
+        $html.="</script>";
+
+        $html.="</head>";
+        $html.="<body>";
+
+        $html.="<!-- 3. Add the container -->";
+        $html.="<div id='container' style='width: 800px; height: 600px; margin: 0 auto'></div>";
+
+
+        $html.="</body>";
+        $html.="</html>";
+
+        echo $html;
+    }
+    /*
+     * Funcion que retorna el cuadro de total turnos atendidos por dias
+     * Menu: Cuadro de turnos por dias
+    */
+    public function verCuadroAction() {
+        $this->setResponse('json');
+        $desde=$this->getPostParam('desde');
+        $hasta=$this->getPostParam('hasta');
+        $modulos=$this->getPostParam('chkmodulos');
+        $servicios=$this->getPostParam('chkservicios');
+        $lista_modulos=explode(',',$modulos);
+        $lista_servicios=explode(',',$servicios);
+        $horas=$this->getPostParam('horas');
+        $minutos=$this->getPostParam('minutos');
+        $segundos=$this->getPostParam('segundos');
+        $forma_duracion=$horas.":".$minutos.":".$segundos;
+        $forma_condicion_servicios="";
+        $html="";
+        $desde1=$desde;
+        $hasta1=$hasta;
+        $compactada1="";
+        $ts=array();
+        if (!empty($servicios)) {
+            for ($i=0;$i<count($lista_servicios);$i++) {
+                if ($i==(count($lista_servicios)-1))
+                    $forma_condicion_servicios.=$lista_servicios[$i];
+                else
+                    $forma_condicion_servicios.=$lista_servicios[$i].",";
+            }
+        }
+
+        if (!empty($modulos) & !empty($lista_servicios) ) {
+            $array_dias_semana = array('Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo');
+            $array_encabezado_dia=array(
+                    'TA'=>array('etiqueta'=>'TA','titulo'=>'Turnos Atendidos'),
+                    'Ta'=>array('etiqueta'=>'Ta','titulo'=>'Turnos Anulados'),
+                    'DT'=>array('etiqueta'=>'DT','titulo'=>'Duración Total'),
+                    'PA'=>array('etiqueta'=>'PA','titulo'=>'Promedio de Atención'),
+                    'Pll'=>array('etiqueta'=>'Pll','titulo'=>'Promedio de Llamada a Atención'),
+                    'ES'=>array('etiqueta'=>'','titulo'=>'',)
+            );
+            $cont_encabezado=count($array_encabezado_dia);
+            $fondo_titulo= "background-color:#328aa4; color:#fff";
+            $tituloEstilo="font-family: Lucida Grande,Lucida Sans Unicode,Verdana,Arial,Helvetica,sans-serif; font-size: 16px; color: #3E576F; text-anchor=middle zIndex=1";
+            $tituloCabecera="<center><text style='$tituloEstilo'>Cuadro de turnos Atentidos, Anulados y Promedios<br />Desde ".$desde."hasta ". $hasta."</text></center>";
+            //INICIO SEPARAR POR SEMANAS
+            $s = strtotime($hasta)-strtotime($desde);
+            $d = intval($s/86400) + 1;      //calcular el total de dias entre fechas
+
+            $fecha= $desde;
+            $fecha= date("Y-m-d", strtotime( "$fecha - 1 day")) ;   //solo para q empiece desde un d�a menos
+
+            $forma_array_semanas= array();
+            $array_aux= array();
+            $aux="";
+
+            $dias= array('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');
+
+            for ($i=1;$i<=$d;$i++) {
+                $fecha= date("Y-m-d", strtotime( "$fecha + 1 day")) ; //a la fecha anterior aumenta un d�a
+
+                $separa = explode("-",$fecha);
+                $anio = $separa[0];
+                $mes= $separa[1];
+                $dia = $separa[2];
+                $num_semana = date('W', mktime(0, 0, 0, $mes, $dia, $anio));
+                $pru=strtoupper($dias[intval((date("w",mktime(0,0,0,$mes,$dia,$anio))))]);  //obtener el dia de la semana
+                //$forma_array_semanas[$num_semana][$pru]=$dia;   //forma el array milti con el numero de semana y los dias
+                $forma_array_semanas[$num_semana][$pru]="$anio-$mes-$dia";   //forma el array milti con el numero de semana y los dias
+                //echo "num semana: ".$num_semana."<br>";
+            }
+
+            /*foreach($forma_array as $key=>$val) {
+                echo $key;  //numero de semana
+                foreach($val as $key2=>$val2 ) {    //$key2= dia de la semana
+                    echo $key2." ".$val2." ";
+                }
+                echo "<br>";
+            }*/
+            //FIN SEPARAR POR SEMANAS
+
+            //INICIO ENCABEZADO
+
+            
+            $html="";
+            $html.="<table align='center' border=0  width='50%'>";
+            $html.="<tr><td>
+            <table><tr><td><b>Turnos con duración a partir de:</b></td><td align='right'>$forma_duracion</td></tr>
+           </table></td></tr>";
+//            $html.="<script type='text/javascript' src='../../js/ventana_secundaria.js'></script>";
+//            $html.="<link href='../../css/tablecloth.css' rel='stylesheet' type='text/css' media='screen' />";
+            //FIN ENCABEZADO
+            foreach($forma_array_semanas as $key=>$val) {
+                $desde = reset( $val );
+                $hasta = end( $val );
+
+                $html.="<tr><td align='right' style='background-color:#FEE1BA;'>
+                Semana desde $desde hasta $hasta
+                </td></tr>";
+
+                $html.="<tr><td style='background-color:#fff;'>";
+
+
+                $html.="<table align='center'>";
+                $html.="<tr>";
+                $html.="<th style='$fondo_titulo'>Módulo</th>";
+                $html.="<th style='$fondo_titulo'>Usuario</th>";
+                //$html.="<th style='background-color:#328aa4; color:#fff'></th>";
+                foreach ($array_dias_semana as $dia) {
+                    $html.="<th colspan=$cont_encabezado style='$fondo_titulo'>$dia</th>";
+                }
+                $html.="<th style='$fondo_titulo' title='Total Turnos Atendidos'>TTA</th>";
+                $html.="<th style='$fondo_titulo' title='Total Turnos anulados'>TTa</th>";
+                $html.="<th style='$fondo_titulo' title='Promedio de Atención Lunes a Viernes'>PA</th>";
+                $html.="<th style='$fondo_titulo' title='Promedio de Llamada Lunes a Viernes'>PLL</th>";
+                $html.="<th style='$fondo_titulo'></th>";
+                $html.="</tr>";
+
+                $html.="<tr>";
+                $html.="<th style='$fondo_titulo'></th>
+                        <th style='$fondo_titulo'></th>";
+                foreach ($array_dias_semana as $dia) {
+                    foreach ($array_encabezado_dia as $valor)
+                        $html.="<th style='$fondo_titulo' title='$valor[titulo]'>$valor[etiqueta]</th>";
+                }
+                $html.="<th style='$fondo_titulo'></th>";
+                $html.="<th style='$fondo_titulo'></th>";
+                $html.="<th style='$fondo_titulo'></th>";
+                $html.="<th style='$fondo_titulo'></th>";
+                $html.="<th style='$fondo_titulo'></th>";
+                $html.="</tr>";
+
+                //SELECT COUNT(*) AS total_dia FROM caja c, turnos t, servicio s, usercaja uc, usuario u
+                //WHERE c.id=t.caja_id AND s.id=t.servicio_id AND c.id=uc.caja_id AND u.id=uc.usuario_id
+                //AND fecha_inicio_atencion BETWEEN '2010-11-22' AND '2010-11-22' AND DAYNAME(fecha_emision)="Monday";
+
+                //DURACION
+                //SELECT duracion FROM caja c, turnos t, servicio s, usercaja uc, usuario u
+                //WHERE c.id=t.caja_id AND s.id=t.servicio_id AND c.id=uc.caja_id AND u.id=uc.usuario_id
+                //AND DAYNAME(fecha_emision)='Monday' AND fecha_inicio_atencion BETWEEN '2010-11-15' AND '2010-11-24' AND c.id= 38 AND atendido=1 AND rechazado=0;
+                $suma_totales_turnos_atendidos=array('Monday'=>0,'Tuesday'=>0,'Wednesday'=>0,'Thursday'=>0,'Friday'=>0,'Saturday'=>0,'Sunday'=>0);
+                $suma_totales_turnos_anulados=array('Monday'=>0,'Tuesday'=>0,'Wednesday'=>0,'Thursday'=>0,'Friday'=>0,'Saturday'=>0,'Sunday'=>0);
+                $suma_duracion_turnos_atendidos=array('Monday'=>0,'Tuesday'=>0,'Wednesday'=>0,'Thursday'=>0,'Friday'=>0,'Saturday'=>0,'Sunday'=>0);
+                $suma_promedio_turnos_atendidos=array('Monday'=>0,'Tuesday'=>0,'Wednesday'=>0,'Thursday'=>0,'Friday'=>0,'Saturday'=>0,'Sunday'=>0);
+                $suma_promedio_turnos_llamada=array('Monday'=>0,'Tuesday'=>0,'Wednesday'=>0,'Thursday'=>0,'Friday'=>0,'Saturday'=>0,'Sunday'=>0);
+                $grantotal_turnos_atendidos=0;
+                $grantotal_turnos_anulados=0;
+                $gran_promedio_atencion=0;
+                $gran_promedio_llamada=0;
+                $forma_array=array();
+                $forma_array_fecha=array();
+                $j=0;
+                $reportes = new Reportes();
+                $totaldias=Array();
+                $totalsemanas=Array();
+                $totales=array();
+                $total=0;
+
+                foreach($lista_modulos as $key=>$id_c) {
+                    $usuario="";
+                    $num_modulo="";
+                    $id_caja="";
+                    foreach($this->queryTotal as $valor) {
+                        //echo $result->getId();
+                        if($valor['id']==$id_c) {
+                            $id_caja=$valor['id'];
+                            $num_modulo=$valor['numeroCaja'];
+                            $usuario=$valor['NombreUsuario'];
+                            if(($valor['TurnoAtendido']==1)&&($valor['TurnoRechazado']==0))$total++;
+                        }
+
+                    }
+                    $Totales[$id_c]=$total;
+                    //  echo($total."...".$id_c." ..");
+                    $total=0;
+//                    echo($desde1." ".$hasta1);
+//                    die();
+                    $reportes = new Reportes();
+                    $fun= new Funciones();
+
+                    //INICIO CALCULO POR FECHAS
+                    $s = strtotime($hasta1)-strtotime($desde1);
+                    $d = intval($s/86400) + 1;      //calcular el total de dias entre fechas
+                    $fecha= $desde1;
+                    $fecha= date("Y-m-d", strtotime( "$fecha - 1 day")) ;   //solo para q empiece desde un d�a meno
+                    $forma_array_semanas= array();
+//                echo ($d."<br />");
+                    for($i=1;$i<=$d;$i++) {
+                        $tot=$i." day";
+                        $fecha= date("Y-m-d", strtotime( "$fecha +1 day")) ; //a la fecha anterior aumenta un d�a
+                        $condicionFecha="fecha_emision BETWEEN '$desde1' AND '$hasta1' AND c.id= $id_c AND atendido=1 AND rechazado=0 AND s.id IN ($forma_condicion_servicios) AND duracion>='$forma_duracion'AND fecha_inicio_atencion='$fecha'" ;
+//                    echo $condicionFecha;
+                        $tot_t_atendidos_x_dia= $reportes->totalTurnosAtendidosTodos($condicionFecha);
+                        $forma_array_fecha[$j][$i]=array('Fecha'=>$fecha,'Total'=>$tot_t_atendidos_x_dia);
+                    }
+                }
+            }
+        }
+    }
+}

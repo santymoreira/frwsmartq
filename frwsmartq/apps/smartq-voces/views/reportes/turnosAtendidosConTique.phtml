@@ -1,0 +1,1217 @@
+<style>
+    .content {
+        /*font-style:normal;
+        font-family:helvetica, arial, verdana, sans-serif;
+        color:#ffffff;
+        background:#333333;*/
+        border:1px solid #444444;
+        -moz-border-radius-topright: 20px;
+        -webkit-border-top-right-radius: 20px;
+        -moz-border-radius-bottomleft: 20px;
+        -webkit-border-bottom-left-radius: 20px;
+        margin: 30px 0 50px;
+        padding: 15px 0;
+    }
+    .content p {
+        margin: 10px 0;
+        padding: 15px 20px;
+    }
+    .panel {
+        position: absolute;
+        top: 50px;
+        left: 0;
+        display: none;
+        background: #ffe389;
+        border:1px solid #111111;
+        -moz-border-radius-topright: 20px;
+        -webkit-border-top-right-radius: 20px;
+        -moz-border-radius-bottomright: 20px;
+        -webkit-border-bottom-right-radius: 20px;
+        width: 400px;
+        height: auto;
+        padding: 30px 30px 30px 130px;
+        filter: alpha(opacity=85);
+        opacity: .85;
+    }
+    .panel p{
+        margin: 0 0 15px 0;
+        padding: 0;
+        /*color: #cccccc;*/
+    }
+    .panel a, .panel a:visited{
+        margin: 0;
+        padding: 0;
+        color: #9FC54E;
+        text-decoration: none;
+        border-bottom: 1px solid #9FC54E;
+    }
+    .panel a:hover, .panel a:visited:hover{
+        margin: 0;
+        padding: 0;
+        /*color: #ffffff;*/
+        text-decoration: none;
+        border-bottom: 1px solid #ffffff;
+    }
+    a.trigger{
+        position: absolute;
+        text-decoration: none;
+        top: 90px; left: 0;
+        font-size: 12px;
+        letter-spacing:-1px;
+        font-family: verdana, helvetica, arial, sans-serif;
+        color:#fff;
+        padding: 5px 10px 5px 5px;
+        font-weight: 700;
+        background:#6fa7d1 url(images/plus.png) 85% 55% no-repeat;
+        border:1px solid #444444;
+        -moz-border-radius-topright: 20px;
+        -webkit-border-top-right-radius: 20px;
+        -moz-border-radius-bottomright: 20px;
+        -webkit-border-bottom-right-radius: 20px;
+        -moz-border-radius-bottomleft: 0px;
+        -webkit-border-bottom-left-radius: 0px;
+        display: block;
+    }
+    a.trigger:hover{
+        position: absolute;
+        text-decoration: none;
+        top: 90px; left: 0;
+        font-size: 12px;
+        letter-spacing:-1px;
+        font-family: verdana, helvetica, arial, sans-serif;
+        color:#fff;
+        padding: 5px 10px 5px 5px;
+        font-weight: 700;
+        background:#6fa7d1 url(images/plus.png) 85% 55% no-repeat;
+        border:1px solid #444444;
+        -moz-border-radius-topright: 20px;
+        -webkit-border-top-right-radius: 20px;
+        -moz-border-radius-bottomright: 20px;
+        -webkit-border-bottom-right-radius: 20px;
+        -moz-border-radius-bottomleft: 0px;
+        -webkit-border-bottom-left-radius: 0px;
+        display: block;
+    }
+    a.active.trigger {
+        background:#6fa7d1 url(images/minus.png) 85% 55% no-repeat;
+    }
+</style>
+
+<link rel='STYLESHEET' type='text/css' href='../../css/impresion/estilo_imprimir.css' media='print'>
+
+<!-- OPCIONES -->
+<div id="div_menu" class="ocultar">
+    <div class="panel">
+        <div align="top" style="height: 90%;width: 100%">
+            <fieldset class='ui-corner-all ui-widget-content' style="height: 100%">
+                <table  id="tbl_menu" border="0" width="100%">
+                    <tr>
+                        <td width="200px" height="500px"  style="vertical-align:top">
+                            <table border="0" style="vertical-align: top; width: 100%;height: 100%">
+                                <tr>
+                                    <td>
+                                        <fieldset class='ui-corner-all ui-widget-content'>
+                                            <legend><b>Fecha</b></legend>
+                                            <table width="100%" >
+                                                <tr>
+                                                    <td class="empty">
+                                                        <label class='labelform' style="width: 60px"><span for='desde'>Desde:</span></label><?php echo Tag::textField("desde", "size: 8", "maxlength: 12","class:  dateISO") ?>
+                                                    </td>
+                                                    <td class="empty">
+                                                        <label class='labelform' style="width: 60px"><span for='hasta'>Hasta:</span></label><?php echo Tag::textField("hasta", "size: 8", "maxlength: 12","class:  dateISO") ?>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </fieldset>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table width="100%" >
+                                            <tr>
+                                                <td class="empty">
+                                                    <fieldset class='ui-corner-all ui-widget-content'>
+                                                        <legend><b>Duraci&oacute;n</b></legend>
+                                                        <label class='labelform' ><span for='horas'>Tomar turnos con duraci&oacute;n a partir de:</span></label><?php echo Tag::textField("horas", "size: 2", "maxlength: 2","class: ","value: 00").":";
+                                                        echo Tag::textField("minutos", "size: 2", "maxlength: 2","class: ","value: 00").":";
+                                                        echo Tag::textField("segundos", "size: 2", "maxlength: 2","class: ","value: 00");?>
+                                                    </fieldset>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <fieldset class="ui-corner-all ui-widget-content">
+                                            <legend><b>Areas</b></legend>
+                                            <input id="chk_all_areas" type="checkbox" /><label style="color:#3366FF; font-size:12px; font-weight:bold">Marcar/desmarcar todos</label><br/>
+                                            <?php
+                                            $db = DbBase::rawConnect();
+                                            $areas=array();
+                                            $nombres=array();
+                                            $i=0;
+                                            $array_valores=array();
+                                            $result = $db->query("SELECT id as clave, nombre_ubicacion as nombre  FROM ubicacion ");
+                                            while($row = $db->fetchArray($result)) {
+                                                //  $areas[$i]= array('Id'=>$row[0],'nombre'=>$row[1]);
+                                                $nombres[$i]=$row[1];
+
+                                                $array_valores[]=Tag::checkboxField("chkareas[]", "value: $row[0]","checked: ","onclick: chekArea()").$row[1]."&nbsp;&nbsp;";
+                                                $i++;
+
+                                            }
+                                            $opcion= $nombres;
+                                            echo "<table>";
+                                            $cont_mod=count($array_valores);
+                                            $cont_filas=ceil($cont_mod/3);
+                                            $x=$cont_filas*3;
+                                            $y=$x-$cont_mod;
+                                            for ($z=1;$z<=$y;$z++)
+                                                $array_valores[]="";
+                                            $cont_key=0;
+                                            for ($f=1; $f<=$cont_filas; $f++) { //filas
+                                                echo "<tr>";
+                                                for ($c=1;$c<=3;$c++) { //columnas
+                                                    echo "<td>".$array_valores[$cont_key]."</td>";
+                                                    $cont_key+=1;
+                                                }
+                                                echo "</tr>";
+                                            }
+                                            echo "</table>";
+                                            ?>
+
+                                        </fieldset>
+                                        <div id="div_opcion" align="center">
+                                        </div>
+
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <fieldset class='ui-corner-all ui-widget-content'>
+                                            <legend><b>M&oacute;dulos</b></legend>
+                                            <input id="chk_all_modulos" type="checkbox"/><label style="color:#3366FF; font-size:12px; font-weight:bold">Marcar/desmarcar todos</label><br/>
+                                            <div id="div_modulos">
+                                            </div>
+                                        </fieldset>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td><fieldset class="ui-corner-all ui-widget-content"><legend><b>Grupo Servicio</b></legend>
+                                            <input id="chk_all_gruposervicios" type="checkbox" /><label style="color:#3366FF; font-size:12px; font-weight:bold">Marcar/desmarcar todos</label><br/>
+                                            <div id="div_GrupoServicios">
+                                            </div>
+                                        </fieldset>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><fieldset class="ui-corner-all ui-widget-content"><legend><b>Servicios</b></legend>
+                                            <input id="chk_all_servicios" type="checkbox" /><label style="color:#3366FF; font-size:12px; font-weight:bold">Marcar/desmarcar todos</label><br/>
+
+                                            <div id="div_Servicio">
+                                                seleccione Grupos de Servicios..para ver Servicios!!
+                                            </div>
+
+
+                                        </fieldset>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <table width="100%" >
+                                            <tr><td><center><input type="button" id="boton" value="Aceptar" title="Aceptar" > </center></td></tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+
+                    </tr>
+                </table>
+            </fieldset>
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    <a class="trigger" href="#">Opciones<br>de reporte</a>
+</div>
+
+
+<div id="container">
+    <?php
+    $tabs[]=array("caption"=>'Turnos Atendios x Modulos','partial'=>'ReporteGrafico');
+    $tabs[]=array("caption"=>'Turnos Atendios x Servicio','partial'=>'ReporteServicio');
+    $tabs[]=array("caption"=>'Turnos Semanales','partial'=>'reporteTurnoSemanales');
+    $tabs[]=array("caption"=>'Detalle Turnos','partial'=>'reporteTurnosXLS');
+    $tabs[]=array("caption"=>'Reporte Turnero','partial'=>'reporteTurnero');
+
+    $empresa = new empresa;
+    $buscaEmpresa=$empresa->findFirst();
+    $calif_4botones_teclado=$buscaEmpresa->getCalif4botonesTeclado();
+    $calif_4botones_pantalla=$buscaEmpresa->getCalif4botonesPantalla();
+    $calif_matriz_pantalla=$buscaEmpresa->getCalifMatrizPantalla();
+    if ($calif_4botones_teclado==1 | $calif_4botones_pantalla==1)
+        $tabs[]=array("caption"=>'Calidad Servicio','partial'=>'ReporteCalidadServicio');
+    if ($calif_matriz_pantalla==1)
+        $tabs[]=array("caption"=>'Preguntas Calificadas','partial'=>'PreguntasCalificadas');
+    Tag::tab($tabs);
+    ?>
+</div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".trigger").click(function(){
+            $(".panel").toggle("fast");
+            $(this).toggleClass("active");
+            return false;
+        });
+    });
+</script>
+
+
+<script>
+    var arregloArea=new Array();
+    var arreglo=new Array();
+    var arregloGrupo=new Array();
+    var arregloservicio=new Array();
+    var servicio, estado="No Hay Datos";
+    var marcar_modulos=false;
+    function chekArea(){
+        var chkareas=$("input:checkbox[name^='chkareas']");
+        var ids="";
+        var con=0;
+        arregloArea=[];
+        for (var x=0; x < chkareas.length; x++) {
+            if (chkareas[x].checked) {
+                ids=ids+chkareas[x].value+",";
+                arregloArea[con]=chkareas[x].value;
+                con++;
+            }
+        }
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/GraficaChkModulos")?>", {
+            areas: arregloArea.join(",")
+        }
+        ,function(json){
+            document.getElementById("div_modulos").innerHTML = json.cks;
+        },'json');
+
+    }
+    function cheks(){
+        var chkmodulos=$("input:checkbox[name^='chkmodulos']");
+        var ids="";
+        arreglo=[];
+        var con=0;
+        //   alert(chkmodulos.length);
+        for (var x=0; x < chkmodulos.length; x++) {
+            if (chkmodulos[x].checked) {
+                ids=ids+chkmodulos[x].value+",";
+                arreglo[con]= chkmodulos[x].value;
+                con++;
+            }
+
+
+        }
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/GraficarChkGrupo")?>", {
+            modulos: arreglo.join(",")
+        }
+        ,function(json){
+            document.getElementById("div_GrupoServicios").innerHTML = json.cksgrupo;
+        },'json');
+    }
+    function chekGrupo(){
+        var chkgrupo=$("input:checkbox[name^='chkgruposervicio']");
+        var ids="";
+        var con=0;
+        arregloGrupo=[];
+        for (var x=0; x < chkgrupo.length; x++) {
+            if (chkgrupo[x].checked) {
+                ids=ids+chkgrupo[x].value+",";
+                arregloGrupo[con]=chkgrupo[x].value;
+                con++;
+            }
+        }
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/GraficarChkServicios")?>", {
+            grupos_servicios: arregloGrupo.join(",")
+        }
+        ,function(json){
+            document.getElementById("div_Servicio").innerHTML = json.chkservicio;
+        },'json');
+
+    }
+    function chekservicio(){
+        var chks=$("input:checkbox[name^='chkservicios']");
+        var ids="";
+        var con=0;
+        arregloservicio=[];
+        for (var x=0; x < chks.length; x++) {
+            if (chks[x].checked) {
+                ids=ids+chks[x].value+",";
+                arregloservicio[con]=chks[x].value;
+                con++;
+            }
+        }
+
+    }
+    $("#boton1").click(function(){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/verGraficoHorasIndividual")?>", {
+            desde: $("#desde").val(),
+            hasta: $("#hasta").val(),
+            chkmodulos: arreglo.join(','),
+            preguntas: arreglopreguntas.join(','),
+            chkservicios: arregloservicio.join(',')
+        }
+        ,function(data){
+            document.getElementById("div_cuadro").innerHTML = data;
+        },'ajax');
+    })
+    $("#boton").click(function(){
+
+        $(".panel").toggle("fast");
+        $(".trigger").toggleClass("active");
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/LLenaQuery")?>", {
+            chkmodulos: arreglo.join(','),
+            chkservicios: arregloservicio.join(','),
+            desde: $("#desde").val(),
+            hasta: $("#hasta").val(),
+            horas:      $("#horas").val(),
+            minutos:    $("#minutos").val(),
+            segundos:   $("#segundos").val()
+        } ,function(json){  
+            if(json.html=="Exitoso")
+            {
+                tablaXLS();
+                servicio=arregloservicio;
+                if ($('#chk_pastel').is(':checked'))ActualizaPastel();
+                if ($('#chk_barras').is(':checked')) ActualizarBarras();
+                ReporteTurnero();
+                //                parametrosBBDD();
+                //                $.post("<?php //echo Utils::getKumbiaUrl("reportes/calificaciones");?>",{
+                //                    action: 'calificaciones'
+                //                });
+                //VerCuadroPreguntasCalificadas();
+                $.post("<?php echo Utils::getKumbiaUrl("reportes/verCuadro");?>", {
+                    desde: $("#desde").val(),
+                    hasta:  $("#hasta").val(),
+                    chkmodulos: arreglo.join(","),
+                    chkservicios: arregloservicio.join(","),
+                    horas:      $("#horas").val(),
+                    minutos:    $("#minutos").val(),
+                    segundos:   $("#segundos").val()
+
+                }
+                ,function(json){
+                    document.getElementById("div_titulo").innerHTML = json.titulo;
+                    document.getElementById("division_cuadro").innerHTML = json.v1;
+                },'json');
+            }
+            else alert("No Hay Datos");
+        },'json')
+    }
+)
+
+    $(function() {
+        $("#desde").datepicker({ dateFormat: 'yy-mm-dd' });
+    });
+    $(function(){
+        $("#hasta").datepicker({ dateFormat: 'yy-mm-dd' });
+    });
+    $("#chk_all_areas").click(function(){
+        var chkareas=$("input:checkbox[name^='chkareas']");
+        chkareas.attr("checked",$(this).is(":checked"))
+        for (var x=0; x < chkareas[x].length; x++) {
+            arregloArea[x]=chkareas[x].value;
+        }
+        chekArea();
+        if(marcar_modulos==true){
+            $("#chk_all_modulos").click();
+            $("#chk_all_gruposervicios").click();
+            $("#chk_all_servicios").click();
+            marcar_modulos=false;
+        }
+    })
+
+    $("#chk_all_modulos").click(function(){
+        var chkmodulos=$("input:checkbox[name^='chkmodulos']");
+        chkmodulos.attr("checked",$(this).is(":checked"))
+        for (var x=0; x < chkmodulos.length; x++) {
+            arreglo[x]=chkmodulos[x].value;
+        }
+        cheks();
+
+        chekGrupo();
+        marcar_modulos=true;
+    })
+
+    $("#chk_all_gruposervicios").click(function(){
+        //  alert("todos grupos");
+        var chkgruposervicio=$("input:checkbox[name^='chkgruposervicio']");
+        chkgruposervicio.attr("checked",$(this).is(":checked"))
+        for (var x=0; x <chkgruposervicio.length; x++) {
+            arregloGrupo[x]=chkgruposervicio[x].value;
+        }
+        chekGrupo();
+        //chekservicio();
+    })
+
+    $("#chk_all_servicios").click(function(){
+        var chkserv=$("input:checkbox[name^='chkservicios']");
+        chkserv.attr("checked",$(this).is(":checked"))
+        for (var x=0; x < chkserv.length; x++) {
+            //  alert(chkserv[x].value);
+            arregloservicio[x]=chkserv[x].value;
+        }
+        //        alert(arregloservicio[0]);
+        chekservicio();
+        marcar_modulos=true;
+    })
+    $("#chk_pastel").click(function(){
+
+        if ($('#chk_pastel').is(':checked')) {
+            ActualizaPastel();}
+        else
+            document.getElementById("div_pastel").innerHTML = "";
+    })
+
+    function ActualizaPastel(){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/GraficadorPastel")?>", {
+            modulos: arreglo.join(","),
+            grupos: arregloGrupo.join(","),
+            desde: $("#desde").val(),
+            hasta:  $("#hasta").val(),
+            chkservicios: arregloservicio.join(',')
+        }
+        ,function(json){
+            document.getElementById("div_pastel").innerHTML = json.html;
+        },'json');
+    }
+
+    $("#chk_barras").click(function(){
+        if ($('#chk_barras').is(':checked')) {
+            ActualizarBarras();
+        }else
+            document.getElementById("maestro_chart").innerHTML = "";
+    })
+    function ActualizarBarras(){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/Graficador1")?>", {
+            modulos: arreglo.join(","),
+            desde: $("#desde").val(),
+            hasta:  $("#hasta").val(),
+            chkservicios: arregloservicio.join(',')
+        }
+        ,function(json){
+            document.getElementById("maestro_chart").innerHTML = json.html;
+            document.getElementById("div_cabecera").innerHTML =json.titulo;
+            document.getElementById("div_estadisticaModulos").innerHTML =json.tabla;
+        },'json');
+
+    }
+
+    $("#chk_barrasServicio").click(function(){
+        if ($('#chk_barrasServicio').is(':checked')) {
+            $.post("<?php echo Utils::getKumbiaUrl("reportes/GraficadorServicioBarras")?>", {
+                modulos: arreglo.join(","),
+                desde: $("#desde").val(),
+                hasta:  $("#hasta").val(),
+                Tipo:"Barras",
+                chkservicios: arregloservicio.join(',')
+            }
+            ,function(json){
+                document.getElementById("div_cabeceraServicio").innerHTML = json.html;
+                document.getElementById("div_ServicioBarras").innerHTML = json.grafica;
+                document.getElementById("div_serviciotabla").innerHTML = json.tabla;
+            },'json');
+        }
+        else{
+            document.getElementById("div_ServicioBarras").innerHTML = "";
+            document.getElementById("div_serviciotabla").innerHTML = "";
+        }
+    })
+    $("#chk_pastelServicio").click(function(){
+        if ($('#chk_pastelServicio').is(':checked')) {
+            $.post("<?php echo Utils::getKumbiaUrl("reportes/GraficadorServicioBarras")?>", {
+                modulos: arreglo.join(","),
+                desde: $("#desde").val(),
+                hasta:  $("#hasta").val(),
+                Tipo:"Pastel",
+                chkservicios: arregloservicio.join(',')
+            }
+            ,function(json){
+                document.getElementById("div_cabeceraServicio").innerHTML = json.html;
+                document.getElementById("div_Serviciopastel").innerHTML = json.grafica;
+                document.getElementById("div_serviciotabla").innerHTML = json.tabla;
+            },'json');
+        }
+        else
+            document.getElementById("div_Serviciopastel").innerHTML = "";
+    })
+    $("#chk_barrasCalidad").click(function(){
+        if ($('#chk_barrasCalidad').is(':checked')) {
+            var tipo='barras';
+            $.post("<?php echo Utils::getKumbiaUrl("reportes/CalidadServicio")?>", {
+                modulos: arreglo.join(","),
+                desde: $("#desde").val(),
+                hasta:  $("#hasta").val(),
+                graficar:tipo,
+                chkservicios: arregloservicio.join(',')
+            }
+            ,function(json){
+                document.getElementById("div_TituloCalidad").innerHTML = json.text;
+                document.getElementById("div_calidadServicio").innerHTML = json.graficaCalidad;
+                document.getElementById("div_TablacalidadServicio").innerHTML = json.tabla;
+            },'json');
+        }
+        else
+            document.getElementById("div_calidadServicio").innerHTML = "";
+    })
+    $("#chk_pastelCalidad").click(function(){
+        if ($('#chk_pastelCalidad').is(':checked')) {
+            var tipo='pastel';
+            $.post("<?php echo Utils::getKumbiaUrl("reportes/CalidadServicio")?>", {
+                modulos: arreglo.join(","),
+                desde: $("#desde").val(),
+                hasta:  $("#hasta").val(),
+                graficar:tipo,
+                chkservicios: arregloservicio.join(',')
+            }
+            ,function(json){
+                document.getElementById("div_TituloCalidad").innerHTML = json.text;
+                document.getElementById("div_pastelCalidad").innerHTML = json.graficaCalidad;
+                document.getElementById("div_TablacalidadServicio").innerHTML = json.tabla;
+            },'json');
+        }
+        else{
+            document.getElementById("div_pastelCalidad").innerHTML = "";
+            document.getElementById("div_TablacalidadServicio").innerHTML = "";
+        }
+    })
+
+
+    function ventanaSecundaria (URL){
+        var Xpos=0;
+        var Ypos=0;
+        window.open(URL,'ventana1','width=600,height=480,scrollbars=yes,resizable=yes,left='+Xpos+',top='+Ypos)
+        document.getElementById("div_cuadro").innerHTML = URL;
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/verGraficoHoras")?>", {
+            action: 'verGraficoHoras',
+            DatosURL: URL
+        }
+        ,function(json){
+            document.getElementById("div_cuadro").innerHTML =json.v1;
+        },'json');
+
+    }
+
+
+    $('#desde').click(function(){
+        document.getElementById("div_cuadro").innerHTML="";
+    });
+    $('#hasta').click(function(){
+        document.getElementById("div_cuadro").innerHTML="";
+    });
+    $('#cajas').click(function(){
+        document.getElementById("div_cuadro").innerHTML="";
+    });
+    $('#servicios').click(function(){
+        document.getElementById("div_cuadro").innerHTML="";
+    });
+
+    function Graficar(){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/ejemplo")?>", {
+
+        }
+        ,function(json){
+            document.getElementById("mi_div").innerHTML =json.html;
+        },'json');
+    }
+    var $tabs = $('#tab-1').tabs();
+
+    function verGraficoHoras(id_modulo,dia,tot_t_atendidos_x_dia,tot_t_anulados_x_dia,duracion_total,duracion_promedio,desde,hasta,id_servicio,forma_duracion){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/verGraficoHoras")?>", {
+            id_modulo:              id_modulo,
+            dia:                    dia,
+            tot_t_atendidos_x_dia:  tot_t_atendidos_x_dia,
+            tot_t_anulados_x_dia:   tot_t_anulados_x_dia,
+            duracion_total:         duracion_total,
+            duracion_promedio:      duracion_promedio,
+            desde:                  desde,
+            hasta:                  hasta,
+            id_servicio:            id_servicio,
+            forma_duracion:         forma_duracion
+        }
+        ,function(json){
+            document.getElementById("tabla").innerHTML =json.v2;
+            var chart;
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'div_cuadro',
+                    defaultSeriesType: 'line',
+                    marginRight: 130,
+                    marginBottom: 50
+                },
+                title: {
+                    text: json.titulo,
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: '',
+                    x: -20
+                },
+                xAxis: {
+                    categories: ['8-9', '9-10', '10-11', '11-12', '12-13', '13-14', '14-15', '15-16', '16-17', '17-18', '18-19']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Turnos'
+                    },
+                    plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                            this.x +': '+ this.y +'TA';
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -10,
+                    y: 100,
+                    borderWidth: 0
+                },
+                series: json.v1
+            });
+        },'json');
+    }
+    function verGraficoSemana(id_modulo,ttat,ttan,desde,hasta,lu,ma,mi,ju,vi,sa,dom){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/verGrafico")?>", {
+            id_modulo:id_modulo,
+            subtotal_total_turnos_atendidos: ttat,
+            subtotal_total_turnos_anulados:  ttan,
+            desde:desde,
+            hasta: hasta,
+            lunes:lu,
+            martes: ma,
+            miercoles: mi,
+            jueves: ju,
+            viernes:vi,
+            sabado:sa,
+            domingo:dom
+        }
+        ,function(json){
+            document.getElementById("tabla").innerHTML =json.html;
+            var chart;
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'div_cuadro',
+                    defaultSeriesType: 'line',
+                    marginRight: 130,
+                    marginBottom: 50
+                },
+                title: {
+                    text: 'TURNOS ATENDIDOS',
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: '',
+                    x: -20
+                },
+                xAxis: {
+                    categories: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Turnos'
+                    },
+                    plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                            this.x +': '+ this.y +'°C';
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -10,
+                    y: 100,
+                    borderWidth: 0
+                },
+                series:json.data
+            });
+        },'json');
+    }
+    function verGraficoTotalSemanasTodos(arreglocompacta)
+    {
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/verGraficoTodos")?>", {
+
+            array:arreglocompacta
+
+        }
+        ,function(json){
+
+            var chart;
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'div_cuadro',
+                    defaultSeriesType: 'line',
+                    marginRight: 130,
+                    marginBottom: 50
+                },
+                title: {
+                    text: json.html,
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: '',
+                    x: -20
+                },
+                xAxis: {
+                    categories: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Turnos'
+                    },
+                    plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                            this.x +': '+ this.y +'-TA';
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -10,
+                    y: 100,
+                    borderWidth: 0
+                },
+                series:json.data
+            });
+        },'json');
+    }
+    function verGraficoTotalFechasTodos(arreglocompacta)
+    {
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/verGraficoFechas")?>", {
+
+            desde: $("#desde").val(),
+            hasta:  $("#hasta").val(),
+            array:arreglocompacta
+
+        }
+        ,function(json){
+
+            var chart;
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'div_cuadro',
+                    defaultSeriesType: 'line',
+                    marginRight: 130,
+                    marginBottom: 50
+                },
+                title: {
+                    text: json.html,
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: '',
+                    x: -20
+                },
+                xAxis: {
+                    categories: json.categoria
+                },
+                yAxis: {
+                    title: {
+                        text: 'Turnos'
+                    },
+                    plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                            this.x +': '+ this.y +'-TA';
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -10,
+                    y: 100,
+                    borderWidth: 0
+                },
+                series:json.data
+            });
+        },'json');
+    }
+    function verGraficoTotalSemana(ttat,ttan,desde,hasta,lu,ma,mi,ju,vi,sa,dom){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/verGrafico")?>", {
+            id_modulo:arreglo.join(','),
+            subtotal_total_turnos_atendidos: ttat,
+            subtotal_total_turnos_anulados:  ttan,
+            desde:desde,
+            hasta: hasta,
+            lunes:lu,
+            martes: ma,
+            miercoles: mi,
+            jueves: ju,
+            viernes:vi,
+            sabado:sa,
+            domingo:dom
+        }
+        ,function(json){
+            document.getElementById("tabla").innerHTML =json.html;
+            var chart;
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'div_cuadro',
+                    defaultSeriesType: 'line',
+                    marginRight: 130,
+                    marginBottom: 50
+                },
+                title: {
+                    text: 'TURNOS ATENDIDOS',
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: '',
+                    x: -20
+                },
+                xAxis: {
+                    categories: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Turnos'
+                    },
+                    plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                            this.x +': '+ this.y +'°C';
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -10,
+                    y: 100,
+                    borderWidth: 0
+                },
+                series:json.data
+            });
+        },'json');
+    }
+    function recargar(){
+        /// Aqui podemos enviarle alguna variable a nuestro script PHP
+        var variable_post="Mi texto recargado";
+        /// Invocamos a nuestro script PHP
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/verGraficoHoras")?>", { variable: variable_post }, function(data){
+            /// Ponemos la respuesta de nuestro script en el DIV recargado
+            $("#mi_div").html(data);
+        });
+        //    ,function(json){
+        //            document.getElementById("tab-3").innerHTML =json.v1;
+        //        },'json');
+    }
+    function parametrosBBDD(){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/Graficador1")?>", {
+            modulos: arreglo.join(","),
+            desde: $("#desde").val(),
+            hasta:  $("#hasta").val(),
+            chkservicios: arregloservicio.join(',')
+        }
+        ,function(json){
+            document.getElementById("div_cabecera").innerHTML =json.titulo;
+            document.getElementById("div_estadisticaModulos").innerHTML =json.tabla;
+        },'json');
+
+    }
+    function graficarServicio(){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/GraficadorServicio")?>", {
+            caja: arreglo.join(','),
+            desde: $("#desde").val(),
+            hasta:  $("#hasta").val(),
+            chkservicios: arregloservicio.join(',')
+
+        },function(json){
+            document.getElementById("div_serviciotabla").innerHTML =json.tabla;
+            var chart;
+            //			$(document).ready(function() {
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'div_servicio',
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false
+                },
+                title: {
+                    text: json.html
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>'+ this.point.name +'</b>: '+ this.y +' %';
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            color: '#000000',
+                            connectorColor: '#000000',
+                            formatter: function() {
+                                return '<b>'+ this.point.name +'</b>: '+ this.y +' %';
+                            }
+                        }
+                    }
+                },
+                series:
+                    json.datos
+
+            });
+            //			});
+
+
+        },'json');
+    }
+    function tablaXLS(){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/reporteTurnosAtendidosModuloXls")?>", {
+            action: 'reporteTurnosAtendidosModuloXls',
+            desde: $("#desde").val(),
+            hasta: $("#hasta").val(),
+            chkmodulos: arreglo.join(','),
+            chkservicios:arregloservicio.join(','),
+            horas:      $("#horas").val(),
+            minutos:    $("#minutos").val(),
+            segundos:   $("#segundos").val()
+        }
+        ,function(data){
+            document.getElementById("div_xls").innerHTML = data;
+        },'ajax')
+    }
+    function graficarCalidadServicio(){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/CalidadServicio")?>", {
+            modulos: arreglo.join(","),
+            desde: $("#desde").val(),
+            hasta:  $("#hasta").val()
+
+        },function(json){
+            document.getElementById("div_TablacalidadServicio").innerHTML =json.tabla;
+            var chart;
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'div_calidadServicio',
+                    defaultSeriesType: 'column'
+                },
+                title: {
+                    text: ''
+                },
+                subtitle: {
+                    text: 'Calidad: Servicio'
+                },
+                xAxis: {
+                    categories: json.categoria
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Calificaciones (clf)'
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    backgroundColor: '#FFFFFF',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: 10,
+                    y: 70,
+                    floating: true,
+                    shadow: true
+                },
+                tooltip: {
+                    formatter: function() {
+                        return ''+
+                            this.x +': '+ this.y +' clf';
+                    }
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: json.serie
+            });
+        },'json');
+
+    }
+    function ReporteTurnero(){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/verCuadroTurnosEmitidos")?>", {
+            //            action: 'verCuadroTurnosEmitidos',
+            desde: $("#desde").val(),
+            hasta: $("#hasta").val(),
+            chkmodulos:arreglo.join(','),
+            chkgruposervicios: arregloGrupo.join(','),//enviar grupo servicio
+            chkservicios:arregloservicio.join(',')//envia los servicios
+
+        }
+        ,function(json){
+            document.getElementById("div_Turnero").innerHTML = json.turnos;
+        },'json')
+    }
+    $("#opciones").change(function(){
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/listaOpcion")?>", {
+            opcion: $("#opciones").val()
+        }
+        ,function(data){
+            document.getElementById("div_opcion").innerHTML = data;
+        },'ajax');
+    })
+    $('#opciones').click(function(){
+        document.getElementById("div_opcion").innerHTML="";
+    });
+    function VerCuadroPreguntasCalificadas()
+    {
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/verCuadroCalificaciones")?>", {
+            action: 'verCuadro',
+            //id: $("#cajas").val()
+            desde: $("#desde").val(),
+            hasta: $("#hasta").val(),
+            chkmodulos: arreglo.join(','),
+            preguntas: arreglopreguntas.join(','),
+            chkservicios: arregloservicio.join(',')
+        }
+        ,function(data){
+            document.getElementById("div_TablaPreguntasCalificadas").innerHTML = data;
+        },'ajax');
+    }
+    var tipo="";
+    $('#chk_barrasPreguntasCalificada').click(function(){
+        if ($('#chk_barrasPreguntasCalificada').is(':checked'))
+            tipo="Barras";
+        else
+            document.getElementById("div_barraPreguntasCalificada").innerHTML = "";
+    });
+    $('#chk_pastelPreguntasCalificadas').click(function(){
+        if ($('#chk_pastelPreguntasCalificadas').is(':checked')) tipo="Pastel";
+        else
+            document.getElementById("div_pastelPreguntasCalificada").innerHTML = "";
+    });
+    function GraficarTodasLasPreguntas(array_serie,array_categorias,array_etiqueta_fila,etiqueta_categoria)
+    {
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/graficarPicos")?>",
+        {
+            array_serie: array_serie,
+            array_categorias: array_categorias,
+            array_etiqueta_fila: array_etiqueta_fila,
+            etiqueta_categoria:etiqueta_categoria
+        }
+        ,function(json){
+            var chart;
+            chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'Div_Todo',
+                    defaultSeriesType: 'line',
+                    marginRight: 130,
+                    marginBottom: 50
+                },
+                title: {
+                    text: 'PREGUNTAS CALIFICADAS',
+                    x: -20 //center
+                },
+                subtitle: {
+                    text: '',
+                    x: -20
+                },
+                xAxis: {
+                    categories: json.categoria
+                },
+                yAxis: {
+                    title: {
+                        text: 'Turnos'
+                    },
+                    plotLines: [{
+                            value: 0,
+                            width: 1,
+                            color: '#808080'
+                        }]
+                },
+                tooltip: {
+                    formatter: function() {
+                        return '<b>'+ this.series.name +'</b><br/>'+
+                            this.x +': '+ this.y +'°C';
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -10,
+                    y: 100,
+                    borderWidth: 0
+                },
+                series:json.datos
+            });
+        },'json')
+    }
+
+    function GraficarPregunta(id_pregunta,total)
+    {
+        $.post("<?php echo Utils::getKumbiaUrl("reportes/GraficaPregunta")?>", {
+            chkmodulos: arreglo.join(','),
+            preguntas: id_pregunta,
+            chkservicios: arregloservicio.join(','),
+            totales:total,
+            tipo: tipo
+        }
+        ,function(json){
+            if (tipo=="Barras"){
+                document.getElementById("div_barraPreguntasCalificada").innerHTML = json.datos;}
+            else if (tipo=="Pastel"){
+                document.getElementById("div_pastelPreguntasCalificada").innerHTML = json.datos;}
+            else{
+                document.getElementById("div_pastelPreguntasCalificada").innerHTML = "";
+                document.getElementById("div_barraPreguntasCalificada").innerHTML = "";
+            }
+
+        },'json')
+
+
+    }
+
+</script>

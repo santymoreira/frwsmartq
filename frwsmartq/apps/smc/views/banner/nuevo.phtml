@@ -1,0 +1,27 @@
+
+<div id='mainContent' enctype="multipart/form-data">
+
+	<?php echo View::getContent();
+		 echo Tag::form('banner/subir');
+	?>
+
+	<div class='ui-corner-all ui-widget-content'>
+                            <h3>Agregar Foto:</h3>
+<?  echo Tag::form('banner/subir');?>
+
+<p><label>Imagen:</label>
+<!--?php echo Tag::fileField("foto");?--></p>
+<?php echo Tag::fileField('banner') ?>
+
+
+
+
+		<?php echo Tag::submitButton("Crear"); echo Tag::button("Cancelar","onclick: window.location='index';"); ?>
+
+
+
+
+	</div>
+	<?php echo Tag::endForm(); ?>
+
+</div>

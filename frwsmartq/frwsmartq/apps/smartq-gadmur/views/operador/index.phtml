@@ -1,0 +1,1327 @@
+<?php echo Tag::javascriptBase() ?>
+<script type="text/javascript" src="../../js/administracion_cookies.js"></script>
+<style>
+    .colorturno{
+        color: red;
+    }
+    .boton_operador1 {
+        color: #0042ff;
+        font-size: 16pt;
+        width: 150px;
+        height: 40px;
+    }
+
+    .boton_operador {
+        background: #28597A;
+        /*background-image:url("../img/boton.png");*/
+        background: -webkit-gradient(linear, left top, left bottom, from(#93BDD9), to(#384954));
+        background: -moz-linear-gradient(top, #93BDD9, #384954);
+        border-top: 1px solid #96D1F8;
+        color: #fff;
+        font-size: 22px;
+        /*font-family: Helvetica, Arial, Sans-Serif;*/
+        /*padding: 13px 26px;*/
+        text-decoration: none;
+        vertical-align: text-bottom;
+        -moz-border-radius: 14px;
+        -webkit-border-radius: 14px;
+        border-radius: 14px;
+        -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+        -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+        box-shadow: rgba(0,0,0,1) 0 1px 0;
+        text-shadow: rgba(0,0,0,.4) 0 1px 0;
+        width: 150px;
+        height: 40px;
+    }
+
+    .bloquear{
+        background: #ccc;
+    }
+
+    .boton_operador_transferir {
+        color: #FB6837;
+        width: 73px;
+        height: 40px;
+        font-family: "Kozuka Gothic Pro M";
+        font-size: 14px;
+    }
+
+    .boton_operador_transferir1 {
+        background: #339933;
+        /*background-image:url("../img/boton.png");*/
+        background: -webkit-gradient(linear, left top, left bottom, from(#93BDD9), to(#384954));
+        background: -moz-linear-gradient(top, #006633, #006633);
+        border-top: 1px solid #96D1F8;
+        color: #FB6837;
+        font-size: 14px;
+        /*font-family: Helvetica, Arial, Sans-Serif;*/
+        /*padding: 13px 26px;*/
+        text-decoration: none;
+        vertical-align: text-bottom;
+        -moz-border-radius: 14px;
+        -webkit-border-radius: 14px;
+        border-radius: 14px;
+        -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+        -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+        box-shadow: rgba(0,0,0,1) 0 1px 0;
+        text-shadow: rgba(0,0,0,.4) 0 1px 0;
+        width: 73px;
+        height: 40px;
+    }
+    .visible{
+        visibility: hidden;
+    }
+    .fondo_operador{
+        background-image:url("../../img/fondo.png");
+        background-repeat:repeat-x;
+        height:100%;
+    }
+    .texto_normal{
+        color: #006393;
+        font-size: 9pt;
+        font-family: Arial;
+    }
+    .alerta_tiempo_maximo{
+        color: #FF0000;
+    }
+</style>
+<?php echo View::getContent(); ?>
+<div  id='mainContent'>
+
+    <?php
+    echo View::getContent();
+    //echo Tag::jqGrid("caption: 'Counter'");
+    ?>
+
+    <fieldset class='ui-corner-all ui-widget-content ui-state-default fondo_operador' height="100" width="290">
+        <legend></legend>
+
+        <table border="0">
+            <tr>
+                <td align="center">
+                    <?php
+                    echo Tag::image($carpeta . "/sistema/logo_operador.png", "height: 50px");
+                    ?>
+                </td>
+                <td align="center"><a href="salir" title="Salir" style="border:0px;text-decoration:none;color:transparent;"><span id="btnexit"></span></a></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table>
+                        <tr>
+                            <td align="right"><label><span class="texto_normal"><b>Total Turnos<br>en Espera:</b></span></label></td>
+                            <td><input id="espera1" name="espera1" type="text"  size= "2"  maxlength= "5"  style="font-size: 18px; background-color:#EAEAEA; text-align: center" readonly="readonly" ></td>
+                            <td align="right"><label><span class="texto_normal"><b>Sus Turnos<br>en Espera:</b></span></label></td>
+                            <td><input id="espera2" name="espera2" type="text"  size= "2"  maxlength= "5"  style="font-size: 20px; background-color:#EAEAEA; text-align: center" readonly="readonly" ></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <!--INICIO VER MENSAJE DE LOS TURNOS TRANSFERIDOS-->
+                    <div id="div_mensaje_turnos_transferidos" style="background-color:#FCDCAB">
+                        <table>
+                            <tr>
+                                <td><?php echo Tag::image('alerta.gif', 'title: Turnos transferidos', 'width: 20', 'border: 0'); ?></td>
+                                <td>Turnos transferidos</td>
+                                <td><?php echo Tag::textField("turnos_transferidos", "size: 2", "readonly: readonly") ?></td>
+                                <td>
+                                    <!--<a href="#" id="mostrar"><?php //echo Tag::image('abrir.png','title: Mostrar turnos transferidos','width: 25','border: 0') ;   ?></a>
+                                    <a href="#" id="ocultar"><?php //echo Tag::image('cerrar.png','title: Ocultar parámetros de ventana','width: 25','border: 0') ;   ?></a>-->
+                                    <input type="button" id="mostrar" value="Ver" title="Mostrar turnos transferidos">
+                                    <!--<input type="button" id="ocultar" value="Ocultar" title="Ocultar turnos transferidos">-->
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!--FIN VER MENSAJE DE LOS TURNOS TRANSFERIDOS-->
+                </td>
+            </tr>
+            <tr>
+                <td align="right">
+                    <label><span class="texto_normal"><b>Turno</b>
+                            <input id="tipo_turno" name="tipo_turno" type="text"  size= "7"  style="font-size: 12px; color: red; background-color: transparent; text-align: left; border: 0" readonly="readonly"></span></label>
+                </td>
+                <td><input id="servicio" name="servicio" type="text"  maxlength="5"  size= "1"  style="color: red; background-color:#EAEAEA; font-size: 20px; text-align: center" readonly="readonly" >
+                    <input id="actual1" name="actual1" type="text"  maxlength="5"  size= "1"  style="color: red; background-color:#EAEAEA; font-size: 20px; text-align: center" readonly="readonly" ></td>
+            </tr>
+            <?php if ($ver_tiempo_maximo == 1) { ?>
+                <tr>
+                    <td align="right">
+                        <label><span class="tiempo_maximo"><b>Tiempo máximo de atención:</b></span></label>
+                    </td>
+                    <td><input id="tiempo_maximo" name="tiempo_maximo" type="text"  maxlength="10"  size= "9"  style="color: #000; background-color:#EAEAEA; font-size: 20px; text-align: center" readonly="readonly" >
+                    </td>
+                </tr>
+            <?php } ?>
+            <?php if ($ver_tiempo_atencion == 1) { ?>
+                <tr>
+                    <td align="right">
+                        <label><span class="tiempo"><b>Tiempo de atención de este turno:</b></span></label>
+                    </td>
+                    <td><input id="tiempo" name="tiempo" type="text"  maxlength="10"  size= "9"  style="color: #000; background-color:#EAEAEA; font-size: 20px; text-align: center" readonly="readonly" >
+                    </td>
+                </tr>
+            <?php } ?>
+            <tr>
+                <td align="center"><input name="anular" id="anular" type="button" value="anular" class="boton_operador" title="Anular turno"></td>
+                <?php
+                if ($tipo_calificacion == 'D') { //Ninguno
+                    echo '<td align="center"><input name="terminar_turno" id="terminar_turno" type="button" value="terminar turno" class="boton_operador"></td>';
+                    //echo Tag::textField("aux_terminar_turno", "size: 1","readonly: readonly");
+                }
+
+                if ($tipo_calificacion != 'D')
+                    echo '<td align="center"><input name="calificar" id="calificar" type="button" value="calificar" class="boton_operador"></td>';
+                ?>
+            </tr>
+            <tr>
+                <td align="center"><input name="atender" id="atender" type="button" value="atender" class="boton_operador" title="Atender turno"></td>
+                <td align="center"><input name="rellamar" id="rellamar" type="button" value="rellamar" class="boton_operador" title="Volver a llamar"></td>
+            </tr>
+            <tr>
+                <td align="center"></td>
+                <td align="center"><label><span class="texto_normal">Transferir:</span></label></td>
+            </tr>
+            <tr>
+                <td align="center"><input name="pausar" id="pausar" type="button" value="pausar" class="boton_operador" ></td>
+                <td align="center">
+                    <input name="transferir" id="transferir" type="button" value="este turno" class="boton_operador_transferir" title="Transferir este turno">
+                    <input name="transferir_todos" id="transferir_todos" type="button" value="todos" class="boton_operador_transferir" title="Transferir todos los turnos">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input name="siguiente" id="siguiente" type="button"  value="SIGUIENTE" class="boton_operador" style="width:294px" title="Llamar siguiente turno"></td>
+            </tr>
+
+            <tr>
+                <td colspan="2"><label><span class="texto_normal">M&oacute;dulo:</span></label> <?php echo Tag::textField("numcaja", "size: 2", "style: border:none; background-color:transparent; font-size: 12px", "readonly: readonly"); ?>
+                    <label><span class="texto_normal">Usuario: </span></label><?php echo Tag::textField("usuario", "size: 15", "style: border:none;  background-color:transparent; font-size: 12px", "readonly: readonly"); ?>
+                    <label><span class="texto_normal">Ip: </span></label><?php echo Tag::textField("ip", "size: 15", "style: border:none;  background-color:transparent; font-size: 12px", "readonly: readonly"); ?>
+                    <br>
+                    <label><span class="texto_normal">Id usuario: </span></label><?php echo Tag::textField("id_usuario", "size: 15", "style: border:none;  background-color:transparent; font-size: 12px", "readonly: readonly"); ?>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <script>
+        function callkeydownhandler(evnt) {
+            var ev = (evnt) ? evnt : event;
+            var code=(ev.which) ? ev.which : event.keyCode;
+            if(code == 13)
+            //alert("El código de la tecla pulsada es: " + code);
+                document.getElementById('siguiente').click();
+	  
+        }
+        if (window.document.addEventListener) {
+            window.document.addEventListener("keydown", callkeydownhandler, false);
+        } else {
+            window.document.attachEvent("onkeydown", callkeydownhandler);
+        }
+
+        /*
+    window.onbeforeunload = function(){
+            alert('desea salir del sistema');
+    }
+         */
+    </script>	
+    <!--Inicio Calificaci�n por teclado-->
+    <?php
+    if ($tipo_calificacion == 'A') //Teclado
+        echo '<input id="valor1" name="valor1" type="text"  maxlength="1"  size= "1" onKeyUp= "enviar_calificacion()" style="border: 0; color:#fff; background-color:transparent">';
+    echo Tag::hiddenField("mensaje", "size: 55", "style: border:1; background-color:transparent; font-size: 9px; color:#C00521", "readonly: readonly");
+    ?>
+    <!--Fin Calificaci�n por teclado-->
+
+    <!--INICIO DIALOG-FORM PARA TRANSFERIR UN TURNO  ANULADO/CANCELADO POSPONER A OTRA FECHA/HORA-->
+    <div id="dialog-form" title="Transferir Turno(s)">
+        <p class="validateTips">Seleccione.</p>
+        <div id="cargando" style="display:none; color: green;">Cargando...<?php echo "<td>" . Tag::image("cargando.gif", "width: 30px", "height: 30px"); ?></div>
+        <div id="div_tipo_tranferencia">
+            <input type='radio' id="radio_tipo_transferencia" name='radio_tipo_transferencia' value="normal" checked onclick="ver_div_fecha_hora('normal')"> Tranferencia normal
+            <!--<input type='radio' id="radio_tipo_transferencia" name='radio_tipo_transferencia' value="posponer" onclick="ver_div_fecha_hora('posponer')"> Posponer-->
+        </div>
+        <div id="div_fecha_hora">
+            <label class='labelform' ><span for='fecha_atender'><b>Fecha</b>:</span></label><?php echo Tag::textField("fecha_atender", "size: 0", "maxlength: 0", "class: dateISO") ?>
+            <label class='labelform' ><span for='hora_atender'><b>Hora</b>:</span></label><?php echo Tag::textField("hora_atender", "size: 0", "maxlength: 0", "class: ") ?>
+        </div>
+        <div id="div_servicios">
+        </div>
+        <div id="div_servicio_seleccionado">
+        </div>
+        <div id="div_operadores">
+        </div>
+    </div>
+    <!--FIN DIALOG-FORM PARA TRANSFERIR UN TURNO  ANULADO/CANCELADO POSPONER A OTRA FECHA/HORA-->
+
+    <!--INICIO DIALOG-FORM2 PARA VER TURNOS TRANSFERIDOS-->
+    <div id="dialog-form2" title="Ver Turno(s) Transferido(s)">
+        <!--<p class="validateTips">Seleccione un turno.</p>-->
+        <fieldset class='ui-corner-all ui-widget-content'>
+            <legend>Turnos transferidos:</legend>
+            <div id="cargando_ver_t_t" style="display:none; color: green;">Cargando...<?php echo "<td>" . Tag::image("cargando.gif", "width: 30px", "height: 30px"); ?></div>
+            <div id="div_turnos_transferidos"></div>
+        </fieldset>
+    </div>
+    <!--FIN DIALOG-FORM2 PARA VER TURNOS TRANSFERIDOS-->
+
+    <!--INICIO DIALOG-FORM3 PARA TRANSFERIR TODOS LOS TURNOS-->
+    <div id="dialog-form3" title="Transferir Varios o Todos los Turnos">
+        <input type="button" value="Continuar" id="continuar">
+        <p class="validateTips">Seleccione.</p>
+        <div id="cargando_todos" style="display:none; color: green;">Cargando...<?php echo "<td>" . Tag::image("cargando.gif", "width: 30px", "height: 30px"); ?></div>
+        <div id="div_turnos_todos">
+        </div>
+        <div id="div_operadores_todos">
+        </div>
+        <!--<input type="text" id="modulos_id_todos" name="modulos_id_todos"/>-->
+    </div>
+    <!--INICIO DIALOG-FORM3 PARA TRANSFERIR TODOS LOS TURNOS-->
+
+    <!--INICIO DIALOG-FORM4 PARA PAUSAS-->
+    <div id="dialog-form4" title="Pausar">
+        <p class="validateTips">Seleccione.</p>
+        <div id="cargando_pausas" style="display:none; color: green;">Cargando...<?php echo "<td>" . Tag::image("cargando.gif", "width: 30px", "height: 30px"); ?></div>
+        <div id="div_pausas">
+        </div>
+    </div>
+    <!--INICIO DIALOG-FORM4 PARA PAUSAS-->
+
+</div>
+
+<?php
+echo Tag::hiddenField("idcaja", "size: 1");
+echo Tag::hiddenField("calificador", "size: 1");            //1=>activo
+//echo Tag::hiddenField("anulado", "size: 1", "value: 0");    //1=>turno anulado
+echo Tag::hiddenField("pausa", "size: 1", "value: 0");      //1=>pausado
+echo Tag::hiddenField("ubicacion_id", "size: 1");            //ubicaci�n del ser. trans. seleccionado
+
+echo Tag::hiddenField("hora_emision", "size: 1");              //hora de la emisi�n del turno para normal y transferir
+
+echo Tag::hiddenField("tipo_calificacion", "size: 1");            //si puede o no transferir todos los turnos
+echo Tag::hiddenField("txt_transferir_uno", "size: 1");            //si puede o no transferir un turno
+echo Tag::hiddenField("txt_transferir_todos", "size: 1");            //si puede o no transferir todos los turnos
+
+echo Tag::hiddenField("cookie", "size: 1");            //si puede o no transferir todos los turnos
+echo Tag::hiddenField("modulos_id", "size: 1");            //si puede o no transferir todos los turnos
+//echo Tag::textField("modulos_id_todos","size: 1");            //si puede o no transferir todos los turnos
+echo Tag::hiddenField("turnos_id", "size: 1");            //si puede o no transferir todos los turnos
+echo Tag::hiddenField("ubicaciones_id", "size: 1");            //ubicaci�n para el turno transferido
+echo Tag::hiddenField("caja_pausas_id", "size: 1");            //ubicaci�n para el turno transferido
+echo Tag::hiddenField("esta_pausado", "size: 1");            //ubicaci�n para el turno transferido
+
+echo Tag::hiddenField("servicio_id", "size: 1");            //ubicaci�n para el turno transferido
+echo Tag::hiddenField("tipo_transferencia", "size: 1");
+
+echo Tag::hiddenField("turno_terminado", "size: 1");
+?>
+<script>
+    //abre el div de los turnos clasificados por servicios
+    function abrir_div_turnos(val){
+        var chks=$("div[name^='div_servicio_']");
+        for (var x=0; x < chks.length; x++) {
+            nombre= chks[x].id;
+            $("#"+nombre).hide();
+        }
+        $("#div_servicio_"+val).show();
+    }
+
+    //cierra el div de los turnos clasificados por servicios
+    function cerrar_div_turnos(val){
+        $("#div_servicio_"+val).hide();
+    }
+
+    //abre el div de los operadores clasificados por ubicaci�n
+    function abrir_div_operadores(val){
+        var chks=$("div[name^='div_ubicacion_']");
+        for (var x=0; x < chks.length; x++) {
+            nombre= chks[x].id;
+            $("#"+nombre).hide();
+        }
+        $("#div_ubicacion_"+val).show();
+    }
+
+    //cierra el div de los operadores clasificados por ubicaci�n
+    function cerrar_div_operadores(val){
+        $("#div_ubicacion_"+val).hide();
+    }
+
+    //seleccionar los turnos respectivos del servicio
+    //cada turnos tiene la clase c_ seguido del id del servicio
+    function check_all(val){
+        var chks=$(".c_"+val);
+        chks.attr("checked","checked");
+    }
+
+    //deseleccionar los turnos respectivos del servicio
+    //cada turnos tiene la clase c_ seguido del id del servicio
+    function uncheck_all(val){
+        $("#turnos_id").val("");
+        var chks=$(".c_"+val);
+        chks.attr("checked","");
+    }
+
+    //selecciona todods los modulos respectivos de la ubicaci�n
+    //cada modulo tiene la clase c_todos seguido del id de la ubicaci�n
+    function check_all_modulos(val){
+        $("#ubicaciones_id").val(val);
+        var chks=$(".c_modulos_"+val);
+        chks.attr("checked","checked");
+        seleccionar(val);
+    }
+
+    //deselecciona todods los modulos respectivos de la ubicaci�n
+    //cada modulo tiene la clase c_todos seguido del id de la ubicaci�n
+    function uncheck_all_modulos(val){
+        $("#modulos_id").val("");
+        var chks=$(".c_modulos_"+val);
+        chks.attr("checked","");
+    }
+
+    //selecciona todods los modulos al transferir turno actual
+    function check_all_modulos_turno_actual(){
+        var chks=$(".c_modulos_turno_actual");
+        chks.attr("checked","checked");
+        seleccionar_turno_actual();
+    }
+
+    //deselecciona todods los modulos al transferir turno actual
+    function uncheck_all_modulos_turno_actual(){
+        var chks=$(".c_modulos_turno_actual");
+        chks.attr("checked","");
+    }
+
+    function caja_pausas_id(val){
+        $("#caja_pausas_id").val(val);
+    }
+</script>
+
+<!--Inicio-->
+<script>
+
+    $("#fecha_atender").datepicker({ dateFormat: 'yy-mm-dd' });
+    $("#hora_atender").timepicker({ timeFormat: 'hh:mm:ss' });
+    $("#div_fecha_hora").hide();
+
+    var tipo_calificacion = $("#tipo_calificacion").val();
+    var tipocalificacion = '';
+    var idGrupoPregunta = 0;
+    if(tipo_calificacion.length > 1){
+        tipocalificacion = tipo_calificacion.substr(0, 1);
+        idGrupoPregunta = tipo_calificacion.substr(2);
+        tipo_calificacion = tipocalificacion;
+    }
+    var ver_tiempo_maximo= <?php echo $ver_tiempo_maximo; ?>;
+    var ver_tiempo_atencion= <?php echo $ver_tiempo_atencion; ?>;
+    $("#anular").addClass('bloquear');      $("#anular").attr('disabled','disabled');
+    $("#atender").addClass('bloquear');     $("#atender").attr('disabled','disabled');
+    $("#calificar").addClass('bloquear');   $("#calificar").attr('disabled','disabled');
+    $("#rellamar").addClass('bloquear');    $("#rellamar").attr('disabled','disabled');
+    $("#transferir").addClass('bloquear');     $("#transferir").attr('disabled','disabled');
+
+    $("#div_mensaje_turnos_transferidos").hide();       //ocultar mensaje de turnos transferidos
+    GuardarCookie('nombre',0,1);
+	
+    var ingreso = 1;
+    //_____________________________
+    if ($("#esta_pausado").val()!="no" && (ingreso != 1)){      //contiene dato
+        $("#transferir_todos").addClass('bloquear');    $("#transferir_todos").attr('disabled','disabled');
+        $("#siguiente").addClass('bloquear');           $("#siguiente").attr('disabled','disabled');
+        $("#pausar").removeClass('bloquear');           $("#pausar").attr('disabled','');
+        $("#pausar").attr({'value': 'Continuar'});
+    }
+    //_____________________________
+    ingreso = 2;
+
+    if (tipo_calificacion=='D'){
+        $("#terminar_turno").addClass('bloquear');      $("#terminar_turno").attr('disabled','disabled');
+    }
+
+</script>
+
+<!--****** OPERACION DE VER Y LLAMAR A LOS TURNOS TRANSFERIDOS ****** -->
+<script>
+    setInterval('contarTurnosTransferidos()',"6000"); //actualizar cada 6 segundos
+    //****** MOSTRAR EL TOTAL DE TURNOS TRANFERIDO ******
+    function contarTurnosTransferidos(){
+        $.post("<?php echo Utils::getKumbiaUrl("operador/contarTurnosTransferidos") ?>",{
+        }, function(json){
+            if (json.num_turnos_transferidos>0){
+                $("#turnos_transferidos").val(json.num_turnos_transferidos);
+                $("#div_mensaje_turnos_transferidos").show(1000);
+            } else {
+                $("#div_mensaje_turnos_transferidos").hide();
+            }
+        },"json");
+    }
+
+    //****** VER LOS TURNOS TRANSFERIDOS ******
+    $("#mostrar").click(function(){
+        document.getElementById("div_turnos_transferidos").innerHTML = "";
+        $("#dialog-form2" ).dialog( "open" );
+        $("#cargando_ver_t_t").css("display", "inline");
+        $.post("<?php echo Utils::getKumbiaUrl("operador/listaTurnosTransferidos") ?>", {
+        },function(json){
+            document.getElementById("div_turnos_transferidos").innerHTML = json.lista_turnos_transferidos;
+            $("#cargando_ver_t_t").css("display", "none");
+        },'json');
+        $("#div_turnos_transferidos").show();
+    });
+
+    //****** LLAMAR EL TURNO TRANSFERIDO SELECCIONADO ******
+    function llamar_t_transferido(id_t_transferido, letra, numero, ubicacion_id){
+        $("#dialog-form2").dialog( "close" );
+
+        $("#siguiente").attr('disabled','disabled');    $("#siguiente").addClass('bloquear');
+        $("#pausar").attr('disabled','disabled');       $("#pausar").addClass('bloquear');
+        $("#transferir").attr('disabled','disabled');   $("#transferir").addClass('bloquear');
+        $("#tipo_turno").val("Transferido");
+        $("#ocultar").attr('disabled','disabled');      $("#ocultar").addClass('bloquear');
+        $("#servicio").val(letra);
+        $("#actual1").val(numero);
+        $("#ubicacion_id").val(ubicacion_id);
+
+        $.post("<?php echo Utils::getKumbiaUrl("operador/llamarTurnoTransferido") ?>", {
+            id_t_t_atender: id_t_transferido,     //turno transferido a ser atendido
+            normal:         0,
+            ubicacion_t_t:  ubicacion_id,
+            servicio:       letra,   //letra del servicio
+            turno:          numero,    //numero de turno
+            num_caja:       $("#numcaja").val()    //numero de caja
+        },function(json){
+        },'json');
+        $("#rellamar").attr('disabled','');         $('#rellamar').removeClass('bloquear');
+        $("#atender").attr('disabled','');          $('#atender').removeClass('bloquear');
+        $("#anular").attr('disabled','');           $('#anular').removeClass('bloquear');
+    }
+
+</script>
+
+<!--****** OPERACION DE TRANFERIR LOS TURNOS ****** -->
+<script>
+    //******  ******
+    $(function() {
+        $( "#dialog:ui-dialog" ).dialog( "destroy" );
+        var tips = $( ".validateTips" );
+
+        function check(mensaje){
+            var chks=$("input:checkbox[name^='chk_modulos_turno_actual_']");
+            var cont=0;
+            for (var x=0; x < chks.length; x++) {
+                if (chks[x].checked) {
+                    cont=cont+1;
+                }
+            }
+            if (cont==0){
+                updateTips( mensaje);
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function check_todos(mensaje){
+            var chks=$("input:checkbox[name^='chk_modulos_todos_']");
+            var cont=0;
+            for (var x=0; x < chks.length; x++) {
+                if (chks[x].checked) {
+                    cont=cont+1;
+                }
+            }
+            if (cont==0){
+                updateTips( mensaje);
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function updateTips( t ) {
+            tips
+            .text( t )
+            .addClass( "ui-state-highlight" );
+            setTimeout(function() {
+                tips.removeClass( "ui-state-highlight", 1500 );
+            }, 500 );
+        }
+
+        /*TRANSFERIR UN TURNO
+         */
+        $("#dialog-form").dialog({
+            autoOpen: false,
+            height: 320,
+            width: 300,
+            modal: true,
+            buttons: {
+                "Aceptar": function() {
+                    var bValid = true;
+                    //allFields.removeClass( "ui-state-error" );
+                    bValid = check('Seleccione al menos un operador');
+                    if ( bValid ) {
+                        $.post("<?php echo Utils::getKumbiaUrl("operador/transferir") ?>", {
+                            //transferir_uno:     1,
+                            remitente:      $("#idcaja").val(),           //para guardar remitente
+                            //servicio_id:    $("#radio_servicio").val(),
+                            servicio_id:    $("#servicio_id").val(),
+                            modulos_id:     $("#modulos_id").val(),      //a los que pasa
+                            letra:          $("#servicio").val(),
+                            numero:         $("#actual1").val(),
+                            ubicacion_id:   $("#ubicacion_id").val(),
+                            hora_emision:   $("#hora_emision").val(),
+                            tipo_transferencia: $("#tipo_transferencia").val(),
+                            fecha_atender:  $("#fecha_atender").val(),
+                            hora_atender:   $("#hora_atender").val(),
+                            id_usuario: $("#id_usuario").val()
+                        },function(json){
+                            //alert(json.modulos);
+                        },'json');
+
+                        alert ("Transferido");
+                        $( this ).dialog( "close" );
+                        //$("#transferir").attr({'style': "font-family: Kozuka Gothic Pro M; font-size:16px",'value':"transferir todos",'disabled':''});
+                        $("#transferir").attr('disabled','disabled');   $('#transferir').addClass('bloquear');
+                        $("#transferido_uno").val(1);       //tranferido un turno correctamente
+                        GuardarCookie('nombre',0,1);
+                    }
+                },
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                }
+            },
+            close: function() {
+                //allFields.val( "" ).removeClass( "ui-state-error" );
+            }
+        });
+
+        /*TRANSFERIRI TODOS LOS TURNOS
+         */
+        $( "#dialog-form3" ).dialog({
+            autoOpen: false,
+            height: 320,
+            width: 300,
+            modal: true,
+            buttons: {
+                "Aceptar": function() {
+                    var bValid = true;
+                    //allFields.removeClass( "ui-state-error" );
+                    bValid = check_todos('Seleccione al menos un operador');
+                    if ( bValid ) {
+                        $.post("<?php echo Utils::getKumbiaUrl("operador/transferirTodos") ?>", {
+                            //transferir_uno:     0,
+                            remitente:          $("#idcaja").val(),           //para guardar remitente
+                            modulos_id:         $("#modulos_id").val(),      //a los modulos que pasa
+                            turnos_id:          $("#turnos_id").val(),       //los ids de los turnos que transfiere
+                            ubicaciones_id:     $("#ubicaciones_id").val(),       //ubicaciones para todos
+                            id_usuario:         $("#id_usuario").val()
+                        },function(json){
+                            $("#espera1").val(json.todos);
+                            $("#espera2").val(json.sus_turnos);
+                        },'json');
+
+                        alert ("Transferidos");
+                        $( this ).dialog( "close" );
+                        //$("#turno_actual").val(0);
+                        //$("#transferir").attr({'style': "font-family: Kozuka Gothic Pro M; font-size:16px",'value':"transferir todos",'disabled':''});
+                        $("#transferir").attr('disabled','disabled');       $('#transferir').addClass('bloquear');
+                        updateTips("Seleccione");
+                    }
+                },
+                Cancel: function() {
+                    updateTips("Seleccione");
+                    $( this ).dialog( "close" );
+                }
+            },
+            close: function() {
+                //allFields.val( "" ).removeClass( "ui-state-error" );
+            }
+        });
+
+        /*CUADRO DE DIALOGO DE PAUSAS
+         */
+        $( "#dialog-form4" ).dialog({
+            autoOpen: false,
+            height: 320,
+            width: 300,
+            modal: true,
+            buttons: {
+                "Aceptar": function() {
+                    var bValid = true;
+                    var id_caja_pausas="";
+                    //allFields.removeClass( "ui-state-error" );
+                    //bValid = check_todos('Seleccione al menos un operador');
+                    //if ( bValid ) {
+
+                    //Antes de aceptar debe terminar el turno si el txt turno_terminado!=1
+                    if ($("#turno_terminado").val()==0){ //no se ha terminado el turno
+                        //alert ($("#turno_terminado").val());
+                        $("#terminar_turno").attr('disabled','disabled');       $('#terminar_turno').addClass('bloquear');
+                        $("#transferir").attr('disabled','');                   $('#transferir').removeClass('bloquear');
+                        $("#transferir_todos").attr('disabled','');             $('#transferir_todos').removeClass('bloquear');
+                        if (ver_tiempo_atencion==1){
+                            pausa();
+                        }
+                        //$("#aux_terminar_turno").val(1);    //se ha terminarno el turno y en siguiente no puede terminar otra vez
+                        $.post("<?php echo Utils::getKumbiaUrl("operador/terminarTurno") ?>", {
+                            num:$("#actual1").val(), //sirve para ver si tengo que actualizar primero el turno
+                            anulado:$("#anulado").val(), //sirve para ver si el actual turnos est� anulado o no
+                            caja:$("#numcaja").val(),
+                            idcaja:$("#idcaja").val()
+                        }, function(json){
+                        }, "json");
+                    }
+
+                    $.post("<?php echo Utils::getKumbiaUrl("operador/pausar") ?>", {
+                        pausas_id: $("#caja_pausas_id").val()
+                    },function(json){
+                        id_caja_pausas= json.id_caja_pausas;
+                        $("#esta_pausado").val(id_caja_pausas);
+                    },'json');
+                    alert ("Pausado!");
+                    $( this ).dialog( "close" );
+                    $("#transferir").attr('disabled','disabled');       $('#transferir').addClass('bloquear');
+                    $("#transferir_todos").attr('disabled','disabled'); $('#transferir_todos').addClass('bloquear');
+                    $("#siguiente").attr('disabled','disabled');        $('#siguiente').addClass('bloquear');
+                    updateTips("Seleccione");
+                    $("#pausar").attr({'value': 'Continuar'});
+
+                    //GuardarCookie('pausa',id_caja_pausas,1);     //enviar id de la pausa
+                    //valor=MostrarCookie('pausa');
+                    //$("#esta_pausado").val(id_caja_pausas);
+                    //}
+                },
+                Cancel: function() {
+                    updateTips("Seleccione");
+                    $( this ).dialog( "close" );
+                }
+            },
+            close: function() {
+                //allFields.val( "" ).removeClass( "ui-state-error" );
+            }
+        });
+
+        /*VEROLOS TURNOS TRANSFERIDOS
+         */
+        $( "#dialog-form2" ).dialog({
+            autoOpen: false,
+            height: 320,
+            width: 300,
+            modal: true,
+            buttons: {
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                }
+            },
+            close: function() {
+                //allFields.val( "" ).removeClass( "ui-state-error" );
+            }
+        });
+
+        $("#continuar").click(function(){
+            var chks=$("input:checked[name^='chk_turno']");     //seleccionar los values de cada turno
+            var cont=0;
+            var ids_turnos="";
+            for (var x=0; x < chks.length; x++) {
+                ids_turnos=ids_turnos+chks[x].value+",";
+                cont+=1;
+            }
+
+            if (cont==0){
+                updateTips("Seleccione al menos un turno");
+            } else {
+                updateTips("Seleccione");
+                $("#continuar").attr('disabled','disabled');    $('#continuar').addClass('bloquear');
+                document.getElementById("div_operadores_todos").innerHTML = "";
+                $("#cargando").css("display", "inline");
+                $("#div_turnos_todos").hide();
+                $.post("<?php echo Utils::getKumbiaUrl("operador/listaOperadoresTodos") ?>", {
+                    //modulo_id:$("#idcaja").val()
+                },function(json){
+                    document.getElementById("div_operadores_todos").innerHTML =
+                        cont+" turnos a transferir <br><br>"+json.mensaje;
+                    $("#cargando").css("display", "none");
+                },'json');
+                $("#div_operadores_todos").show(1000);
+                $("#turnos_id").val(ids_turnos);
+            }
+        })
+    });
+
+    /*Mostrar el div para la fecha y hora para posponer turno
+     */
+    function ver_div_fecha_hora(val){
+        $("#tipo_transferencia").val(val);
+        if (val=='normal'){    //normal
+            $("#div_fecha_hora").hide();
+        } else {        //2 posponer
+            $("#div_fecha_hora").show();
+        }
+    }
+
+
+    function obtener_operadores(servicio_id, ubicacion_id){
+        $("#servicio_id").val(servicio_id);
+        document.getElementById("div_servicio_seleccionado").innerHTML ="";
+        document.getElementById("div_operadores").innerHTML = "";
+        $("#cargando").css("display", "inline");
+        $("#div_servicios").hide();
+        $("#ubicacion_id").val(ubicacion_id);
+        $.post("<?php echo Utils::getKumbiaUrl("operador/listaOperadores") ?>", {
+            //modulo_id:$("#idcaja").val(),
+            servicio_id: servicio_id
+        },function(json){
+            //document.getElementById("div_servicio_seleccionado").innerHTML =
+            //"<fieldset class='ui-corner-all ui-widget-content'><legend>Servicio a Transferir:</legend>"+json.nombre_servicio+"</fieldset>";
+            document.getElementById("div_operadores").innerHTML = json.mensaje;
+            $("#cargando").css("display", "none");
+        },'json');
+
+        $("#div_servicio_seleccionado").show(1000);
+        $("#div_operadores").show(1000);
+
+    }
+
+    $("#chk_modulos_2").click(function(){
+        /*$("#modulos_id").val(nelson);*/
+        alert ("hola");
+    });
+
+    $("#transferir").click(function() {
+        $("#modulos_id").val("");
+        document.getElementById("div_servicios").innerHTML ="";
+        document.getElementById("div_servicio_seleccionado").innerHTML ="";
+        document.getElementById("div_operadores").innerHTML = "";
+        document.getElementById("div_operadores_todos").innerHTML = "";
+        $("#cargando").css("display", "inline");
+
+        $.post("<?php echo Utils::getKumbiaUrl("operador/listarServicios") ?>", {
+        },function(json){
+            document.getElementById("div_servicios").innerHTML =
+                "<fieldset class='ui-corner-all ui-widget-content'><legend>Servicios:</legend>"+json.lista_servicios+"</fieldset>";
+            $("#cargando").css("display", "none");
+        },'json');
+        $("#div_servicios").show();
+        $("#div_operadores").hide();
+        $("#div_servicio_seleccionado").hide();
+        $("#dialog-form" ).dialog( "open" );
+        //updateTips("Seleccione");
+    });
+
+    $("#transferir_todos").click(function() {
+        $("#continuar").attr('disabled','');        
+        $('#continuar').removeClass('bloquear');
+        $("#modulos_id").val("");
+        document.getElementById("div_turnos_todos").innerHTML ="";
+        //document.getElementById("div_servicio_seleccionado").innerHTML ="";
+        document.getElementById("div_operadores").innerHTML = "";
+        document.getElementById("div_operadores_todos").innerHTML = "";
+        $("#cargando_todos").css("display", "inline");
+
+        $.post("<?php echo Utils::getKumbiaUrl("operador/listarTurnosTodos") ?>", {
+        },function(json){
+            document.getElementById("div_turnos_todos").innerHTML =json.lista_turnos_todos;
+            $("#cargando_todos").css("display", "none");
+        },'json');
+        $("#div_turnos_todos").show();
+        $("#div_operadores_todos").hide();
+        //$("#div_servicio_seleccionado").hide();
+        $("#dialog-form3" ).dialog( "open" );
+    });
+</script>
+
+<script>
+    //Inicio calificaci�n por teclado "A"
+    //al presionar el cliente una tecla se activa siguiente y pausar
+    function enviar_calificacion() {
+        $("#siguiente").attr('disabled','');        $('#siguiente').removeClass('bloquear');
+        $("#pausar").attr('disabled','');           $('#pausar').removeClass('bloquear');
+        $("#mostrar").attr('disabled','');          $('#mostrar').removeClass('bloquear');
+        $("#ocultar").attr('disabled','');          $('#ocultar').removeClass('bloquear');
+        $("#transferir").attr('disabled','');       $('#transferir').removeClass('bloquear');
+        $("#transferir_todos").attr('disabled',''); $('#transferir_todos').removeClass('bloquear');
+
+        $.post("<?php echo Utils::getKumbiaUrl("operador/terminarTurnoTeclado") ?>", {
+            calificacion_teclado:$("#valor1").val() //valor de la calificaci�n
+        }, function(json){
+            if (ver_tiempo_atencion==1)
+                pausa();    //para el tiempo de atencion
+        }, "json");
+        $("#valor1").val("");
+    }
+    //Fin calificaci�n por teclado
+
+    //Inicio tipo calificacion "D"
+    $("#terminar_turno").click(function(){
+        recargarTurno();
+        $("#terminar_turno").attr('disabled','disabled');       $('#terminar_turno').addClass('bloquear');
+        $("#transferir").attr('disabled','');                   $('#transferir').removeClass('bloquear');
+        $("#transferir_todos").attr('disabled','');             $('#transferir_todos').removeClass('bloquear');
+        $("#mostrar").attr('disabled','');                      $('#mostrar').removeClass('bloquear');
+        if (ver_tiempo_atencion==1){
+            pausa();
+        }
+        //$("#aux_terminar_turno").val(1);    //se ha terminarno el turno y en siguiente no puede terminar otra vez
+        $.post("<?php echo Utils::getKumbiaUrl("operador/terminarTurno") ?>", {
+            num:$("#actual1").val(), //sirve para ver si tengo que actualizar primero el turno
+            anulado:$("#anulado").val(), //sirve para ver si el actual turnos est� anulado o no
+            caja:$("#numcaja").val(),
+            idcaja:$("#idcaja").val()
+        }, function(json){
+        }, "json");
+        //            $("#pausa").val(1);     //he pulsado pausar
+        $("#turno_terminado").val(1);           //he terminado el turno
+    })
+    //Fin tipo calificacion "D"
+
+    setInterval('recargar()',"4000");
+    setInterval('recargarTurno()',"300000"); //actualizar cada 5 minutos
+    function recargar(){
+        if ($("#espera2").val()==0){
+            recargarTurno();
+        }
+    }
+
+    function recargarTurno(){
+        $.post("<?php echo Utils::getKumbiaUrl("operador/contarTurnos") ?>",{
+            idcaja:$("#idcaja").val()
+        }, function(json){
+            $("#espera1").val(json.espera1);
+            $("#espera2").val(json.espera2);
+        },"json");
+    }
+
+    $("#siguiente").click(function(){
+        GuardarCookie('nombre',0,1);
+        //$("#transferir").attr({'style': "font-family: Kozuka Gothic Pro M; font-size:15px",'value':"transferir este turno"});
+        recargarTurno();
+        $("#tipo_turno").val("Normal");
+        if ($("#espera2").val()!=0){
+            $.post("<?php echo Utils::getKumbiaUrl("operador/siguiente") ?>",{
+                num:        $("#actual1").val(), //sirve para ver si tengo que actualizar primero el turno
+                anulado:    $("#anulado").val(), //sirve para ver si el actual turnos est� anulado o no
+                caja:       $("#numcaja").val(),
+                idcaja:     $("#idcaja").val(),
+                pausa:      $("#pausa").val(),
+                normal:     1
+            }, function(json){
+                $("#actual1").val(json.actual1);
+                $("#servicio").val(json.servicio);
+                $("#espera1").val(json.espera1);
+                $("#espera2").val(json.espera2);
+                $("#hora_emision").val(json.hora_emision);
+                if (json.actual1!=""){
+                    if (ver_tiempo_maximo==1){
+                        $("#tiempo_maximo").val(json.tiempo_maximo);
+                    }
+                    $("#atender").attr('disabled','');                  $('#atender').removeClass('bloquear');
+                    $("#rellamar").attr('disabled','');                 $('#rellamar').removeClass('bloquear');
+                    $("#siguiente").attr('disabled','disabled');        $('#siguiente').addClass('bloquear');
+                    $("#pausar").attr('disabled','disabled');           $('#pausar').addClass('bloquear');
+                    $("#calificar").attr('disabled','disabled');        $('#calificar').addClass('bloquear');
+                    $("#anular").attr('disabled','');                   $('#anular').removeClass('bloquear');
+                    $("#anulado").val(0);
+                    $("#pausa").val(0);     //vuelvo al estado 0 de pausa
+
+                    $("#mostrar").attr('disabled','disabled');          $('#mostrar').addClass('bloquear');
+                    $("#ocultar").attr('disabled','disabled');          $('#ocultar').addClass('bloquear');
+                    $("#transferir").attr('disabled','disabled');       $('#transferir').addClass('bloquear');
+                    $("#transferir_todos").attr('disabled','disabled'); $('#transferir_todos').addClass('bloquear');
+                    $("#div_turnos_transferidos").hide();
+                } else {
+                    alert("Turno ha sido llamado por otro operador!!");
+                }
+
+            },"json");
+
+        }
+        if (ver_tiempo_atencion==1){
+            detiene();  //detiene el tiempo de atencion
+            $("#tiempo").attr({'style': 'color: #000; background-color:#EAEAEA; font-size: 20px; text-align: center'});
+        }
+
+        if (tipo_calificacion=='D'){
+            $("#terminar_turno").addClass('bloquear');      $("#terminar_turno").attr('disabled','disabled');
+            $("#turno_terminado").val(0);
+        }
+    });
+
+
+    $("#pausar").click(function(){
+        recargarTurno();
+        var valor=MostrarCookie('pausa');
+        if ($("#esta_pausado").val()!="no"){      //sio es dif de "no" tonces si esta en pausa
+            $("#transferir_todos").attr('disabled','');     $('#transferir_todos').removeClass('bloquear');
+            $("#siguiente").attr('disabled','');            $('#siguiente').removeClass('bloquear');
+            $("#pausar").attr({'value': 'pausar'});     //regresa a label "pausar"
+            $.post("<?php echo Utils::getKumbiaUrl("operador/actualizarPausa") ?>", {
+                cajapausa_id: $("#esta_pausado").val()
+            },function(json){
+            },'json');
+            //GuardarCookie('pausa',"no",1);     //fin de la pausa
+            //valor=MostrarCookie('pausa');
+            $("#esta_pausado").val("no");
+        } else {    //no esta en pausa
+
+            if (tipo_calificacion=='D'){ //D= ninguno
+                /*$.post("<?php //echo Utils::getKumbiaUrl("operador/terminarTurno")   ?>", {
+                    num:$("#actual1").val(), //sirve para ver si tengo que actualizar primero el turno
+                    anulado:$("#anulado").val(), //sirve para ver si el actual turnos est� anulado o no
+                    caja:$("#numcaja").val(),
+                    idcaja:$("#idcaja").val()
+                }, function(json){
+                }, "json");*/
+                //            $("#pausa").val(1);     //he pulsado pausar
+            }
+
+            $.post("<?php echo Utils::getKumbiaUrl("operador/verPausas") ?>", {
+            },function(json){
+                document.getElementById("div_pausas").innerHTML =json.lista_pausas;
+            },'json');
+
+            $("#dialog-form4" ).dialog( "open" );
+
+
+        }
+    });
+
+    $("#atender").click(function(){
+
+        recargarTurno();
+        $("#atender").attr('disabled','disabled');      $('#atender').addClass('bloquear');
+        $("#rellamar").attr('disabled','disabled');     $('#rellamar').addClass('bloquear');
+        $("#pausar").attr('disabled','disabled');       $('#pausar').addClass('bloquear');
+        $("#anular").attr('disabled','disabled');       $('#anular').addClass('bloquear');
+
+        $("#calificar").attr('disabled','');        $('#calificar').removeClass('bloquear');
+        if ( (tipo_calificacion=='B') | (tipo_calificacion=='C') ){   //B=Pantalla Simple C=Pantalla matriz
+            abrirPantallaSecundaria('pantallapublicador?letra=' + $("#servicio").val() + '&numero=' + $("#actual1").val());
+        }
+
+        if (tipo_calificacion=='D'){   //D= ninguno
+            $("#terminar_turno").attr('disabled','');   $('#terminar_turno').removeClass('bloquear');
+            $("#siguiente").attr('disabled','');        $('#siguiente').removeClass('bloquear');
+            $("#pausar").attr('disabled','');           $('#pausar').removeClass('bloquear');
+        }
+
+        $.post("<?php echo Utils::getKumbiaUrl("operador/atender") ?>",{
+        }, function(json){
+        },"json");
+        if (ver_tiempo_atencion==1)
+            comienza(); //comenzar el tiempo de atencion
+    });
+
+    $("#calificar").click(function(){
+        $("#calificar").attr('disabled','disabled');    $('#calificar').addClass('bloquear');
+        if (tipo_calificacion=="A") {
+            $("#valor1").focus();
+        } else if (tipo_calificacion=="B") {  //Pantalla Simple
+            abrirPantallaSecundaria('pantallacalificador?ip='+ $("#ip").val());
+        } else if (tipo_calificacion=="C") {   //Pantalla Matriz
+            abrirPantallaSecundaria('pantallacalificadorMatriz?ip='+ $("#ip").val()+'&id='+idGrupoPregunta);
+        }
+    });
+
+    $("#anular").click(function(){
+        recargarTurno();
+        $.post("<?php echo Utils::getKumbiaUrl("operador/anular") ?>", {
+            id_usuario: $("#id_usuario").val()
+        }, function(json){
+        }, "json");
+        $("#anular").attr('disabled','disabled');       $('#anular').addClass('bloquear');
+        $("#atender").attr('disabled','disabled');      $('#atender').addClass('bloquear');
+        $("#rellamar").attr('disabled','disabled');     $('#rellamar').addClass('bloquear');
+        $("#siguiente").attr('disabled','');            $('#siguiente').removeClass('bloquear');
+        $("#pausar").attr('disabled','');               $('#pausar').removeClass('bloquear');
+
+        if ( tipo_calificacion=='A'){        //tipo calificaci�n= teclado 4 botones
+            $("#transferir").attr('disabled','');           $('#transferir').removeClass('bloquear');
+            $("#transferir_todos").attr('disabled','');     $('#transferir_todos').removeClass('bloquear');
+        } else if ( (tipo_calificacion=='B') | (tipo_calificacion=='C') ){   //pantallas
+            GuardarCookie('nombre',1,1);    //1=activar siguiente
+        } else if (tipo_calificacion=='D'){     //tipo calificaci� = ninguno
+            $("#transferir").attr('disabled','');           $('#transferir').removeClass('bloquear');
+            $("#transferir_todos").attr('disabled','');     $('#transferir_todos').removeClass('bloquear');
+        }
+
+
+    });
+    $("#rellamar").click(function(){
+        $.post("<?php echo Utils::getKumbiaUrl("operador/timbre") ?>", {
+            servicio:   $("#servicio").val(),   //letra del servicio
+            turno:      $("#actual1").val(),    //numero de turno
+            num_caja:   $("#numcaja").val()    //numero de caja
+            //normal:     $("#normal").val(),     //si es o no turno normal
+            //ubicacion_id:$("#ubicacion_id").val()      //ubicacion del turno transferido seleccionado
+        }, function(json){
+            //alert(json)
+        }, "json");
+    });
+</script>
+
+<script>
+    /*Se abre al loguearse*/
+    if ( (tipo_calificacion=='B') | (tipo_calificacion=='C') ){   //B=Pantalla Simple C=Pantalla matriz
+        //setInterval('activar_siguiente()',"1000");
+        abrirPantallaSecundaria('pantallainicial'); //abrirInicial();
+    }
+
+    //Prmite abrir una ventana para publicador o calificador(simple o matriz)
+    function abrirPantallaSecundaria(pantalla){
+        var w = screen.width;
+        var h = screen.height;
+        window.open( pantalla,'Calificador','width=' + w + ',height='+ h +',menubar=no,scrollbars=no,toolbar=no,location=no,directories=no,resizable=yes,top=0,left=' + w + '');
+    }
+
+    //Se usa esta funci�n cuando el tipo de calificaci�n es
+    //B: pantalla con 4 botones
+    //C: pantalla con matriz
+    function activar_siguiente(){
+        var valor=MostrarCookie('nombre');
+        $("#cookie").val(valor);
+        if (valor==1){
+            $("#siguiente").attr('disabled','');    $('#siguiente').removeClass('bloquear');
+            $("#pausar").attr('disabled','');       $('#pausar').removeClass('bloquear');
+            $("#mostrar").attr('disabled','');          //una vez calificato, puede ver sus t. transferidos
+            if ($("#txt_transferir_uno").val()==1)      //una vez calificado, si tiene permiso tonces muestra transferir
+                $("#transferir").attr('disabled','');       $('#transferir').removeClass('bloquear');
+            if ($("#txt_transferir_todos").val()==1)
+                $("#transferir_todos").attr('disabled','');     $('#transferir_todos').removeClass('bloquear');
+            pausa();    //para el tiempo
+        } else {
+            $("#transferir").attr('disabled','disabled');       $('#transferir').addClass('bloquear');
+        }
+    }
+</script>
+
+
+<script>
+    //Selecciona los ids de los m�dulos para transferir el turno o los turnos_todos
+    function seleccionar(val){
+        var chks1=$("input:checkbox[name^='chk_modulos_todos_']");
+        var nombre="";
+        for (var x=0; x < chks1.length; x++) {
+            nombre= chks1[x].id;
+            var clase = chks1[x].className;
+            var nom_clase="c_modulos_"+val;
+            if (clase==nom_clase){
+                //$("#"+nombre).attr("checked", "checked");
+            } else {
+                $("#"+nombre).attr("checked", "");
+            }
+        }
+
+        $("#ubicaciones_id").val(val);
+        var chks=$("input:checkbox[name^='chk_modulos_']");
+        var ids="";
+        //chks.attr("checked",$(this).is(":checked"))
+        for (var x=0; x < chks.length; x++) {
+            if (chks[x].checked) {
+                ids=ids+chks[x].value+",";
+            }
+        }
+        $("#modulos_id").val(ids);
+    }
+    function seleccionar_turno_actual(){
+        var chks=$("input:checkbox[name^='chk_modulos_turno_actual_']");
+        var ids="";
+        for (var x=0; x < chks.length; x++) {
+            if (chks[x].checked) {
+                ids=ids+chks[x].value+",";
+            }
+        }
+        $("#modulos_id").val(ids);
+    }
+</script>
+
+<!--****** ALERTA DE TURNOS POR ATENDER ****** -->
+<script>
+    setInterval('comprobarTurnos()',"2000");
+    function comprobarTurnos(){
+        if ( $("#espera2").val() == 0){
+            document.title= "SmartQ";
+        }
+        else {
+            document.title= "A L E R T A";
+            setTimeout("otro()",1000);
+        }
+    }
+    function otro(){
+        document.title= "T u r n o";
+    }
+</script>
+
+<!--****** RESTAURAR VENTANA ****** -->
+<script>
+    function restaurar(){
+        var w = screen.width * 0.76;
+        var h = screen.height * 0.70;
+        window.statusbar.visible = false;
+        window.scrollbars.visible = false;
+        window.menubar.visible = false;
+        window.toolbar.visible = false;
+        window.locationbar.visible = false;
+        window.personalbar.visible = false;
+        //window.directories.visible = false;
+        window.innerWidth = 355;
+        window.innerHeight = 490;
+        window.screenX = w;
+        window.screenY = h;
+        //alwaysLowered = false;
+        setTimeout("restaurar()",2000);
+    }
+    restaurar();
+</script>
+
+<!-- ***** MOSTRAR RELOJ ***** -->
+<script>
+    //setInterval("reloj()",1000);
+    function reloj(){
+        momentoActual = new Date()
+        hora = momentoActual.getHours()
+        minuto = momentoActual.getMinutes()
+        segundo = momentoActual.getSeconds()
+        dia= momentoActual.getDate();
+        mes= momentoActual.getMonth()+1;
+        anio= momentoActual.getFullYear();
+        if (String(dia).length == 1)
+            dia="0"+dia;
+        if (String(mes).length == 1)
+            mes="0"+mes;
+        if (String(hora).length == 1)
+            hora="0"+hora;
+        if (String(minuto).length == 1)
+            minuto="0"+minuto;
+        if (String(segundo).length == 1)
+            segundo="0"+segundo;
+        horaImprimible = hora + " : " + minuto + " : " + segundo;
+        $("#fechahora").val(dia+"/"+mes+"/"+anio+"  "+horaImprimible);
+    }
+</script>
+
+<!-- ***** CRONOMETRO ***** -->
+<script>
+    var timerito_1;
+    var tiempo_total = 0;
+
+    function muestra_segundos(){
+        var horas = 0;
+        var minutos = 0;
+        var segundos = 0;
+        var segundos_aux = 0;
+        var tiempo_temp = 0.0;
+        tiempo_total++;
+        tiempo_temp = tiempo_total/3600;
+        horas = Math.floor(tiempo_temp);
+        tiempo_temp = tiempo_temp - horas;
+        tiempo_temp = tiempo_temp*60;
+        minutos = Math.floor(tiempo_temp);
+        tiempo_temp = (tiempo_temp - minutos)*60;
+        segundos = Math.floor(tiempo_temp);
+        segundos_aux = Math.floor(tiempo_temp);
+
+        if(String(horas).length == 1)
+            horas = "0" + horas;
+        if(String(minutos).length == 1)
+            minutos = "0" + minutos;
+        if(String(segundos).length == 1)
+            segundos = "0" + segundos;
+        resultado = horas+':'+minutos+':'+segundos;
+
+
+        if (resultado>=$("#tiempo_maximo").val()){
+            if( segundos_aux % 2){
+                $("#tiempo").attr({'style': 'color: #000; background-color:#EAEAEA; font-size: 20px; text-align: center'});
+                //$("#tiempo").addClass('alerta_tiempo_maximo');
+            }
+            else{
+                $("#tiempo").attr({'style': 'color: #FF0000; background-color:#EAEAEA; font-size: 20px; text-align: center'});
+                //$("#tiempo").removeClass('alerta_tiempo_maximo');
+            }
+        }
+
+        $("#tiempo").val(resultado);
+    }
+    function comienza(){
+        muestra_segundos();
+        timerito_1 = setInterval('muestra_segundos();',1000);
+    }
+    function pausa(){
+        clearInterval(timerito_1);
+    }
+
+    function detiene(){
+        tiempo_total = 0;
+        clearInterval(timerito_1);
+        //document.getElementById('aaa').innerHTML = "-:--:--";
+        $("#tiempo").val("--:--:--");
+    }
+
+    function reIniciar(){
+        window.open('pantallainicial','Calificador','width=640,height=480,menubar=no,scrollbars=no,toolbar=no,location=no,directories=no,resizable=no,top=0,left=1500');
+        activar_siguiente();
+    } 
+</script>
+
+<!-- *********   Prueba bloqueo de botones transferir turnos ***** -->
+<script>
+    var estado_turno;
+    function estadoTurnoTransferido(){
+        if(transferirUno==1){
+          $("#transferir").attr('disabled','disabled');   
+          $("#transferir").addClass('bloquear');  
+           } elseif(transferirTodos)
+        
+        
+        
+        $.post("<?php echo Utils::getKumbiaUrl("operador/contarTurnosTransferidos") ?>",{
+        }, function(json){
+            if (json.num_turnos_transferidos>0){
+                $("#turnos_transferidos").val(json.num_turnos_transferidos);
+                $("#div_mensaje_turnos_transferidos").show(1000);
+            } else {
+                $("#div_mensaje_turnos_transferidos").hide();
+            }
+        },"json");
+    }
+
+    //****** VER LOS TURNOS TRANSFERIDOS ******
+    $("#mostrar").click(function(){
+        document.getElementById("div_turnos_transferidos").innerHTML = "";
+        $("#dialog-form2" ).dialog( "open" );
+        $("#cargando_ver_t_t").css("display", "inline");
+        $.post("<?php echo Utils::getKumbiaUrl("operador/listaTurnosTransferidos") ?>", {
+        },function(json){
+            document.getElementById("div_turnos_transferidos").innerHTML = json.lista_turnos_transferidos;
+            $("#cargando_ver_t_t").css("display", "none");
+        },'json');
+        $("#div_turnos_transferidos").show();
+    });
+
+    //****** LLAMAR EL TURNO TRANSFERIDO SELECCIONADO ******
+    function llamar_t_transferido(id_t_transferido, letra, numero, ubicacion_id){
+        $("#dialog-form2").dialog( "close" );
+
+        $("#siguiente").attr('disabled','disabled');    $("#siguiente").addClass('bloquear');
+        $("#pausar").attr('disabled','disabled');       $("#pausar").addClass('bloquear');
+        $("#transferir").attr('disabled','disabled');   $("#transferir").addClass('bloquear');
+        $("#tipo_turno").val("Transferido");
+        $("#ocultar").attr('disabled','disabled');      $("#ocultar").addClass('bloquear');
+        $("#servicio").val(letra);
+        $("#actual1").val(numero);
+        $("#ubicacion_id").val(ubicacion_id);
+
+        $.post("<?php echo Utils::getKumbiaUrl("operador/llamarTurnoTransferido") ?>", {
+            id_t_t_atender: id_t_transferido,     //turno transferido a ser atendido
+            normal:         0,
+            ubicacion_t_t:  ubicacion_id,
+            servicio:       letra,   //letra del servicio
+            turno:          numero,    //numero de turno
+            num_caja:       $("#numcaja").val()    //numero de caja
+        },function(json){
+        },'json');
+        $("#rellamar").attr('disabled','');         $('#rellamar').removeClass('bloquear');
+        $("#atender").attr('disabled','');          $('#atender').removeClass('bloquear');
+        $("#anular").attr('disabled','');           $('#anular').removeClass('bloquear');
+    }
+
+</script>

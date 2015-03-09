@@ -1,0 +1,108 @@
+<!--
+FUNCIONA MUY BIEN
+ES PARA EMITIR TURNOS NORMALES
+-->
+<div id="div_botones" align="center">
+    <table width="100%" align="center">
+        <?php
+        $habilitar_t_e=0;   //habilitar vista de turnos en espera
+        //inicio buscar ubicaci�n
+        //SELECT nombre_ubicacion FROM servicio s, ubicacion u WHERE u.id=s.ubicacion_id GROUP BY nombre_ubicacion;
+        $db = DbBase::rawConnect();
+        $result2 = $db->query("SELECT u.id, nombre_ubicacion FROM servicio s, ubicacion u WHERE u.id=s.ubicacion_id GROUP BY nombre_ubicacion");
+
+        $total_filas=0;
+        $total_filas_6=0;
+        while($row = $db->fetchArray($result2)) {
+            $id_ubicacion=$row[0];
+            $ubicacion=$row[1];
+
+            //INICIO PONER BOTONES POR UBICACION
+            $sql=new ActiveRecordJoin(array("entities"=>array ("Servicio","Dispensador","Dispensadorservicio","Ubicacion"),
+                            "fields"=>array (
+                                    "{#Servicio}.nombre",
+                                    "{#Servicio}.estado",
+                                    "{#Servicio}.id",
+                                    "{#Servicio}.letra",
+                                    "{#Servicio}.estilo_letra",
+                                    "{#Servicio}.gruposervicio_id",
+                                    "{#Ubicacion}.nombre_ubicacion"
+                            ),
+                            //"groupFields" => array("{#Servicio}.estilo_letra"),
+                            "order" => "estilo_letra, nombre asc",
+                            "conditions"=>"{#Dispensadorservicio}.dispensador_id=$id_dispensador AND {#Ubicacion}.id=$id_ubicacion")
+            );
+            $cont=0;
+            $num_registros = 0;
+            $num_registros= count($sql->getResultSet());
+            $total_filas+=$num_registros;
+            $total_filas_6+=$num_registros;
+            if ($num_registros % 2 <> 0)
+                $total_filas+=1;
+            if ($num_registros!=0)
+                echo "<center><label size=30 style='color: #000; font-size: 16px; font-family: arial black; border-style: none; background-color:transparent'>".strtoupper($ubicacion)."</label></center>";
+
+            echo "<table width='100%' align='center'>";
+            foreach ($sql->getResultSet() as $result) {
+                $color              = "#".$result->getEstiloLetra();
+                $nombre             =$result->getNombre();
+                $value              =$result->getLetra().". ".$result->getNombre();
+                $nombre_ubicacion   =$result->getNombreUbicacion();
+                $letra              =$result->getLetra();
+                if($total_servicios<=6) {
+                    echo "<tr><td width=50% align='center' style='padding:4px'><center>";
+                    echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="emitir_turno('.$result->getId().",".$result->getGruposervicioId().","."'$letra'".",'$nombre'".",'$nombre_ubicacion'".')">';
+                    if ($habilitar_t_e==1)
+                        echo '<input name="txt_servicio_'.$result->getId().'" id="txt_servicio_'.$result->getId().'" type="text" value="" style="color:#000; background:#fff; width: 22px; text-align: right" readonly="readonly">';
+                    echo "</center></td></tr>";
+
+                }
+                else {
+                    $cont=$cont+1;
+                    if ($cont % 2 <> 0) {
+                        if ($result->getEstado()==1) {
+                            echo "<tr><td width=50% align='center' style='padding:4px'><center>";
+                            echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="emitir_turno('.$result->getId().",".$result->getGruposervicioId().","."'$letra'".",'$nombre'".",'$nombre_ubicacion'".')">';
+                            if ($habilitar_t_e==1)
+                                echo '<input name="txt_servicio_'.$result->getId().'" id="txt_servicio_'.$result->getId().'" type="text" value="" style="color:#000; background:#fff; width: 22px; text-align: right" readonly="readonly">';
+                            echo "</center></td>";
+                        }
+                    } else {
+                        if ($result->getEstado()==1) {
+                            echo "<td align='center' style='padding:4px'><center>";
+                            echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="emitir_turno('.$result->getId().",".$result->getGruposervicioId().","."'$letra'".",'$nombre'".",'$nombre_ubicacion'".')">';
+                            if ($habilitar_t_e==1)
+                                echo '<input name="txt_servicio_'.$result->getId().'" id="txt_servicio_'.$result->getId().'" type="text" value="" style="color:#000; background:#fff; width: 22px; text-align: right" readonly="readonly">';
+                            echo "</center></td></tr>";
+                        }
+                    }
+                }
+            }
+            echo "</table>";
+            //FIN PONER BOTONES POR UBICACION
+        }
+        ?>
+        <center><br/>
+        </center>
+    </table>
+</div>
+<?php
+echo Tag::textField("total_filas","value: $total_filas");
+echo Tag::textField("total_filas_6","value: $total_filas_6");
+?>
+
+<script>
+    function emitir_turno(servicio_id,gruposervicio_id,letra,nombre_servicio,nombre_ubicacion){
+        $.post("<?php echo Utils::getKumbiaUrl("dispensadorservicio/emitirturno")?>",{
+            servicio_id:        servicio_id,
+            gruposervicio_id:   gruposervicio_id,
+            letra:              letra,
+            nombre_servicio:    nombre_servicio,
+            nombre_ubicacion:   nombre_ubicacion
+        }, function(json){
+<?php if ($habilitar_t_e==1) { ?>
+            $("#txt_servicio_"+servicio_id).val(json.esperando);
+    <?php } ?>
+            },'json');
+        }
+</script>

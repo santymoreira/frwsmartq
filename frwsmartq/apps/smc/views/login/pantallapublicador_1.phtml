@@ -1,0 +1,181 @@
+
+<!--<script type="text/javascript" src="../../js/jquery.media.js?v0.92"></script>-->
+<style>
+    .fondo_operador{
+        background-image:url("../../img/fondo.png");
+        background-repeat:repeat-x;
+        height:100%;
+    }
+    .titulo_noticia{
+        font-size:35px;
+        color: #FF6600;
+    }
+    .noticia{
+        font-size:30px;
+    }
+</style>
+
+<div  id='mainContent'>
+    <?php echo View::getContent();
+    //echo Tag::jqGrid("caption: 'Counter'");
+    ?>
+    <fieldset class='ui-corner-all ui-widget-content ui-state-default'>
+        <legend></legend>
+        <table border="0" width="100%">
+            <tr align="center">
+                <td align="center" style="font-size:35px">
+                    M&oacute;dulo: <?php echo Tag::textField("numcaja", "style: border:none; background-color:transparent; font-size: 35px; width:40px; text-align:center", "readonly: readonly");?>
+                </td>
+            </tr>
+        </table>
+        <div id="div_contenido">
+        </div>
+    </fieldset>
+
+</div>
+<?php
+echo Tag::hiddenField("cubo", "style: border:none; background-color:transparent; font-size: 22px; width:30px; text-align:left");
+?>
+<script>
+
+    function restaurar(){
+        var w = screen.width;
+        var h = screen.height;
+        window.statusbar.visible = false;
+        window.scrollbars.visible = false;
+        window.menubar.visible = false;
+        window.toolbar.visible = false;
+        window.locationbar.visible = false;
+        window.personalbar.visible = false;
+        window.directories.visible = false;
+        window.screenX = w+300 ;
+        window.screenY = 0;
+        window.innerWidth = w;
+        window.innerHeight = h;
+        //alwaysLowered = false;
+        setTimeout("restaurar()",2000);
+    }
+    restaurar();
+
+    function Resize()
+    {
+        var ancho=screen.width  //esta variable si utilizo
+        var alto=screen.height  //esta variable si utilizo
+        var cubo=String($("#cubo").val());
+        if (ancho>='400' & ancho<='600'){ //pantalla vertical pequeña
+            document.getElementById("div_contenido").innerHTML =
+                "<table border='0' width='100%'>"+
+                "   <tr>"+
+                "    <td colspan='2'>"+
+                "       <marquee direction='up' align='middle' scrollamount='3' width='100%' height='550px' id='Marquesina' bgcolor='transparent'><?php
+$publicar_noticias=1;
+if ($publicar_noticias==1) {
+    $formarnoticias="";
+    $fecha_hoy=date("Y-m-d");
+    $noticias= new Noticias();
+    $buscaNoticia= $noticias->find("publicar=1 AND '$fecha_hoy' BETWEEN fecha_inicio_publicacion AND fecha_fin_publicacion");
+    foreach($buscaNoticia as $result) {
+        $formarnoticias.="<font class='titulo_noticia'><b><i>".$result->getTitulo().": </i></b></font><font class='noticia'>".$result->getNoticia()."</font><br><br>";
+    }
+    echo $formarnoticias;
+}
+?>"+
+                "       </font>"+
+                "       </marquee>"+
+                "    </td>"+
+                "   </tr>"+
+                "    <tr>"+
+                "        <td align='left' >"+
+                "            <embed wmode='transparent' src='../../img/"+cubo+"' width='140' height='140'> </embed>"+
+                "        </td>"+
+                "        <td align='right'>"+
+                "            <embed wmode='transparent' src='../../img/logoinferior.swf' width='110' height='110'> </embed>"+
+                "        </td>"+
+                "    </tr>"+
+                "</table>"
+        } else if (ancho>='700' & ancho<='900'){  //pantalla horizontal pequeña
+            document.getElementById("div_contenido").innerHTML =
+                "<table border='0' width='100%'>"+
+                "  <tr>"+
+                "    <td><embed src='../../img/"+cubo+"' width='120' height='120'> </embed></td>"+
+                "    <td rowspan='2'>"+
+
+                "<object width='620' height='400' attr1='attrValue1' attr2='attrValue2'"+
+                    "codebase='http://www.apple.com/qtactivex/qtplugin.cab'"+
+                    "classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'>"+
+                "<param name='src'      value='../../img/publicidad.swf'>"+
+                "<param name='autoplay' value='true'>"+
+                "<param name='param1'   value='paramValue1'>"+
+                "<param name='param2'   value='paramValue2'>"+
+                "<embed width='620' height='400' src='../../img/publicidad.swf' autoplay='true'"+
+                       "attr1='attrValue1' attr2='attrValue2' param1='paramValue1' param2='paramValue2'"+
+                       "pluginspage='http://www.apple.com/quicktime/download/' > </embed>"+
+            "</object>"+
+
+                /*"       <marquee direction='up' align='middle' scrollamount='3' width='100%' height='400px' id='Marquesina' bgcolor='transparent'><?php
+/*$publicar_noticias=1;
+if ($publicar_noticias==1) {
+    $formarnoticias="";
+    $fecha_hoy=date("Y-m-d");
+    $noticias= new Noticias();
+    $buscaNoticia= $noticias->find("publicar=1 AND '$fecha_hoy' BETWEEN fecha_inicio_publicacion AND fecha_fin_publicacion");
+    foreach($buscaNoticia as $result) {
+        $formarnoticias.="<font class='titulo_noticia'><b><i>".$result->getTitulo().": </i></b></font><font class='noticia'>".$result->getNoticia()."</font><br><br>";
+    }
+    echo $formarnoticias;
+}*/
+?>"+
+                "       </font>"+
+                "       </marquee>"+*/
+                "    </td>"+
+                "  </tr>"+
+                "  <tr>"+
+                "    <td><embed src='../../img/logoinferior.swf' width='130' height='130'> </embed></td>"+
+                "  </tr>"+
+                "</table>"
+        } else if (ancho>='1000' & ancho<='1100'){  //
+            document.getElementById("div_contenido").innerHTML =
+                "<table border='0' width='100%'>"+
+                "  <tr>"+
+                "    <td><embed src='../../img/"+cubo+"' width='130' height='130'> </embed></td>"+
+                "    <td rowspan='2'>"+
+
+                "<object width='620' height='400' attr1='attrValue1' attr2='attrValue2'"+
+                    "codebase='http://www.apple.com/qtactivex/qtplugin.cab'"+
+                    "classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'>"+
+                "<param name='src'      value='../../img/publicidad.swf'>"+
+                "<param name='autoplay' value='true'>"+
+                "<param name='param1'   value='paramValue1'>"+
+                "<param name='param2'   value='paramValue2'>"+
+                "<embed width='620' height='400' src='../../img/publicidad.swf' autoplay='true'"+
+                       "attr1='attrValue1' attr2='attrValue2' param1='paramValue1' param2='paramValue2'"+
+                       "pluginspage='http://www.apple.com/quicktime/download/' > </embed>"+
+            "</object>"+
+
+                /*"       <marquee direction='up' align='middle' scrollamount='3' width='100%' height='480px' id='Marquesina' bgcolor='transparent'><?php
+/*$publicar_noticias=1;
+if ($publicar_noticias==1) {
+    $formarnoticias="";
+    $fecha_hoy=date("Y-m-d");
+    $noticias= new Noticias();
+    $buscaNoticia= $noticias->find("publicar=1 AND '$fecha_hoy' BETWEEN fecha_inicio_publicacion AND fecha_fin_publicacion");
+    foreach($buscaNoticia as $result) {
+        $formarnoticias.="<font class='titulo_noticia'><b><i>".$result->getTitulo().": </i></b></font><font class='noticia'>".$result->getNoticia()."</font><br><br>";
+    }
+    echo $formarnoticias;
+}*/
+?>"+
+                "       </font>"+
+                "       </marquee>"+*/
+                "    </td>"+
+                "  </tr>"+
+                "  <tr>"+
+                "    <td><embed src='../../img/logoinferior.swf' width='120' height='120'> </embed></td>"+
+                "  </tr>"+
+                "</table>"
+        }
+    }
+    window.onresize=Resize;
+    Resize();
+</script>
+

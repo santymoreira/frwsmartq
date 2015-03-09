@@ -1,0 +1,43 @@
+<?php
+   $instancePath = Core::getInstancePath();
+   //echo Tag::image("src: $instancePath/css/themes/redmond/images/toolbar/exit.png");
+   Tag::image("src: $instancePath/css/themes/redmond/images/sort_descBlack.gif");
+   
+?>
+<div id="iconuser">
+    <div>
+        <?php
+          $datosUsuario=SessionNamespace::get("datosUsuarioSMC");
+        //  echo $datosUsuario->getNombre();
+        ?>
+       <table>
+              <tr>
+               <td>
+                   <a href="javascript: void(0)" class="optionuser" style="text-decoration: none;"><font style="padding-right: 5px;"><?php echo Utils::ucwords($datosUsuario->getNombre());?></font></a>
+               </td>
+               <td>
+                    <?php echo Tag::image("src: ".$instancePath."css/themes/redmond/images/sort_descBlack.gif","valign: top","class: optionuser","style: cursor: pointer;"); ?>
+               </td>
+               <td>
+                    <?php
+                    //echo Tag::themeUI();
+                    ?>
+               </td>
+              </tr>
+              <tr>
+                  <td colspan="2">
+                    <?php
+                        if(Session::issetData("funcionUsuario"))
+                            echo $datosUsuario->getFuncionUsuario();
+                    ?>
+                  </td>
+              </tr>
+       </table>
+        
+    </div>
+    
+    
+</div>
+
+<a href="login/salir" title="Salir" style="right:20px;top: 9px; position:absolute;border:0px;text-decoration:none;color:transparent;"><span id="btnexit"></span></a>
+

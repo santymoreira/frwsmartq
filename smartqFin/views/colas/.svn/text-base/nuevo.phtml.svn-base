@@ -1,0 +1,23 @@
+<div id='mainContent'>
+
+	<?php echo View::getContent();
+		 echo Tag::form('colas/guardar');
+	?>
+	<fieldset class='ui-corner-all ui-widget-content'>
+		<legend>Datos de Colas</legend>
+		<p><label class='labelform' ><span for='caja_id'><b>Caja</b>:</span></label><?php echo Tag::select("caja_id", $Caja->find("order: id"), "using: id,id", "use_dummy: yes","dummyValue: ''","class: ") ?></p>
+		<p><label class='labelform' ><span for='por_atender'><b>Por Atender</b>:</span></label><?php echo Tag::textField("por_atender", "size: 1", "maxlength: 1","class:  numeric") ?></p>
+		<p><label class='labelform' ><span for='atendido'><b>Atendido</b>:</span></label><?php echo Tag::textField("atendido", "size: 1", "maxlength: 1","class:  numeric") ?></p>
+		<p><label class='labelform' ><span for='fecha_inicio_atencion'><b>Fecha Inicio Atencion</b>:</span></label><?php echo Tag::textField("fecha_inicio_atencion", "size: 0", "maxlength: 0","class:  dateISO") ?></p>
+		<p><label class='labelform' ><span for='hora_inicio_atencion'><b>Hora Inicio Atencion</b>:</span></label><?php echo Tag::textField("hora_inicio_atencion", "size: 0", "maxlength: 0","class: ") ?></p>
+		<p><label class='labelform' ><span for='fecha_fin_atencion'><b>Fecha Fin Atencion</b>:</span></label><?php echo Tag::textField("fecha_fin_atencion", "size: 0", "maxlength: 0","class:  dateISO") ?></p>
+		<p><label class='labelform' ><span for='hora_fin_atencion'><b>Hora Fin Atencion</b>:</span></label><?php echo Tag::textField("hora_fin_atencion", "size: 0", "maxlength: 0","class: ") ?></p>
+		<p><label class='labelform' ><span for='duracion'><b>Duracion</b>:</span></label><?php echo Tag::textField("duracion", "size: 0", "maxlength: 0","class: ") ?></p>
+		<p><label class='labelform' ><span for='calificacion'><b>Calificacion</b>:</span></label><?php echo Tag::textField("calificacion", "size: 20", "maxlength: 20","class: ") ?></p>
+	</fieldset>
+	<div class='ui-corner-all ui-widget-content'>
+		<?php echo Tag::submitButton("Crear"); echo Tag::button("Cancelar","onclick: window.location='index';"); ?>
+	</div>
+	<?php echo Tag::endForm(); ?>
+
+</div>

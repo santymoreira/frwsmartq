@@ -1,0 +1,211 @@
+<!--INICIO DIALOG-FORM PARA TURNOS-->
+<div id="dialog-form-turno" title="Emitir turno">
+    <!--<button id="but1" onclick="doFmt();factory.printing.Print(false)">Print This Page</button>-->
+
+    <p class="validateTips">Seleccione.</p>
+    <div id="cargando" style="display:none; color: green;">Cargando...<?php echo "<td>".Tag::image("cargando.gif","width: 30px","height: 30px"); ?></div>
+    <div id="div_operadores">
+    </div>
+</div>
+<!--FIN DIALOG-FORM PARA TURNOS-->
+<?php
+$habilitar_t_e=0;   //habilitar vista de turnos en espera
+echo Tag::hiddenField("seleccion_operador");
+
+if ($tipoDispensador=="simple")                                     //m�dulo dispensador para una PC normal
+    View::renderPartial("dispensador_simple");
+else if ($tipoDispensador=="touch")                                 //dispensador touch grande
+    View::renderPartial("dispensador_touch");
+else if ($tipoDispensador=="botonera")                          //botonera sin touch hasta 8 botones
+    View::renderPartial("dispensador_botonera");
+else if ($tipoDispensador=="touch_pequenia")                //botonera con touch
+    View::renderPartial("dispensador_touch_pequenia");
+else if ($tipoDispensador=="botonera_pantalla")         //botonera con pantalla hasta 8 botones
+    View::renderPartial("dispensador_botonera_pantalla");
+?>
+
+<!-- ***** Recarga par que no se termine la sesion ***** -->
+<script>
+    setInterval('recargarPantalla()',"600000"); //Recarga para que no se termine la sesi�n cada 10 minutos
+    function recargarPantalla(){
+        $.post("<?php echo Utils::getKumbiaUrl("dispensadorservicio/recargaPantalla")?>",{
+        }, function(json){
+            $("#aux").val(json.aux);
+        },"json");
+    }
+</script>
+
+<!-- ****** Emitir turno sin seleccionar el operador ***** -->
+<script>
+    //Funcion que emite el turno sin seleccionar el operador
+    function emitir_turno(servicio_id,gruposervicio_id,letra,nombre_servicio,nombre_ubicacion){
+        $.post("<?php echo Utils::getKumbiaUrl("dispensadorservicio/emitirturno")?>",{
+            servicio_id:        servicio_id,
+            gruposervicio_id:   gruposervicio_id,
+            letra:              letra,
+            nombre_servicio:    nombre_servicio,
+            nombre_ubicacion:   nombre_ubicacion
+        }, function(json){
+<?php if ($habilitar_t_e==1) { ?>
+            $("#txt_servicio_"+servicio_id).val(json.esperando);
+    <?php } ?>
+            },'json');
+        }
+
+
+</script>
+
+<!-- ****** DIALOG-FORM Emitir turno seleccionando el operador ***** -->
+<SCRIPT>
+    //var tipo_calificacion = $("#tipo_calificacion").val();
+    var servicio_id1=0;
+    var gruposervicio_id1;
+    var letra1;
+    var nombre_servicio1;
+    var nombre_ubicacion1;
+
+    function emitir_turno_operador(operador_id, numero_modulo){
+        $.post("<?php echo Utils::getKumbiaUrl("dispensadorservicio/emitirTurnoAntiguo")?>",{
+            operador_id:        operador_id,
+            servicio_id:        servicio_id1,
+            gruposervicio_id:   gruposervicio_id1,
+            letra:              letra1,
+            nombre_servicio:    nombre_servicio1,
+            nombre_ubicacion:   nombre_ubicacion1,
+            numero_modulo:      numero_modulo
+        }, function(json){
+            //document.getElementById("div_imprimir").innerHTML= json.html;
+            $("#dialog-form-turno" ).dialog( "close" );
+            //doFmt();factory.printing.Print(false);
+        },'json');
+    }
+
+    function emitir_turno_nuevo(){
+        $.post("<?php echo Utils::getKumbiaUrl("dispensadorservicio/emitirturno")?>",{
+            servicio_id:        servicio_id1,
+            gruposervicio_id:   gruposervicio_id1,
+            letra:              letra1,
+            nombre_servicio:    nombre_servicio1,
+            nombre_ubicacion:   nombre_ubicacion1
+        }, function(json){
+            //document.getElementById("div_imprimir").innerHTML= json.html;
+            $("#dialog-form-turno" ).dialog( "close" );
+            //doFmt();factory.printing.Print(false);
+        },'json');
+    }
+
+    function ver_operadores(servicio_id,gruposervicio_id,letra,nombre_servicio,nombre_ubicacion){
+        servicio_id1     =servicio_id;
+        gruposervicio_id1=gruposervicio_id;
+        letra1           =letra;
+        nombre_servicio1 =nombre_servicio;
+        nombre_ubicacion1=nombre_ubicacion;
+        document.getElementById("div_operadores").innerHTML ="";
+        $("#dialog-form-turno" ).dialog( "open" );
+        $("#cargando").css("display", "inline");
+        $.post("<?php echo Utils::getKumbiaUrl("dispensadorservicio/listaOperadores")?>", {
+            servicio_id: servicio_id
+        },function(json){
+            document.getElementById("div_operadores").innerHTML = json.mensaje;
+            $("#cargando").css("display", "none");
+        },'json');
+    }
+
+    $(function() {
+        $( "#dialog:ui-dialog" ).dialog( "destroy" );
+        var tips = $( ".validateTips" );
+
+        function check(mensaje){
+            var chks=$("input:checkbox[name^='chk_modulos_turno_actual_']");
+            var cont=0;
+            for (var x=0; x < chks.length; x++) {
+                if (chks[x].checked) {
+                    cont=cont+1;
+                }
+            }
+            if (cont==0){
+                updateTips( mensaje);
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function updateTips( t ) {
+            tips
+            .text( t )
+            .addClass( "ui-state-highlight" );
+            setTimeout(function() {
+                tips.removeClass( "ui-state-highlight", 1500 );
+            }, 500 );
+        }
+
+        /*TRANSFERIR UN TURNO
+         */
+        $("#dialog-form-turno").dialog({
+            autoOpen: false,
+            height: 480,
+            width: 400,
+            modal: true,
+            buttons: {
+                /*"Aceptar": function() {
+                    var bValid = true;
+                    //allFields.removeClass( "ui-state-error" );
+                    bValid = check('Seleccione al menos un operador');
+                    if ( bValid ) {
+
+                    }
+                },*/
+                Cancel: function() {
+                    $( this ).dialog( "close" );
+                }
+            },
+            close: function() {
+                //allFields.val( "" ).removeClass( "ui-state-error" );
+            }
+        });
+
+
+    });
+</SCRIPT>
+
+<!-- ***** Reloj ***** -->
+<script>
+    setInterval("reloj()",1000)
+    function reloj(){
+        momentoActual = new Date()
+        hora = momentoActual.getHours()
+        minuto = momentoActual.getMinutes()
+        segundo = momentoActual.getSeconds()
+        dia= momentoActual.getDate();
+        mes= momentoActual.getMonth()+1;
+        anio= momentoActual.getFullYear();
+        if (String(dia).length == 1)
+            dia="0"+dia;
+        if (String(mes).length == 1)
+            mes="0"+mes;
+        if (String(hora).length == 1)
+            hora="0"+hora;
+        if (String(minuto).length == 1)
+            minuto="0"+minuto;
+        if (String(segundo).length == 1)
+            segundo="0"+segundo;
+        horaImprimible = hora + " : " + minuto + " : " + segundo;
+        $("#fechahora").val(dia+"/"+mes+"/"+anio+"  "+horaImprimible);
+    }
+</script>
+
+<!-- ***** Imprimir en red **** -->
+<script>
+    function doFmt() {
+        factory.printing.printer = "\\\\<?php echo $ubicacion_impresora?>\\<?php echo $nombre_impresora?>";
+        factory.printing.topMargin = 0;
+        factory.printing.leftMargin = 0;
+
+        factory.printing.rightMargin = 0;
+        //factory.printing.bottomMargin = 0;
+        //factory.printing.copies = 1;
+        //ver();
+        //$("#div_imprimir").css("display", "none");
+    }
+</script>

@@ -1,0 +1,128 @@
+<style type="text/css">
+    #div_fondo {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+    }
+    #div_logo {
+        position: absolute;
+        left: 20px;
+        top: 5px;
+        border: none;
+    }
+    #div_slogan {
+        position: absolute;
+        left: 180px;
+        top: 8px;
+        border: none;
+    }
+    #div_fondo_turnos {
+        position: absolute;
+        left: 650px;
+        top: 130px;
+    }
+    #div_fondo_noticias {
+        position: absolute;
+        left: 10px;
+        top: 650px;
+    }
+    #div_logo_pw {
+        position: absolute;
+        top:700px;
+        left:940px;
+    }
+    #midiv{
+        position:absolute;
+        left:8px;
+        top:140px;
+        z-index:1;
+    }
+    .noticiavertical{
+        font-size:35px;
+    }
+    #div_fecha_hora{
+        top:30px;
+        left:826px;
+        position:absolute;
+    }
+    #hora{
+        font-size:30px;
+        background-color:transparent;
+        border:0;
+        color:#fff;
+        text-align: center;
+        font-family:impact;
+    }
+    #fecha{
+        font-size:30px;
+        background-color:transparent;
+        border:0;
+        color:#fff;
+        text-align: center;
+        font-family:impact;
+        /*text-shadow: -1px 0 #fff, 0 1px #fff,
+	  1px 0 #fff, 0 -1px #fff*/
+    }
+
+</style>
+
+<!--<div id="div_fondo"><img src="sistema/fondo_pantalla.jpg" width="1020" height="760" alt="fondo pantalla" /></div>-->
+<div id="div_fondo_turnos"><img src="sistema/fondo_turnos.png" width="368" height="530" alt="fondo turnos" /></div>
+<div id="div_fondo_noticias"><img src="sistema/noticia.png" width="930" height="99" alt="fondo noticias" /></div>
+<div id="div_logo_pw"><embed wmode="transparent" src="../../img/logoinferior.swf" width="80" height="62"> </embed></div>
+
+<div id="div_llamar" style="display:none;">
+    <div id="div_llamar_turno" style="top:10px; left:180px; position:absolute">
+        <input type="text" id="turno" name="turno" value=" " readonly="readonly" style="border:0px;background: transparent;color:fff;font-size: 95px;font-family: Impact;text-align: center;width:250px"/>
+    </div>
+    <div id="div_separador" style="top:60px; left:480px; position:absolute">
+        <img src="sistema/guion.png" width="50" alt="guion" />
+    </div>
+    <div id="div_llamar_modulo" style="top:10px; left:500px; position:absolute">
+        <input type="text" id="modulo" name="modulo" value=" " readonly="readonly" style="border:0px;background: transparent;color:fff;font-size: 95px;font-family: Impact;text-align: center;width:180px"/>
+    </div>
+</div>
+
+<div id="media1"></div>     <!-- Div para el timbre -->
+<div id="midiv"></div>      <!-- Div para el video -->
+
+
+<div id="t_actual" style="top:215px; left:652px; position:absolute">
+    <input type="text" id="t1" name="t1" value=" " readonly="readonly" style="border:0px;background: transparent;color:#fff;font-size: 80px;font-family: Impact;text-align: center;width:210px"/>
+</div>
+<div id="m_actual" style="top:215px; left:870px; position:absolute">
+    <input type="text" id="ta1" name="ta1" value=" " readonly="readonly" style="border:0px;background: transparent;color:#fff;font-size: 80px;font-family: Impact;text-align: center;width:142px"/>
+</div>
+
+<div id="t_anterior1" style="top:324px; left:662px; position:absolute">
+    <input type="text" id="t2" name="t2" value=" " readonly="readonly" style="border:0px;background: transparent;color:#fff;font-size: 74px;font-family: Impact;text-align: center;width:200px; "/>
+</div>
+<div id="m_anterior1" style="top:324px; left:870px; position:absolute">
+    <input type="text" id="ta2" name="ta2" value=" " readonly="readonly" style="border:0px;background: transparent;color:#fff;font-size: 74px;font-family: Impact;text-align: center;width:142px"/>
+</div>
+
+<div id="t_anterior2" style="top:400px; left:662px; position:absolute">
+    <input type="text" id="t3" name="t3" value=" " readonly="readonly" style="border:0px;background: transparent;color:#fff;font-size: 74px;font-family: Impact;text-align: center;width:200px; "/>
+</div>
+<div id="m_anterior2" style="top:400px; left:870px; position:absolute">
+    <input type="text" id="ta3" name="ta3" value=" " readonly="readonly" style="border:0px;background: transparent;color:#fff;font-size: 74px;font-family: Impact;text-align: center;width:142px"/>
+</div>
+
+<div id="t_anterior3" style="top:477px; left:662px; position:absolute">
+    <input type="text" id="t4" name="t4" value=" " readonly="readonly" style="border:0px;background: transparent;color:#fff;font-size: 74px;font-family: Impact;text-align: center;width:200px;"/>
+</div>
+<div id="m_anterior3" style="top:477px; left:870px; position:absolute">
+    <input type="text" id="ta4" name="ta4" value=" " readonly="readonly" style="border:0px;background: transparent;color:#fff;font-size: 74px;font-family: Impact;text-align: center;width:142px;"/>
+</div>
+
+<div id="t_anterior4" style="top:555px; left:662px; position:absolute">
+    <input type="text" id="t5" name="t5" value=" " readonly="readonly" style="border:0px;background: transparent;color:#fff;font-size: 74px;font-family: Impact;text-align: center;width:200px;"/>
+</div>
+<div id="m_anterior4" style="top:555px; left:870px; position:absolute">
+    <input type="text" id="ta5" name="ta5" value=" " readonly="readonly" style="border:0px;background: transparent;color:#fff;font-size: 74px;font-family: Impact;text-align: center;width:142px"/>
+</div>
+
+<div id="div_noticias" style="top:690px; left:30px; position:absolute">
+</div>
+
+<!--<marquee onmouseover=this.stop() onmouseout=this.start() direction="up" scrollAmount="2" style="width:200;height:250">-->

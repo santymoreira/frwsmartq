@@ -1,0 +1,31 @@
+<div id='mainContent'>
+
+    <?php
+    //echo View::getContent();
+    //echo Tag::form('noticias/guardar/true');
+    View::renderPartial("toolbarform");
+    echo Tag::form("noticias/guardar/true");
+    ?>
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend>Datos de Noticias</legend>
+        <p><label class='labelform' ><span for='titulo'><b>Título</b>:</span></label><?php echo Tag::textField("titulo", "size: 50", "maxlength: 100","class: ") ?></p>
+        <p><label class='labelform' ><span for='noticia'><b>Noticia</b>:</span></label><?php echo Tag::textArea("noticia", "maxlength: 500","rows: 3","cols:100","class: ") ?></p>
+        <p><label class='labelform' ><span for='publicar'><b>Publicar Si/No</b>:</span></label><?php echo Tag::checkboxField("publicar") ?></p>
+        <p><label class='labelform' ><span for='fecha_inicio_publicacion'><b>Fecha Inicio Publicación</b>:</span></label><?php echo Tag::textField("fecha_inicio_publicacion", "size: 0", "maxlength: 0","class:  dateISO") ?></p>
+        <p><label class='labelform' ><span for='fecha_fin_publicacion'><b>Fecha Fin Publicación</b>:</span></label><?php echo Tag::textField("fecha_fin_publicacion", "size: 0", "maxlength: 0","class:  dateISO") ?></p>
+    </fieldset>
+    <!--<div class='ui-corner-all ui-widget-content'>
+        <?php //echo Tag::submitButton("Grabar"); echo Tag::button("Cancelar","onclick: window.location='../index';"); ?>
+    </div>-->
+    <?php echo Tag::endForm(); ?>
+
+</div>
+
+<script>
+    $(function() {
+        $("#fecha_inicio_publicacion").datepicker({ dateFormat: 'yy-mm-dd' });
+    });
+    $(function() {
+        $("#fecha_fin_publicacion").datepicker({ dateFormat: 'yy-mm-dd' });
+    });
+</script>

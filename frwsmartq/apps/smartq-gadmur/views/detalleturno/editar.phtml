@@ -1,0 +1,22 @@
+<div id='mainContent'>
+
+	<?php echo View::getContent();
+		 echo Tag::form('detalleturno/guardar/true');
+	?>
+	<fieldset class='ui-corner-all ui-widget-content'>
+		<legend>Datos de Detalleturno</legend>
+		<p><label class='labelform' ><span for='usuario_id'><b>Usuario</b>:</span></label><?php echo Tag::select("usuario_id", $Usuario->find("order: id"), "using: id,id", "use_dummy: yes","dummyValue: ''","class:  required") ?></p>
+		<p><label class='labelform' ><span for='turno_id'><b>Turno</b>:</span></label><?php echo Tag::select("turno_id", $Turno->find("order: id"), "using: id,id", "use_dummy: yes","dummyValue: ''","class:  required") ?></p>
+		<p><label class='labelform' ><span for='servicio_id'><b>Servicio</b>:</span></label><?php echo Tag::select("servicio_id", $Servicio->find("order: id"), "using: id,id", "use_dummy: yes","dummyValue: ''","class:  required") ?></p>
+		<p><label class='labelform' ><span for='caja_id'><b>Caja</b>:</span></label><?php echo Tag::select("caja_id", $Caja->find("order: id"), "using: id,id", "use_dummy: yes","dummyValue: ''","class:  required") ?></p>
+		<p><label class='labelform' ><span for='fechaEmision'><b>FechaEmision</b>:</span></label><?php echo Tag::textField("fechaEmision", "size: 0", "maxlength: 0","class:  dateISO") ?></p>
+		<p><label class='labelform' ><span for='horaEmision'><b>HoraEmision</b>:</span></label><?php echo Tag::textField("horaEmision", "size: 0", "maxlength: 0","class: ") ?></p>
+		<p><label class='labelform' ><span for='fechaAtencion'><b>FechaAtencion</b>:</span></label><?php echo Tag::textField("fechaAtencion", "size: 0", "maxlength: 0","class:  dateISO") ?></p>
+		<p><label class='labelform' ><span for='horaAtencion'><b>HoraAtencion</b>:</span></label><?php echo Tag::textField("horaAtencion", "size: 0", "maxlength: 0","class: ") ?></p>
+	</fieldset>
+	<div class='ui-corner-all ui-widget-content'>
+		<?php echo Tag::submitButton("Grabar"); echo Tag::button("Cancelar","onclick: window.location='../index';"); ?>
+	</div>
+	<?php echo Tag::endForm(); ?>
+
+</div>

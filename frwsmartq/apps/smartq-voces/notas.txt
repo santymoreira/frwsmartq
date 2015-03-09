@@ -1,0 +1,5 @@
+﻿Es el sistema instalado en la EE hasta la fecha 04/04/2014
+Aqui se añade las funciones varias voces
+
+/*NOTA: Correr la sentencia sql para el llamado de cajas*/
+ALTER TABLE `smartq-voces`.`pantalla` ADD COLUMN `formato_voz` VARCHAR(100) NULL AFTER `ventana`;

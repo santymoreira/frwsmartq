@@ -1,0 +1,112 @@
+/* 
+    Document   : menu_desplegable
+    Created on : 11-nov-2011, 21:40:22
+    Author     : 
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+/* 
+   TODO customize this sample style
+   Syntax recommendation http://www.w3.org/TR/REC-CSS2/
+*/
+
+
+.content {
+    /*font-style:normal;
+    font-family:helvetica, arial, verdana, sans-serif;
+    color:#ffffff;
+    background:#333333;*/
+    border:1px solid #444444;
+    -moz-border-radius-topright: 20px;
+    -webkit-border-top-right-radius: 20px;
+    -moz-border-radius-bottomleft: 20px;
+    -webkit-border-bottom-left-radius: 20px;
+    margin: 30px 0 50px;
+    padding: 15px 0;
+}
+.content p {
+    margin: 10px 0;
+    padding: 15px 20px;
+}
+.panel {
+    position:absolute;
+    top: 90px;
+    left: 0;
+    display: none;
+    background: #ffe389;
+    border:1px solid #111111;
+    -moz-border-radius-topright: 20px;
+    -webkit-border-top-right-radius: 20px;
+    -moz-border-radius-bottomright: 20px;
+    -webkit-border-bottom-right-radius: 20px;
+    width: 550px;
+    height: auto;
+    padding: 10px 10px 10px 100px;
+    filter: alpha(opacity);
+    opacity: .90;
+}
+.panel p{
+     position: absolute;
+    margin: 0 0 15px 0;
+    padding: 0;
+    /*color: #cccccc;*/
+}
+.panel a, .panel a:visited{
+     position: absolute;
+    margin: 0;
+    padding: 0;
+    color: #9FC54E;
+    text-decoration: none;
+    border-bottom: 1px solid #9FC54E;
+}
+.panel a:hover, .panel a:visited:hover{
+    margin: 0;
+    padding: 0;
+    /*color: #ffffff;*/
+    text-decoration: none;
+    border-bottom: 1px solid #ffffff;
+}
+a.trigger{
+    position: absolute;
+    text-decoration: none;
+    top: 5px; left: 0;
+    font-size: 12px;
+    letter-spacing:-1px;
+    font-family: verdana, helvetica, arial, sans-serif;
+    color:#fff;
+    padding: 5px 10px 5px 5px;
+    font-weight: 700;
+    background:#6fa7d1 url(images/plus.png) 85% 55% no-repeat;
+    border:1px solid #444444;
+    -moz-border-radius-topright: 20px;
+    -webkit-border-top-right-radius: 20px;
+    -moz-border-radius-bottomright: 20px;
+    -webkit-border-bottom-right-radius: 20px;
+    -moz-border-radius-bottomleft: 0px;
+    -webkit-border-bottom-left-radius: 0px;
+    display: block;
+}
+a.trigger:hover{
+    position: absolute;
+    text-decoration: none;
+    top: 5px; left: 0;
+    font-size: 12px;
+    letter-spacing:-1px;
+    font-family: verdana, helvetica, arial, sans-serif;
+    color:#fff;
+    padding: 5px 10px 5px 5px;
+    font-weight: 700;
+    background:#6fa7d1 url(images/plus.png) 85% 55% no-repeat;
+    border:1px solid #444444;
+    -moz-border-radius-topright: 20px;
+    -webkit-border-top-right-radius: 20px;
+    -moz-border-radius-bottomright: 20px;
+    -webkit-border-bottom-right-radius: 20px;
+    -moz-border-radius-bottomleft: 0px;
+    -webkit-border-bottom-left-radius: 0px;
+    display: block;
+}
+a.active.trigger {
+    background:#6fa7d1 url(images/minus.png) 85% 55% no-repeat;
+}

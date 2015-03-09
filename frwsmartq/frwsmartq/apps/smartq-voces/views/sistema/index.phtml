@@ -1,0 +1,11 @@
+<div id='mainContent'>
+
+<?php
+    echo View::getContent();
+    if($contar==0){
+        echo Tag::jqGrid("caption: 'Sistema'");
+    }else{
+        echo Tag::jqGrid("caption: 'Sistema'", "addbutton: false");
+    }
+?>
+</div>

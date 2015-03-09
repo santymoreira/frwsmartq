@@ -1,0 +1,132 @@
+<style>
+    .parametros{color:#000; top:140px; left:0px; position:absolute}
+
+    .boton_dispensador {
+        background: #384954;
+        /*background-image:url("../../img/boton.png");*/
+        background: -webkit-gradient(linear, left top, left bottom, from(#93BDD9), to(#384954));
+        background: -moz-linear-gradient(top, #93BDD9, #384954);
+        border-top: 1px solid #96D1F8;
+
+        color: #fff;
+        font-size: 16px;
+        font-family: Helvetica, Arial, Sans-Serif;
+        padding-left: 12px; padding-right: 12px;
+        padding-top: 4px; padding-bottom: 4px;
+        text-decoration: none;
+        vertical-align: text-bottom;
+        -moz-border-radius: 14px;
+        -webkit-border-radius: 14px;
+        border-radius: 14px;
+        -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+        -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+        box-shadow: rgba(0,0,0,1) 0 1px 0;
+        text-shadow: rgba(0,0,0,.4) 0 1px 0;
+        /*width: 100px;*/
+        /*height: 20px;*/
+    }
+    .boton_dispensador:hover {
+        background: #28597A;
+        /*background-image:url("../img/boton.png");*/
+        /*width: 100px;*/
+        /*height: 20px;*/
+        border-top-color: #28597A;
+        color: #F39900;
+    }
+    .boton_dispensador:active {
+        /*background-image:url("logo_pie.png");*/
+        background: #719BB8;
+        border-top-color: #719BB8;
+    }
+</style>
+
+<div id="div_parametros_fondo" style="top:0px; left:0px">
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend>Par谩metros fondo</legend>
+        <p><label class='labelform' ><span for='im_fon'><b>Nombre de la imagen de fondo y extensi贸n</b>:</span></label><?php echo Tag::textField("im_fon", "size: 20", "maxlength: 50","class: required") ?></p>
+    </fieldset>
+</div>
+
+<div id="div_parametros_logo_institucion" class="parametros">
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend>Par谩metros logo de la instituci贸n</legend>
+        <p><label class='labelform' ><span for='xx_pli'><b>X</b>:</span></label><?php echo Tag::textField("xx_pli", "size: 4", "maxlength: 4","class: number") ?></p>
+        <p><label class='labelform' ><span for='yy_pli'><b>Y</b>:</span></label><?php echo Tag::textField("yy_pli", "size: 4", "maxlength: 4","class: number") ?></p>
+        <p><label class='labelform' ><span for='wi_pli'><b>Ancho</b>:</span></label><?php echo Tag::textField("wi_pli", "size: 4", "maxlength: 4","class: number") ?></p>
+        <p><label class='labelform' ><span for='he_pli'><b>Alto</b>:</span></label><?php echo Tag::textField("he_pli", "size: 4", "maxlength: 4","class: number") ?></p>
+        <p><label class='labelform' ><span for='fl_pli'><b>Nombre de animaci贸n flash</b>:</span></label><?php echo Tag::textField("fl_pli", "size: 20", "maxlength: 50","class: required") ?></p>
+    </fieldset>
+</div>
+<?php
+$alineacion = array('center' => 'Centrado','right' => 'Derecha','left' => 'Izquierda');
+$fuente = array('arial' => 'Arial','time new roman' => 'Time New Roman');
+?>
+<div id="div_parametros_nombre" class="parametros">
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend>Par谩metros del encabezadoa</legend>
+        <fieldset class='ui-corner-all ui-widget-content'>
+            <legend></legend>
+            <p><label class='labelform' ><span for='xx_pno'><b>X</b>:</span></label><?php echo Tag::textField("xx_pno", "size: 4", "maxlength: 4","class: number") ?></p>
+            <p><label class='labelform' ><span for='yy_pno'><b>Y</b>:</span></label><?php echo Tag::textField("yy_pno", "size: 4", "maxlength: 4","class: number") ?></p>
+            <p><label class='labelform' ><span for='wi_pno'><b>Ancho</b>:</span></label><?php echo Tag::textField("wi_pno", "size: 4", "maxlength: 4","class: number") ?></p>
+            <p><label class='labelform' ><span for='he_pno'><b>Alto</b>:</span></label><?php echo Tag::textField("he_pno", "size: 4", "maxlength: 4","class: number") ?></p>
+            <p><label class='labelform' ><span for='no_pno'><b>Encabezado</b>:</span></label><?php echo Tag::textField("no_pno", "size: 20", "maxlength: 100","class: number") ?></p>
+        </fieldset>
+        <fieldset class='ui-corner-all ui-widget-content'>
+            <legend>Formato</legend>
+            <p><label class='labelform' ><span for='fu_pno'><b>Fuente</b>:</span></label><?php echo Tag::selectStatic("fu_pno", $fuente) ?></p>
+            <p><label class='labelform' ><span for='al_pno'><b>Alineaci贸n</b>:</span></label><?php echo Tag::selectStatic("al_pno", $alineacion) ?></p>
+            <p><label class='labelform' ><span for='tl_pno'><b>Tama帽o de letra</b>:</span></label><?php echo Tag::textField("tl_pno", "size: 4", "maxlength: 2","class: number") ?></p>
+            <p><label class='labelform' ><span for='cl_pno'><b>Color de letra</b>:</span></label><?php echo Tag::textField("cl_pno", "size: 4", "maxlength: 10","class: required") ?></p>
+        </fieldset>
+    </fieldset>
+</div>
+<p><input name="guardar" id="guardar" type=button value="Guardar" class= "boton_dispensador" ></p>
+
+
+<script>
+    $("#guardar").click(function(){
+        $.post("<?php echo Utils::getKumbiaUrl("estilopantallaoperador/guardarEstilo")?>",{
+            accion:'estilopantallaoperador',
+            im_fon: $("#im_fon").val(),
+            xx_pli: $("#xx_pli").val(),yy_pli: $("#yy_pli").val(),wi_pli: $("#wi_pli").val(),he_pli: $("#he_pli").val(),fl_pli: $("#fl_pli").val(),
+            xx_pno: $("#xx_pno").val(),yy_pno: $("#yy_pno").val(),wi_pno: $("#wi_pno").val(),he_pno: $("#he_pno").val(),no_pno: $("#no_pno").val(),fu_pno: $("#fu_pno").val(),al_pno: $("#al_pno").val(),tl_pno: $("#tl_pno").val(),cl_pno: $("#cl_pno").val()
+        }, function(data){
+            window.location.reload();
+            //document.getElementById("div_opcion").innerHTML = data;
+        },'ajax');
+    });
+</script>
+
+<script>
+    $(function() {
+        $( "#div_logo_institucion" ).draggable();
+        $( "#div_empresa" ).draggable();
+    });
+
+    //Par醡etros logo flash institucion
+    function ver_div_logo_institucion(){
+        $("#div_parametros_logo_institucion").show(500);
+        $("#div_parametros_nombre").hide("slow");
+    }
+    function xy_logo_institucion(){
+        $("#xx_pli").val($("#div_logo_institucion").position().left);
+        $("#yy_pli").val($("#div_logo_institucion").position().top );
+    }
+
+    //Par醡etros nombre institucion
+    function ver_div_nombre(){
+        $("#div_parametros_nombre").show(500);
+        $("#div_parametros_logo_institucion").hide("slow");
+    }
+    function xy_nombre(){
+        $("#xx_pno").val($("#div_empresa").position().left);
+        $("#yy_pno").val($("#div_empresa").position().top );
+    }
+
+    function ocultar(){
+        $("#div_parametros_logo_institucion").hide("slow");
+        $("#div_parametros_nombre").hide("slow");
+    }
+    ocultar();
+</script>

@@ -1,0 +1,19 @@
+<div id='mainContent'>
+
+	<?php echo View::getContent();
+		 echo Tag::form('pantallavideos/guardar');
+	?>
+	<fieldset class='ui-corner-all ui-widget-content'>
+		<legend>Datos de Pantallavideos</legend>
+		<p><label class='labelform' ><span for='pantalla_id'><b>Pantalla</b>:</span></label><?php echo Tag::select("pantalla_id", $Pantalla->find("order: id"), "using: id,numero", "use_dummy: yes","dummyValue: ''","class: ") ?></p>
+		<p><label class='labelform' ><span for='video_id'><b>Video</b>:</span></label><?php echo Tag::select("video_id", $Video->find("order: id"), "using: id,nombre", "use_dummy: yes","dummyValue: ''","class: ") ?></p>
+		<p><label class='labelform' ><span for='activo'><b>Activo</b>:</span></label><?php echo Tag::textField("activo", "size: 4", "maxlength: 4","class:  numeric") ?></p>
+		<p><label class='labelform' ><span for='orden'><b>Orden</b>:</span></label><?php echo Tag::textField("orden", "size: 4", "maxlength: 4","class:  numeric") ?></p>
+		<p><label class='labelform' ><span for='reproducir'><b>Reproducir</b>:</span></label><?php echo Tag::textField("reproducir", "size: 4", "maxlength: 4","class:  numeric") ?></p>
+	</fieldset>
+	<div class='ui-corner-all ui-widget-content'>
+		<?php echo Tag::submitButton("Crear"); echo Tag::button("Cancelar","onclick: window.location='index';"); ?>
+	</div>
+	<?php echo Tag::endForm(); ?>
+
+</div>

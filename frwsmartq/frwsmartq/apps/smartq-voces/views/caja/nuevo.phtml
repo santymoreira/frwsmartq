@@ -1,0 +1,14 @@
+<?php View::renderPartial("toolbarform");
+//echo View::getContent();
+echo Tag::form('caja/guardar');
+?>
+<div id='mainContent'>
+    <?php
+    $tabs[]=array("caption"=>'Datos Generales','partial'=>'generalnuevo');
+    $tabs[]=array("caption"=>'Asignación de Servicios','partial'=>'servicionuevo');
+    $tabs[]=array("caption"=>'Horario de Trabajo','partial'=>'horarionuevo');
+    $tabs[]=array("caption" => 'Tiempo de Calificador', 'partial' => 'tiempocalificar');
+    Tag::tab($tabs);
+    ?>
+</div>
+

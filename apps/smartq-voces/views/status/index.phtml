@@ -1,0 +1,235 @@
+
+<div id='mainContent'>
+    <?php
+    //View::renderPartial('toolbarformrefresh');
+    ?>
+    <table class='tablesorter' id='Exportar_a_Excel' border="1">
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>Usuario</th>
+                <th>Estado Login</th>
+                <th>Módulo</th>
+                <th>Ubicación</th>
+                <th>Turnos Atendidos</th>
+                <th>Turnos Transferidos</th>
+                <th>Turnos Anulados</th>
+                <th>Estado Actual</th>
+                <th>Turno</th>
+<!--                <th>Hora Inicio</th>
+                <th>Tiempo Transcurrido</th>-->
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            //busco el estado actual (del dia actual) de los usuarios
+            $db = DbBase::rawConnect();
+            $html = "";
+            $result = $db->query("SELECT u.id AS usuario_id, u.nombres, u.login, c.id AS caja_id, c.numero_caja, ubi.nombre_ubicacion, p.nombre_pausa, cp.estado, cp.fecha_inicio, cp.hora_inicio, cp.fecha_fin, cp.hora_fin,
+                CASE cp.estado
+                WHEN 1 THEN SEC_TO_TIME(TIME_TO_SEC(CURTIME()) - TIME_TO_SEC(hora_inicio))
+                ELSE  SEC_TO_TIME(TIME_TO_SEC(hora_fin) - TIME_TO_SEC(hora_inicio))
+                END AS tiempo_transcurrido
+                FROM usuario u
+                JOIN grupousuario gu ON gu.usuario_id=u.id
+                LEFT JOIN caja c ON c.usuario_actual=u.id
+                left join ubicacion ubi on ubi.id=c.ubicacion_id
+                LEFT JOIN caja_pausas cp ON (SELECT id FROM caja_pausas WHERE usuario_id=u.id AND fecha_inicio= CURDATE() ORDER BY id DESC LIMIT 1)=cp.id 
+                left join pausas p on p.id=cp.pausas_id
+                WHERE grupo_id IN (5,7) ORDER BY u.nombres");
+            $i=1;
+            while ($row = $db->fetchArray($result)) {
+                $turnos_atendidos = "";
+                $turnos_anulados = "";
+                $turnos_transferidos = "";
+                $fecha_hoy = date('Y-m-d');
+                $usuario_id = $row['usuario_id'];
+                //--busco los turnos atendidos
+                $db = DbBase::rawConnect();
+                $result1 = $db->query("SELECT COUNT(*) AS turnos_atendidos FROM turnos
+                WHERE fecha_emision = '$fecha_hoy' AND atendido=1 AND id_username = $usuario_id");
+                while ($row1 = $db->fetchArray($result1)) {
+                    $turnos_atendidos = $row1['turnos_atendidos'];
+                }
+                //--busco los turnos anulados
+                $result2 = $db->query("SELECT COUNT(*) AS turnos_anulados FROM turnos
+                 WHERE fecha_emision = '$fecha_hoy' AND rechazado=1 AND id_username = $usuario_id");
+                while ($row2 = $db->fetchArray($result2)) {
+                    $turnos_anulados = $row2['turnos_anulados'];
+                }
+
+                //--busco los turnos tansferidos
+                $result4 = $db->query("SELECT COUNT(*) AS turnos_transferidos FROM turnos_transferidos
+                WHERE fecha_emision = '$fecha_hoy' AND id_user_transfiere = $usuario_id");
+                while ($row4 = $db->fetchArray($result4)) {
+                    $turnos_transferidos = $row4['turnos_transferidos'];
+                }
+
+                //--buscco el ultimo turno que esta llamando
+                $turno_actual = "";
+                $estado_actual = "";
+                $result3 = $db->query("SELECT t.*, s.nombre, s.letra FROM turnos t, servicio s
+                WHERE t.servicio_id=s.id AND fecha_emision = '$fecha_hoy' AND id_username = $usuario_id
+                ORDER BY id DESC LIMIT 1;");
+                while ($row3 = $db->fetchArray($result3)) {
+                    if ($row3['rechazado'] == 1) {    //ultimo turnos anulado por tanto esta esperando
+                        $estado_actual = 'Sin Atender';
+                    } else if ($row3['por_atender'] == 1 & $row3['atendido'] == 0 & $row3['rechazado'] == 0 & $row3['hora_inicio_atencion'] == '00:00:00') {
+                        $turno_actual = $row3['letra'] . $row3['numero'];
+                        $estado_actual = 'Llamando';
+                    } else if ($row3['por_atender'] == 1 & $row3['atendido'] == 0 & $row3['rechazado'] == 0 & $row3['hora_inicio_atencion'] != '00:00:00') {
+                        $turno_actual = $row3['letra'] . $row3['numero'];
+                        $estado_actual = 'Atendiendo';
+                    } else if ($row3['atendido'] == 1) {
+                        $estado_actual = 'Sin Atender';
+                    }
+                }
+
+                $login = "Inactivo";
+                $color = "red";
+                if ($row['login'] == 1) {
+                    $login = "Activo";
+                    $color = "green";
+                }
+                //$pausado = "<font color=''><b>NO</b></font>";
+//                if ($row['estado'] == 1)
+//                    $pausado = "<font color='green'><b>SI</b></font>";
+
+                $html.="<tr>";
+                $html.="<td align='center'> $i </td>";
+                $html.="<td align='center'> <input type='hidden' size=5 id='usuario_{$row['usuario_id']}' value='{$row['usuario_id']}'/> {$row['nombres']} </td>";
+                $html.="<td align='center'> <input type='text' readonly='readonly' size=5 style='color:$color' id='estado_login_{$row['usuario_id']}' value='$login'/> </td>";
+                $html.="<td align='center'> <input type='text' readonly='readonly' size=5 style='color:' id='numero_caja_{$row['usuario_id']}' value='{$row['numero_caja']}'/> </td>";
+                $html.="<td align='center'> <input type='text' readonly='readonly' size=5 style='color:' id='ubicacion_{$row['usuario_id']}' value='{$row['nombre_ubicacion']}'/> </td>";
+                $html.="<td align='center'> <input type='text' readonly='readonly' size=5 id='turnos_atendidos_{$row['usuario_id']}' value='$turnos_atendidos'/></td>";
+                $html.="<td align='center'> <input type='text' readonly='readonly' size=5 id='turnos_transferidos_{$row['usuario_id']}' value='$turnos_transferidos'/></td>";
+                $html.="<td align='center'> <input type='text' readonly='readonly' size=5 id='turnos_anulados_{$row['usuario_id']}' value='$turnos_anulados'/> </td>";
+                $html.="<td align='center'> <input type='text' readonly='readonly' size=20 id='estado_actual_{$row['usuario_id']}' value='$estado_actual'/></td>";
+                $html.="<td align='center'> <input type='text' readonly='readonly' size=5 id='turno_actual_{$row['usuario_id']}' value='$turno_actual'/> </td>";
+                //$html.="<td align='center'> {$row['hora_inicio']} </td>";
+                //$html.="<td align='center'> {$row['tiempo_transcurrido']} </td>";
+                $html.="</tr>";
+                $i++;
+            }
+            echo $html;
+            ?>
+        </tbody>
+    </table>
+</div>
+
+<!-- chat -->
+<div id="chat" style="color: #fff"></div>
+
+<script>
+    jQuery(function($) {
+        var socket = io.connect("http://<?php echo $servidor_node; ?>");
+        var $chat = $('#chat');
+        socket.on('new message', function(data) {
+
+            $chat.text(data);   //envio a chat el msg
+            var smg_siguiente = $("#chat").text();
+            //alert("smg nuevo:"+smg_siguiente);
+            var res = smg_siguiente.split("|");
+
+            if (res.length >= 4) {  //si es >=5 dio siguiente
+                turno = res[0].split(":");
+                turno = turno[1].split("/");
+                //alert(turno[1]);
+                usuario = res[6].split(":");
+                usuario_id = usuario[1];
+                opcion = res[4].split(":");
+                if (opcion[1] == 'siguiente') {
+                    $("#estado_actual_" + usuario_id).val("Llamando");
+                    $("#turno_actual_" + usuario_id).val(turno[0] + turno[1]);
+                } else 
+                if (opcion[1] == 'atender') {
+                    $("#estado_actual_" + usuario_id).val("Atendiendo");
+                    $("#turno_actual_" + usuario_id).val(turno[0] + turno[1]);
+                } else
+                if (opcion[1] == 'calificado') {
+                    $("#estado_actual_" + usuario_id).val("Sin Atender");
+                    $("#turno_actual_" + usuario_id).val("");
+                    //alert(usuario_id);
+                    actualizar_datos(usuario_id);
+                } else
+                if (opcion[1] == 'anular') {
+                    $("#estado_actual_" + usuario_id).val("Sin Atender");
+                    $("#turno_actual_" + usuario_id).val("");
+                    actualizar_datos(usuario_id);
+                }
+            } 
+            if (res.length == 1) { //salir
+                op = res[0].split(":");
+                usuario_id = op[1];
+                //alert(usuario_id);
+                if (op[0] == 'salir') {
+                    //alert(op[0]);
+                    actualizar_datos(usuario_id);
+                    $("#estado_login_" + usuario_id).val("Inactivo");
+                    $("#estado_login_" + usuario_id).css("color", "red");
+                    $("#estado_actual_" + usuario_id).val("");
+                    $("#turno_actual_" + usuario_id).val("");
+                } else if (op[0] == 'entrar') {
+                    //alert(smg_siguiente+"entrar");
+                    actualizar_datos(usuario_id);
+                    $("#estado_login_" + usuario_id).val("Activo");
+                    $("#estado_login_" + usuario_id).css("color", "green");
+                } else if (op[0] == 'pausar') {
+                    $("#estado_actual_" + usuario_id).val("En Pausa");
+                } else if (op[0] == 'nopausar') {
+                    $("#estado_actual_" + usuario_id).val("Sin Atender");
+                    //actualizar_datos(usuario_id);
+                }
+            }
+            /*else { //calificado
+             op = res[0]; //siguiente|c1|Muy Bueno //calificado desde el calificador
+             if (op=='siguiente'){
+             buscar_turno();
+             }
+             }*/
+        });
+    });
+
+    function actualizar_datos(usuario_id) {
+        $.ajax({
+            url: "<?php echo Utils::getKumbiaUrl("status/actualizarDatos") ?>",
+            async: true,
+            type: "POST",
+            //data: $("#frm_confirmar_rechazar_guia").serialize(),
+            data: "usuario_id=" + usuario_id,
+            beforeSend: function(objeto) {
+            },
+            complete: function(objeto, exito) {
+            },
+            contentType: "application/x-www-form-urlencoded",
+            dataType: "json",
+            error: function(objeto, quepaso, otroobj) {
+                //alert("Error con el servidor");
+            },
+            global: true,
+            ifModified: false,
+            processData: true,
+            success: function(data) {
+//                if(data.estado_login==1){
+//                    $("#estado_login_" + usuario_id).val("Activo");
+//                    $("#estado_login_" + usuario_id).css("color", "green");
+//                } 
+                /*else {
+                    $("#estado_login_" + usuario_id).val("Inactivo");
+                    $("#estado_login_" + usuario_id).css("color", "red");
+                }*/
+                //$("#estado_login_" + usuario_id).val(data.estado_login);
+                $("#numero_caja_" + usuario_id).val(data.numero_caja);
+                $("#ubicacion_" + usuario_id).val(data.ubicacion);
+                
+                //alert(data.turnos_atendidos);
+                $("#turnos_atendidos_" + usuario_id).val(data.turnos_atendidos);
+                $("#turnos_anulados_" + usuario_id).val(data.turnos_anulados);
+                $("#turnos_transferidos_" + usuario_id).val(data.turnos_transferidos);
+                
+                
+            },
+            timeout: 60000//,
+        });
+    }
+</script>

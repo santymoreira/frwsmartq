@@ -1,0 +1,9 @@
+<div id='mainContent'>
+
+    <?php
+    echo View::getContent();
+//echo Tag::jqGrid("caption: 'Usuario'");
+    echo Tag::jqGrid("caption: 'Usuarios'", "typewinedit: 'popup'", "optwinedit: 'width=700,height=600,left=320,top=150,scrollbars=yes'", "height: 'auto'", "multiselect: false", "addbutton: true", "editbutton: true", "delbutton: true");
+    ?>
+
+</div>

@@ -1,0 +1,95 @@
+<fieldset class='ui-corner-all ui-widget-content'>
+    <legend><b>Sucursales</b></legend>
+    <table border="1">
+        <tr>
+            <th>No</th>
+            <th>Sucursal
+            </th>
+            <th>Fecha y Hora <br> de última sincronización</th>
+        </tr>
+        <?php
+        $cont=0;
+        $sucursal       =new Sucursal();
+        $buscaSucursal  =$sucursal->find("order: alias_sucursal");
+        foreach($buscaSucursal as $result) {
+            $cont+=1;
+            $sucursal_id    =$result->getId();
+            $alias_sucursal =$result->getAliasSucursal();
+            $sinchistorial      =new Sinchistorial();
+            $buscaSinchistorial = $sinchistorial->findFirst("sucursal_id=$sucursal_id","order: id","limit: 1");
+            if($buscaSinchistorial) {
+                $fecha_ultima_sinc=$buscaSinchistorial->getFechaSincronizacion();
+                $hora_ultima_sinc=$buscaSinchistorial->getHoraSincronizacion();
+            } else {
+                $fecha_ultima_sinc="2010-01-01";
+                $hora_ultima_sinc="00:00:00";
+            }
+
+            echo "<tr><td>".$cont."</td>";
+            echo "<td> <input type='radio' id='radio_sucursal' name='radio_sucursal' value='$sucursal_id' onclick='obtener_modulos_servicios($sucursal_id)'/>$alias_sucursal</td>";
+            echo "<td>".$fecha_ultima_sinc." ".$hora_ultima_sinc."</td></tr>";
+        }
+        ?>
+    </table>
+</fieldset>
+
+
+<div id='cargando' style='display:none; color: green;'>Obteniendo datos de la sucursal...
+    <input type="image" src="../../img/cargando.gif" style="width: 30px"/>
+</div>
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend><b>Módulos</b></legend>
+    <div id='div_modulos' name='div_modulos'></div>
+</fieldset>
+
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend><b>Servicios</b></legend>
+    <div id='div_servicios' name='div_servicios'></div>
+</fieldset>
+
+<?php echo Tag::hiddenField("sucursal_id"); ?>
+
+<script>
+    function valida_envia(){
+        var activos=$("input:checked[name^='chkmodulos']");
+        var cont=activos.length;
+        if (cont ==0){
+            alert("Seleccione la sucursal y al menos un módulo")
+            return 0;
+        }
+        var activos=$("input:checked[name^='chkservicios']");
+        var cont=activos.length;
+        if (cont ==0){
+            alert("Seleccione la sucursal y al menos un servicio")
+            return 0;
+        }
+        document.fvalida.submit();
+    }
+    $("#chk_all_modulos").click(function(){
+        var chks=$("input:checkbox[name^='chkmod']");
+        chks.attr("checked",$(this).is(":checked"))
+    })
+
+    $("#chk_all_servicios").click(function(){
+        var chks=$("input:checkbox[name^='chkser']");
+        chks.attr("checked",$(this).is(":checked"))
+    })
+
+    /*
+     * Permite obtener los m�dulos y los servicios de la sucursal seleccionada
+     */
+    function obtener_modulos_servicios(sucursal_id){
+        $("#sucursal_id").val(sucursal_id);
+        document.getElementById("div_modulos").innerHTML = "";
+        document.getElementById("div_servicios").innerHTML = "";
+        $("#cargando").css("display", "inline");
+        $.post("<?php echo Utils::getKumbiaUrl("reportes_sucursales/obtenerModulosServicios")?>", {
+            sucursal_id: $("#sucursal_id").val()
+        }
+        ,function(json){
+            $("#cargando").css("display", "none");
+            document.getElementById("div_modulos").innerHTML = json.modulos;
+            document.getElementById("div_servicios").innerHTML = json.servicios;
+        },'json');
+    }
+</script>

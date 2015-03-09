@@ -1,0 +1,23 @@
+<div id='mainContent'>
+
+	<?php //echo View::getContent();
+                 View::renderPartial('toolbarform');
+		 echo Tag::form('controlacceso/guardar/true','autocomplete: off');
+	?>
+	<fieldset class='ui-corner-all ui-widget-content'>
+		<legend>Datos de Controlacceso</legend>
+		<p><label class='labelform' ><span for='usuario_id'><b>Usuario</b>:</span></label><?php echo Tag::select("usuario_id", $Usuario->find("order: ci"), "using: id,ci", "use_dummy: yes","dummyValue: ''","class:  required") ?></p>
+		<p><label class='labelform' ><span for='ip'><b>Ip</b>:</span></label><?php echo Tag::textField("ip", "size: 45", "maxlength: 45","class: ") ?></p>
+		<p><label class='labelform' ><span for='sesion_inicio'><b>Sesion Inicio</b>:</span></label><?php echo Tag::textField("sesion_inicio", "size: 12", "maxlength: 0","class:  dateISO") ?></p>
+		<p><label class='labelform' ><span for='hora_inicio'><b>Hora Inicio</b>:</span></label><?php echo Tag::textField("hora_inicio", "size: 12", "maxlength: 0","class: ") ?></p>
+		<p><label class='labelform' ><span for='sesion_fin'><b>Sesion Fin</b>:</span></label><?php echo Tag::textField("sesion_fin", "size: 12", "maxlength: 0","class:  dateISO") ?></p>
+		<p><label class='labelform' ><span for='hora_fin'><b>Hora Fin</b>:</span></label><?php echo Tag::textField("hora_fin", "size: 12", "maxlength: 0","class: ") ?></p>
+		<p><label class='labelform' ><span for='duracion'><b>Duracion</b>:</span></label><?php echo Tag::textField("duracion", "size: 12", "maxlength: 0","class: ") ?></p>
+		<p><label class='labelform' ><span for='estado'><b>Estado</b>:</span></label><?php echo Tag::checkboxField("estado");?></p>
+	</fieldset>
+	<!--<div class='ui-corner-all ui-widget-content'>
+		<?php //echo Tag::submitButton("Grabar"); echo Tag::button("Cancelar","onclick: window.location='../index';"); ?>
+	</div>-->
+	<?php echo Tag::endForm(); ?>
+
+</div>

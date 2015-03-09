@@ -1,0 +1,31 @@
+<!--<script type="text/javascript" src="../../../js/jscolor.js"></script>-->
+<script type="text/javascript" src="../../../js/select_dependientes.js"></script>
+
+<div id='mainContent'>
+
+    <?php    //View::renderPartial('toolbarform');
+    echo Tag::form('reportes/reporteColasAtendidasCajaXls');
+    ?>
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend><b>Fecha</b></legend>
+        <p><label class='labelform' ><span for='desde'>Desde:</span></label><?php echo Tag::textField("desde", "size: 12", "maxlength: 12","class:  dateISO") ?></p>
+        <p><label class='labelform' ><span for='hasta'>Hasta:</span></label><?php echo Tag::textField("hasta", "size: 12", "maxlength: 12","class:  dateISO") ?></p>
+        <?php echo Tag::hiddenField('estado','value: 1')?>
+    </fieldset>
+    <fieldset class="ui-corner-all ui-widget-content">
+        <legend><b>Cajas</b></legend>
+        <p><label class='labelform' ><span for='usuarios'>Seleccione la caja:</span></label><?php echo Tag::selectStatic("cajas", $lista_cajas,"class:  required") ?></p>
+    </fieldset>
+    <?php echo Tag::submitButton("Procesar");?>
+    <?php echo Tag::endForm(); ?>
+
+</div>
+
+<script>
+    $(function() {
+        $("#desde").datepicker({ dateFormat: 'yy-mm-dd' });
+    });
+    $(function() {
+        $("#hasta").datepicker({ dateFormat: 'yy-mm-dd' });
+    });
+</script>

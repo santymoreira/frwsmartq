@@ -1,0 +1,82 @@
+<?php
+      $estintlogin='';
+      $esttmpsesion='';
+      $chkintlogin='checked: true';
+      $chktmpsesion='checked: true';
+      $clsintlogin='class: required';
+      $clstmpsesion='class: required';
+      if(!Tag::getValueFromAction('intentoslogin')){
+           $estintlogin='disabled: true';
+           $chkintlogin='';
+           $clsintlogin='';
+      }
+      if(!Tag::getValueFromAction('tiemposesion')){
+           $esttmpsesion='disabled: true';
+           $chktmpsesion='';
+           $clstmpsesion='';
+      }
+      
+?>
+
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend><?php  echo Tag::checkboxField('intentosloginchk',$chkintlogin); ?>Bloquear usuario tras tentativa invalida de login</legend>
+    <p>
+        <label><span>N&uacute;mero de intentos</span></label><br/>
+        <?php echo Tag::numericField('intentoslogin','size: 10','maxlength: 1',$estintlogin,$chkintlogin); ?>
+        &nbsp;&nbsp;&nbsp;
+        <?php
+          echo Tag::checkboxField('notificarbloqueo',$estintlogin);
+        ?>
+        <label><span>Notificar al administrador</span></label>
+    </p>
+
+</fieldset>
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend><?php echo Tag::checkboxField('tiemposesionchk',$chktmpsesion); ?>Habilitar l&iacute;mite de tiempo de sesi&oacute;n (timeout)</legend>
+    <p>
+        <label><span>Minutos</span></label><br/>
+        <?php echo Tag::numericField('tiemposesion','size: 10','maxlength: 2',$esttmpsesion,$clstmpsesion); ?>
+    </p>
+</fieldset>
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Control de contrase&ntilde;as</legend>
+    <p><label><span>Tama&ntilde;o m&iacute;nimo</span></label><br/>
+    <?php echo Tag::numericField('tamanocontrasena','size: 10','maxlength: 2');?>
+    </p>
+    <p>
+    <label><span>Plazo validez (meses)</span></label><br/>
+    <?php echo Tag::numericField('validezclave','size: 10','maxlength: 2');?>
+    </p>
+</fieldset>
+
+<script type="text/javascript">
+    $(function(){
+        $("#intentosloginchk").click(function(){
+            var inp=$("#intentoslogin");
+            if($(this).is(":checked")){
+                $(inp).attr("disabled",false);
+                $(inp).addClass("required");
+                $("#notificarbloqueo").attr("disabled",false);
+
+            }else{
+                $(inp).attr("disabled",true);
+                $(inp).val("");
+                $(inp).removeClass("required");
+                $("#notificarbloqueo").attr("disabled",true);
+                $("#notificarbloqueo").attr("checked",false);
+            }
+        });
+        $("#tiemposesionchk").click(function(){
+            var inp=$("#tiemposesion");
+            if($(this).is(":checked")){
+                $(inp).attr("disabled",false)
+                $(inp).addClass("required");
+            }else{
+                $(inp).attr("disabled",true);
+                $(inp).val("");
+                $(inp).removeClass("required");
+            }
+        });
+    });
+</script>
+

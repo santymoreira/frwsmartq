@@ -1,0 +1,34 @@
+<div id="div_reporte_turnos_semanales">
+    <table  align="center" border ="0" width="100%">
+        <tr><td><div id="div_titulo" style="width: 100%"></div></td><tr>
+        <tr>
+            <th>
+                <div  id="division_cuadro" >
+                </div>
+            </th>
+        <tr>
+        <tr>
+            <td>
+                <div id="div_detalle">
+                    <div  id="div_cuadro"></div>
+                    <div id="tabla"></div>
+                </div>
+            </td>
+        <tr>
+
+    </table>
+
+    <script>
+        window.onresize=Resize;
+        Resize();
+
+        function Resize(){
+            ancho= $(window).width()-70;
+            alto=$(window).height()/2-75;
+            document.getElementById("division_cuadro").setAttribute("style", "background-color:#transparent; width:"+ancho+"px; height:"+alto+"px; border:1px solid black; overflow-y:auto; overflow-x:auto; ");
+            document.getElementById("div_detalle").setAttribute("style", "background-color:#transparent; width:"+ancho+"px; height:"+alto+"px; border:1px solid black; overflow-y:auto; overflow-x:auto; ");
+            //document.getElementById("tabla").setAttribute("style", "background-color:#transparent; width:"+ancho+"px; height:"+alto+"px; border:1px solid black; overflow-y:auto; overflow-x:auto; ");
+        }
+
+    </script>
+</div>

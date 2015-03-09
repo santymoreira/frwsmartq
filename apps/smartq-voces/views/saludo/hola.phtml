@@ -1,0 +1,30 @@
+<h1>Hola Mundo</h1>
+
+<script type="text/javascript" src="/frwsmartq/javascript/core/framework/jQuery/jquery.js"></script>
+<script type="text/javascript" src="/frwsmartq/javascript/core/framework/jQuery/jqprint.js"></script>
+<script type="text/javascript" src="/frwsmartq/javascript/core/framework/jQuery/jquery.browser.js"></script>
+
+
+<p><input type="button" id="boton_imprimir" value="Imprimir" /></p>
+<div id="impresion1">
+    <table>
+        <tr><td colspan="2">Imagen:</td></tr>
+        <tr><td colspan="2"><img src="images.jpg" width="80px" height="80px"></td></tr>
+        <tr><td>COOPERATIVA</td><td>CPN</td></tr>
+        <tr><td>TURNO</td><td>A001</td></tr>
+        <tr><td>Tiempo</td><td>10:01</td></tr>
+        <tr><td>LUGAR</td><td>PLANTA BAJA</td></tr>
+    </table>
+</div>
+<div id="otros_id">
+    Esto no se imprime
+</div>
+
+<script type="text/javascript">
+    $("#boton_imprimir").click(function() {
+        $('#impresion1').jqprint();
+        return false;
+    });
+
+
+</script>

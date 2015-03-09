@@ -1,0 +1,91 @@
+<div id="div_botones" align="center">
+    <table width="100%" align="center" >
+        <?php
+        $habilitar_t_e=0;   //habilitar vista de turnos en espera
+        //inicio buscar ubicaci�n
+        //SELECT nombre_ubicacion FROM servicio s, ubicacion u WHERE u.id=s.ubicacion_id GROUP BY nombre_ubicacion;
+        $db = DbBase::rawConnect();
+        $result2 = $db->query("SELECT u.id, nombre_ubicacion FROM servicio s, ubicacion u WHERE u.id=s.ubicacion_id GROUP BY nombre_ubicacion");
+
+        while($row = $db->fetchArray($result2)) {
+            $id_ubicacion=$row[0];
+            $ubicacion=$row[1];
+
+            //Inicio por ubicaci�n
+            $sql=new ActiveRecordJoin(array("entities"=>array ("Servicio","Dispensador","Dispensadorservicio","Ubicacion"),
+                            "fields"=>array (
+                                    "{#Servicio}.nombre",
+                                    "{#Servicio}.estado",
+                                    "{#Servicio}.id",
+                                    "{#Servicio}.letra",
+                                    //"{#Servicio}.ubicacion_id",
+                                    "{#Servicio}.estilo_letra",
+                                    "{#Servicio}.gruposervicio_id",
+                                    "{#Ubicacion}.nombre_ubicacion"
+                            ),
+                            //"groupFields" => array("{#Servicio}.estilo_letra"),
+                            "order" => "estilo_letra, nombre asc",
+                            "conditions"=>"{#Dispensadorservicio}.dispensador_id=$id_dispensador AND {#Ubicacion}.id=$id_ubicacion")
+            );
+            $cont=0;
+            $total_filas = 0;
+            foreach ($sql->getResultSet() as $result1) {
+                $total_filas+=1;
+            }
+
+            if ($total_filas!=0)
+                echo "<center><label size=30 style='color: #000; font-size: 25px; border-style: none; background-color:transparent'>".$ubicacion."</label></center>";
+
+            echo "<table width='100%' align='center'>";
+            foreach ($sql->getResultSet() as $result) {
+                $color= "#".$result->getEstiloLetra();
+                $nombre             =$result->getNombre();
+                $value              =$result->getLetra().". ".$result->getNombre();
+                $nombre_ubicacion   =$result->getNombreUbicacion();
+                $letra              =$result->getLetra();
+                if($total_servicios<=6) {
+                    echo "<tr><td width=50% align='center' style='padding:4px'><center>";
+                    if ($seleccion_operador==1)
+                        echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="ver_operadores('.$result->getId().",".$result->getGruposervicioId().","."'$letra'".",'$nombre'".",'$nombre_ubicacion'".')">';
+                    else
+                        echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="emitir_turno('.$result->getId().",".$result->getGruposervicioId().","."'$letra'".",'$nombre'".",'$nombre_ubicacion'".')">';
+
+                    if ($habilitar_t_e==1)
+                        echo '<input name="txt_servicio_'.$result->getId().'" id="txt_servicio_'.$result->getId().'" type="text" value="" style="color:#000; background:#fff; width: 22px; text-align: right" readonly="readonly">';
+                    echo "</center></td></tr>";
+
+                }
+                else {
+                    $cont=$cont+1;
+                    if ($cont % 2 <> 0) {
+                        if ($result->getEstado()==1) {
+                            echo "<tr><td width=50% align='center' style='padding:4px'><center>";
+                            if ($seleccion_operador==1)
+                                echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="ver_operadores('.$result->getId().",".$result->getGruposervicioId().","."'$letra'".",'$nombre'".",'$nombre_ubicacion'".')">';
+                            else
+                                echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="emitir_turno('.$result->getId().",".$result->getGruposervicioId().","."'$letra'".",'$nombre'".",'$nombre_ubicacion'".')">';
+                            if ($habilitar_t_e==1)
+                                echo '<input name="txt_servicio_'.$result->getId().'" id="txt_servicio_'.$result->getId().'" type="text" value="" style="color:#000; background:#fff; width: 22px; text-align: right" readonly="readonly">';
+                            echo "</center></td>";
+                        }
+                    } else {
+                        if ($result->getEstado()==1) {
+                            echo "<td align='center' style='padding:4px'><center>";
+                            if ($seleccion_operador==1)
+                                echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="ver_operadores('.$result->getId().",".$result->getGruposervicioId().","."'$letra'".",'$nombre'".",'$nombre_ubicacion'".')">';
+                            else
+                                echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="emitir_turno('.$result->getId().",".$result->getGruposervicioId().","."'$letra'".",'$nombre'".",'$nombre_ubicacion'".')">';
+                            if ($habilitar_t_e==1)
+                                echo '<input name="txt_servicio_'.$result->getId().'" id="txt_servicio_'.$result->getId().'" type="text" value="" style="color:#000; background:#fff; width: 22px; text-align: right" readonly="readonly">';
+                            echo "</center></td></tr>";
+                        }
+                    }
+                }
+            }
+            echo "</table>";
+        }
+        ?>
+        <center><br/>
+        </center>
+    </table>
+</div>

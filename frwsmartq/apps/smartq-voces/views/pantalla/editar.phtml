@@ -1,0 +1,22 @@
+<div id='mainContent'>
+
+    <?php
+    //echo View::getContent();
+    View::renderPartial("toolbarform");
+    echo Tag::form('pantalla/guardar/true');
+    ?>
+    <?php
+    $tabs[]=array("caption"=>'Datos Generales','partial'=>'general');
+    //$tabs[]=array("caption"=>'Modelo de Pantalla','partial'=>'modelo');
+    $tabs[]=array("caption"=>'Asignación de Videos','partial'=>'videos');
+    $tabs[]=array("caption"=>'Asignación de Archivos SWF','partial'=>'publicidad');
+    $tabs[]=array("caption"=>'Horario de Programación','partial'=>'horario_editar');
+    $tabs[]=array("caption"=>'Asignación de RSS','partial'=>'feeds_editar');
+    $tabs[]=array("caption"=>'Señal TV','partial'=>'senal_tv');
+    Tag::tab($tabs);
+    ?>
+
+    <?php echo Tag::endForm(); ?>
+
+</div>
+<script type="text/javascript" src="../../../js/jscolor.js"></script>

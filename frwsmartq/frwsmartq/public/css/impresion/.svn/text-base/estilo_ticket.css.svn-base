@@ -1,0 +1,41 @@
+#div_logo {
+    position: absolute;
+    left: 81px;
+    top: 1px;
+}
+#div_logo_smartq {
+    position: absolute;
+    left: 0px;
+    top: 61px;
+}
+#div_fono_pw {
+    position: absolute;
+    left: 255px;
+    top: 46px;
+}
+#div_texto {
+    position: absolute;
+    left: 25px;
+    top: 71px;
+    width: 226px;
+    border: none;
+    font-size:10px;
+    line-height:10px;
+}
+.nombre{
+    font-size:12px;
+    line-height:10px;
+}
+.frase{
+    font-size:10px;
+    line-height:9px;
+}
+.ticket{
+    font-size:48px;
+    font-weight:bold;
+    line-height:38px;
+}
+.normal{
+    font-size:10px;
+    line-height:7px;
+}

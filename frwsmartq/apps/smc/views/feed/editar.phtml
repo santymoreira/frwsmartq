@@ -1,0 +1,47 @@
+<div id='mainContent'>
+
+    <?php
+    //echo View::getContent();
+    View::renderPartial("toolbarform");
+    echo Tag::form("feed/guardar/true");
+    ?>
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend>Datos de Feed</legend>
+        <p><label class='labelform' ><span for='categoriafeeds_id'><b>Categoría</b>:</span></label><?php echo Tag::select("categoriafeeds_id", $Categoriafeeds->find("order: nombre_categoria"), "using: id,nombre_categoria", "use_dummy: yes","dummyValue: ''","class:  required") ?></p>
+        <p><label class='labelform' ><span for='url_feed'><b>Url Feed</b>:</span></label><?php echo Tag::textField("url_feed", "size: 70", "maxlength: 200","class:  required") ?></p>
+        <p><label class='labelform' ><span for='activo'><b>Activo</b>:</span></label><?php echo Tag::checkboxField("activo");?></p>
+    </fieldset>
+
+    <input type="button" name="verFeed" id="verFeed" value="Leer" />
+
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <div id="cargando" style="display:none; color: green;">Cargando...<?php echo "<td>".Tag::image("cargando.gif","width: 30px","height: 30px"); ?></div>
+        <div id="div_ver_feed">
+
+        </div>
+    </fieldset>
+
+    <!--<div class='ui-corner-all ui-widget-content'>
+    <?php //echo Tag::submitButton("Grabar"); echo Tag::button("Cancelar","onclick: window.location='../index';"); ?>
+	</div>-->
+    <?php echo Tag::endForm(); ?>
+
+</div>
+
+<script>
+    $("#verFeed").click(function(){
+        if ($("#url_feed").val()==""){
+            alert ("Ingrese el URL");
+        } else {
+            document.getElementById("div_ver_feed").innerHTML = "";
+            $("#cargando").css("display", "inline");
+            $.post("<?php echo Utils::getKumbiaUrl("feed/verFeed")?>", {
+                url_feed: $("#url_feed").val()
+            },function(data){
+                document.getElementById("div_ver_feed").innerHTML = data;
+                $("#cargando").css("display", "none");
+            },'ajax');
+            $("#div_turnos_transferidos").show();
+        }
+    });
+</script>

@@ -1,0 +1,99 @@
+<style type="text/css">
+    #div_fondo {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        z-index:1;
+    }
+    #div_cenefa {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        z-index:2;
+    }
+    #div_logo_institucion {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        z-index:3;
+    }
+    #div_logo_pw {
+        position: absolute;
+        left: 710px;
+        top: 425px;
+        z-index:3;
+    }
+    #div_encabezado {
+        position: absolute;
+        left: 244px;
+        top: 0px;
+        z-index:4;
+    }
+    .encabezado{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 80px;
+        font-style: normal;
+        color: #000;
+    }
+    #div_numero_encabezado {
+        position: absolute;
+        left: 624px;
+        top: 0px;
+        z-index:5;
+    }
+</style>
+<!--<script src="Scripts/swfobject_modified.js" type="text/javascript"></script>-->
+
+<div id="div_fondo">
+    <?php echo Tag::image($carpeta."/sistema/calificacion_fondo_horizontal7.png", 'id: img_logo_calificacion', 'width: 795px', 'height: 470px') ?>
+</div>
+<div id="div_cenefa">
+    <?php echo Tag::image($carpeta."/sistema/calificacion_cenefa_horizontal7.png", 'id: img_logo_calificacion', 'width: 795px', 'height: 161px') ?>
+</div>
+<div id="div_logo_institucion">
+    <?php echo Tag::image($carpeta."/sistema/logo_operador.png", 'id: img_logo_calificacion', 'width: 144px', 'height: 114px') ?>
+</div>
+<div id="div_logo_pw">
+    <embed wmode='transparent' src='../../img/logoinferior.swf' width="81" height="43"> </embed>
+</div>
+<div id="div_encabezado" class="encabezado">MÓDULO</div>
+
+<?php
+echo Tag::textField("numcaja", "style: border:none; background-color:transparent; font-size: 22px; width:30px; text-align:left");
+echo Tag::textField("cubo", "style: border:none; background-color:transparent; font-size: 22px; width:30px; text-align:left");
+echo Tag::textField("usuario", "style: border:none; background-color:transparent; font-size: 22px; width:30px; text-align:left");
+echo Tag::textField("foto", "style: border:none; background-color:transparent; font-size: 22px; width:30px; text-align:left");
+echo Tag::hiddenField("carpeta");
+?>
+
+<script>
+    var modulo=String($("#numcaja").val());
+    var cubo=String($("#cubo").val());
+    var usuario=String($("#usuario").val());
+    var foto=String($("#foto").val());
+    var carpeta=String($("#carpeta").val());
+
+    //document.getElementById("div_logo_institucion").innerHTML =
+       // "<input type='image' src='../../img/"+ carpeta +"/sistema/logo_operador.png' width='144' height='143'> </embed>";
+
+    function restaurar(){
+        var w = screen.width;
+        var h = screen.height;
+        window.statusbar.visible = false;
+        window.scrollbars.visible = false;
+        window.menubar.visible = false;
+        window.toolbar.visible = false;
+        window.locationbar.visible = false;
+        window.personalbar.visible = false;
+        window.directories.visible = false;
+        window.screenX = w+300 ;
+        window.screenY = 0;
+        window.innerWidth = w;
+        window.innerHeight = h;
+        //alwaysLowered = false;
+        setTimeout("restaurar()",2000);
+    }
+    restaurar();
+
+    document.title= "Calificador";
+</script>

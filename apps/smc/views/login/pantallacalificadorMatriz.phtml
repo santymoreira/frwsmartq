@@ -1,0 +1,227 @@
+<script type="text/javascript" src="../../js/administracion_cookies.js"></script>
+<style>
+    .boton_operador {
+        color: #0042ff;
+        font-size: 40pt;
+        width: 350px;
+        height: 70px;
+    }
+    .fondo_operador{
+        background-image:url("../../img/fondo.png");
+        background-repeat:repeat-x;
+        height:100%;
+    }
+    .estilo_boton_calificacion1 {
+        /*background: -moz-linear-gradient(top, #0080FF, #384954);*/
+        background-color:#0000CE;
+    }
+    .estilo_boton_calificacion1:hover {
+        background: #28597A;
+        border-top-color: #28597A;
+        color: #006633;
+    }
+    .estilo_boton_calificacion1:active {
+        background: #719BB8;
+        border-top-color: #719BB8;
+    }
+
+    .estilo_boton_calificacion2 {
+        /*background: -moz-linear-gradient(top, #05A344, #384954);*/
+        background-color:#049B41;
+    }
+    .estilo_boton_calificacion2:hover {
+        background: #28597A;
+        border-top-color: #28597A;
+        color: #006633;
+    }
+    .estilo_boton_calificacion2:active {
+        background: #719BB8;
+        border-top-color: #719BB8;
+    }
+
+    .estilo_boton_calificacion3 {
+        /*background: -moz-linear-gradient(top, #E28A12, #384954);*/
+        background-color:#E28A12;
+    }
+    .estilo_boton_calificacion3:hover {
+        background: #28597A;
+        border-top-color: #28597A;
+        color: #006633;
+    }
+    .estilo_boton_calificacion3:active {
+        background: #719BB8;
+        border-top-color: #719BB8;
+    }
+
+    .estilo_boton_calificacion4 {
+        /*background: -moz-linear-gradient(top, #FF5E5E, #384954);*/
+        background-color:#FF2020;
+    }
+    .estilo_boton_calificacion4:hover {
+        background: #28597A;
+        border-top-color: #28597A;
+        color: #006633;
+    }
+    .estilo_boton_calificacion4:active {
+        background: #719BB8;
+        border-top-color: #719BB8;
+    }
+
+    .estilo_todos_botones{
+        border:0;
+        background: -webkit-gradient(linear, left top, left bottom, from(#93BDD9), to(#384954));
+
+        /*background: -moz-linear-gradient(top, #05A344, #384954);*/
+        border-top: 0px solid #96D1F8;
+
+        /*color: #F39900;
+        font-size: 25px;
+        font-family: Helvetica, Arial, Sans-Serif;
+        padding: 13px 26px;
+        text-decoration: none;
+        vertical-align: text-bottom;*/
+        -moz-border-radius: 14px;
+        -webkit-border-radius: 14px;
+        border-radius: 14px;
+        -moz-box-shadow: rgba(50,80,80,50) 0 7px 0; /*Borde del botón*/
+        -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+        box-shadow: rgba(0,0,0,1) 0 1px 0;
+        text-shadow: rgba(0,0,0,.4) 0 1px 0;
+        /*width: 80px;
+        height: 30px;*/
+    }
+    th {
+        font-size:18px;
+        font-weight:bold;
+        background-color:#0080FF;
+        color:#fff;
+    }
+    td {
+        font-size:15px;
+        padding:4px;
+    }
+
+    #div_contenido_preguntas {
+        position: absolute;
+        left: 55px;
+        top: 115px;
+        width:680px;
+        height:362px;
+        z-index:5;
+    }
+</style>
+
+<?php
+$arrayPane[]=array('position'=>'middle','options'=>'resizable: false','partial'=>'plantilla_calificacion');
+Tag::pane($arrayPane);
+?>
+
+<?php echo View::getContent();
+//echo Tag::jqGrid("caption: 'Counter'");
+$array_calificacion= array();
+$calificacion= new Calificacion();
+$buscaCalificacion = $calificacion->find("order: orden");
+foreach ($buscaCalificacion as $result) {
+    $array_calificacion[$result->getId()]= array('nom'=>$result->getNomCalificacion(),'puntos'=>$result->getPuntos());
+}
+?>
+
+<div id="div_numero_encabezado" class="encabezado" ></div>
+<div id="div_contenido_preguntas">
+    <table align="center">
+        <tr>
+            <th>N.</th>
+            <th>TÃ­tulo</th>
+            <?php
+            foreach ($array_calificacion as $valor)
+                echo "<th>".$valor['nom']."</th>";
+            ?>
+        </tr>
+        <?php
+        $num_pregunta=0;
+        $preguntas= new Preguntas();
+        $buscaPreguntas = $preguntas->find("conditions: publicar=1","order: orden","limit: 8");
+        foreach ($buscaPreguntas as $result) {
+            $num_pregunta+=1;
+            $id_pregunta=$result->getId();
+            echo "<tr>";
+            echo "<th>".$num_pregunta."</th>";
+            echo "<td style=' background-color:#91C8FF'>".$result->getNomPregunta()."</td>";
+            $num_cal=0;
+            foreach ($array_calificacion as $valor) {
+                $num_cal+=1;
+                $puntuacion=$valor['puntos'];
+                echo "<td style=' background-color:#91C8FF'><center><input name='s1' id='calificar".$num_pregunta.$num_cal."' type=button value='' class='estilo_boton_calificacion".$num_cal." estilo_todos_botones' onclick=calificar(".$id_pregunta.",".$puntuacion.",".$num_pregunta.")></center></td>";
+                //echo "<td><a href='javascript:calificar(".$id_pregunta.",".$puntuacion.")'><img id='imagen' alt='Calificar' border=0 width='80px' height='30px' onclick='imagen()'></a></td>";
+                //echo '<button type="button" class="boton" name="Btn_enviar" id="Btn_enviar" onClick="enviar(form)" alt="Envie sus mensaje"> <img src="../../img/fondo boton dispensador.png" border=0 width="80px" height="30px"></button>';
+            }
+            echo "</tr>";
+        }
+        ?>
+    </table>
+</div>
+
+<?php echo Tag::hiddenField("idcaja", "size: 1");?>
+<?php echo Tag::hiddenField("calificador", "size: 1");?>
+<?php Tag::textField("usuario","size: 5"); ?>
+
+
+<script>
+    num_preguntas=<?php echo $num_preguntas; ?>; //total preguntas
+    num_calificaciones=4;       //4 es Excelente, Muy Bueno, Bueno, Regular
+    cont_preguntas=0;
+
+    document.getElementById("div_numero_encabezado").innerHTML = modulo;
+    //INICIO ABRIR ENVIAR CALIFICACION Y ABRIR PANTALLA INICIAL
+    //Función que permite primero guardar la calificación y luego abre la pantalla inicial
+    function calificar(id_pregunta, puntuacion, num_pregunta){
+        cont_preguntas+=1;
+        $.post("<?php echo Utils::getKumbiaUrl("operador/calificarMatriz")?>",{
+            num:$("#actual1").val(), //sirve para ver si tengo que actualizar primero el turno
+            caja:$("#numcaja").val(),
+            idcaja:$("#idcaja").val(),
+            id_pregunta: id_pregunta,
+            puntuacion: puntuacion,
+            num_preguntas: num_preguntas,
+            cont_preguntas: cont_preguntas
+        }, function(json){
+        },"json");
+        for (j=1; j<=num_calificaciones; j++){
+            //document.getElementById("calificar"+num_pregunta+j).style.width = '100px';
+            $("#calificar"+num_pregunta+j).attr('disabled','disabled');
+            document.getElementById("calificar"+num_pregunta+j).style.background = '#999';
+        }
+        if (cont_preguntas==num_preguntas){
+            window.open('pantallainicial','Calificador','width=640,height=480,menubar=no,scrollbars=no,toolbar=no,location=no,directories=no,resizable=no,top=0,left=1500');
+            GuardarCookie('nombre',1,1);
+        }
+    }
+    //FIN ABRIR ENVIAR CALIFICACION Y ABRIR PANTALLA INICIAL
+
+    function Resize()
+    {
+        var ancho=screen.width  //esta variable si utilizo
+        //var alto=screen.height  //esta variable si utilizo
+        for (i=1; i<=num_preguntas; i++){ //fila=pregunta
+            for (j=1; j<=num_calificaciones; j++){
+//                if (ancho>='400' & ancho<='600'){
+//                    var heinght_array= ['62px','62px','62px','62px','62px','62px','62px','62px'];
+//                    document.getElementById("calificar"+i+j).style.width = '60px';
+//                    document.getElementById("calificar"+i+j).style.height = heinght_array[num_preguntas-1];
+//                } else if (ancho>='700' & ancho<='900'){  //monitor UM701(USB)
+                    var heinght_array= ['90px','90px','90px','64px','50px','40px','32px','26px'];
+                    document.getElementById("calificar"+i+j).style.width = '100px';
+                    document.getElementById("calificar"+i+j).style.height = heinght_array[num_preguntas-1];
+//                } else if (ancho>='1000' & ancho<='1100'){  //monitor horizontal grande
+//                    var heinght_array= ['100px','100px','90px','79px','62px','53px','46px','41px'];
+//                    document.getElementById("calificar"+i+j).style.width = '100px';
+//                    document.getElementById("calificar"+i+j).style.height = heinght_array[num_preguntas-1];
+//                }
+            }
+        }
+
+    }
+    window.onresize=Resize;
+    Resize();
+
+</script>

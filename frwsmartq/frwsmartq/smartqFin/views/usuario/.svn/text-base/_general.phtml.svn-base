@@ -1,0 +1,45 @@
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Datos Generales</legend>
+    <table cellspacing="5">
+        <tr>
+            <td colspan="2">
+                <label class='labelform' ><span for='descripcion'><b>Descripción</b>:</span></label><?php echo Tag::textField("descripcion", "size: 40", "maxlength: 40","class: ") ?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="labelform"><span for='password'><b>Contrase&ntilde;a</b>:</span></label><?php echo Tag::passwordField("password","size: 26","maxlength: 16")?>
+            </td>
+            <td>
+                <label class="labelform"><span for='cpassword'><b>Confirmar contrase&ntilde;a</b>:</span></label><?php echo Tag::passwordField("cpassword","size: 26","maxlength: 16","equalTo: #password")?>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class='labelform' ><span for='ci'><b>Ci</b>:</span></label><?php echo Tag::textField("ci", "size: 15", "maxlength: 15","class: ") ?>
+            </td>
+            <td>
+                <p><label class='labelform' ><span for='telefono'><b>Teléfono</b>:</span></label><?php echo Tag::textField("telefono", "size: 15", "maxlength: 15","class: ") ?>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <label class='labelform' ><span for='movil'><b>Móvil</b>:</span></label><?php echo Tag::textField("movil", "size: 15", "maxlength: 15","class: ") ?>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <label class='labelform' ><span for='email'><b>Email</b>:</span></label><?php echo Tag::textField("email", "size: 60", "maxlength: 100","class:  email") ?>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <label class='labelform' ><span for='foto'><b>Foto</b>:</span></label>
+                <?php if($id!="") { //tonces es editar ?>
+                    <?php echo Tag::textField("foto1", "size: 20", "maxlength: 100","class: ") ?>
+                    <?php } ?>
+                <?php echo Tag::fileField("foto") ?>
+            </td>
+        </tr>
+    </table>
+</fieldset>

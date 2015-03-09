@@ -1,0 +1,30 @@
+<div id='mainContent'>
+
+	<?php echo View::getContent();
+		 echo Tag::form('empresa/guardar');
+	?>
+	<fieldset class='ui-corner-all ui-widget-content'>
+		<legend>Datos de Empresa</legend>
+		<p><label class='labelform' ><span for='nombrecomercial'><b>Nombrecomercial</b>:</span></label><?php echo Tag::textField("nombrecomercial", "size: 45", "maxlength: 45","class: ") ?></p>
+		<p><label class='labelform' ><span for='razonsocial'><b>Razonsocial</b>:</span></label><?php echo Tag::textField("razonsocial", "size: 45", "maxlength: 180","class: ") ?></p>
+		<p><label class='labelform' ><span for='matriz'><b>Matriz</b>:</span></label><?php echo Tag::checkboxField("matriz");?></p>
+		<p><label class='labelform' ><span for='logosuperior'><b>Logosuperior</b>:</span></label><?php echo Tag::textField("logosuperior", "size: 50", "maxlength: 50","class: ") ?></p>
+		<p><label class='labelform' ><span for='logoprincipal'><b>Logoprincipal</b>:</span></label><?php echo Tag::textField("logoprincipal", "size: 50", "maxlength: 50","class: ") ?></p>
+		<p><label class='labelform' ><span for='logooperador'><b>Logooperador</b>:</span></label><?php echo Tag::textField("logooperador", "size: 50", "maxlength: 50","class: ") ?></p>
+		<p><label class='labelform' ><span for='logoticket'><b>Logoticket</b>:</span></label><?php echo Tag::textField("logoticket", "size: 50", "maxlength: 50","class: ") ?></p>
+		<p><label class='labelform' ><span for='fondopantalla'><b>Fondopantalla</b>:</span></label><?php echo Tag::textField("fondopantalla", "size: 50", "maxlength: 50","class: ") ?></p>
+		<p><label class='labelform' ><span for='fondodispensador'><b>Fondodispensador</b>:</span></label><?php echo Tag::textField("fondodispensador", "size: 50", "maxlength: 50","class: ") ?></p>
+		<p><label class='labelform' ><span for='flashpantalla'><b>Flashpantalla</b>:</span></label><?php echo Tag::textField("flashpantalla", "size: 50", "maxlength: 50","class: ") ?></p>
+		<p><label class='labelform' ><span for='flashdispensador'><b>Flashdispensador</b>:</span></label><?php echo Tag::textField("flashdispensador", "size: 50", "maxlength: 50","class: ") ?></p>
+		<p><label class='labelform' ><span for='modulo_operadores'><b>Modulo Operadores</b>:</span></label><?php echo Tag::checkboxField("modulo_operadores");?></p>
+		<p><label class='labelform' ><span for='modulo_cajas'><b>Modulo Cajas</b>:</span></label><?php echo Tag::checkboxField("modulo_cajas");?></p>
+		<p><label class='labelform' ><span for='calif_4botones_teclado'><b>Calif 4botones Teclado</b>:</span></label><?php echo Tag::checkboxField("calif_4botones_teclado");?></p>
+		<p><label class='labelform' ><span for='calif_4botones_pantalla'><b>Calif 4botones Pantalla</b>:</span></label><?php echo Tag::checkboxField("calif_4botones_pantalla");?></p>
+		<p><label class='labelform' ><span for='calif_matriz_pantalla'><b>Calif Matriz Pantalla</b>:</span></label><?php echo Tag::checkboxField("calif_matriz_pantalla");?></p>
+	</fieldset>
+	<div class='ui-corner-all ui-widget-content'>
+		<?php echo Tag::submitButton("Crear"); echo Tag::button("Cancelar","onclick: window.location='index';"); ?>
+	</div>
+	<?php echo Tag::endForm(); ?>
+
+</div>

@@ -1,0 +1,191 @@
+<div id='mainContent'>
+    <?php
+    View::renderPartial('toolbarformrefresh');
+    ?>
+    <table class='tablesorter' id='Exportar_a_Excel' border="1">
+        <thead>
+            <tr>
+                <th>Módulo</th>
+                <th>Usuario</th>
+                <th>Ubicación</th>
+                <th>Estado</th>
+                <th>Cantidad de turnos<br>transferidos</th>
+                <th>Cantidad de turnos<br>anulados</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            $db = DbBase::rawConnect();
+            $forma_cajas_ids="";
+            $cont_t_transferidos="";
+			$estado="";
+            $cont_t_anulados="";
+            $fecha= date("Y-m-d");
+
+            //ver los que están en pausas
+            $condicion="{#CajaPausas}.fecha_inicio='$fecha' AND {#CajaPausas}.estado=1" ;
+            $query = new ActiveRecordJoin(array(
+                            "entities" => array("Caja", "Usuario", "Usercaja","Ubicacion","Pausas", "CajaPausas"),
+                            "fields" => array(
+                                    "{#Caja}.id",
+                                    "{#Caja}.numero_caja",
+                                    "{#Usuario}.nombres",
+                                    "{#Ubicacion}.nombre_ubicacion",
+                                    "{#Pausas}.nombre_pausa"
+                            ),
+                            "conditions" => $condicion,
+                            "order"=>"{#Caja}.numero_caja"
+            ));
+            foreach($query->getResultSet() as $result) {
+                $forma_cajas_ids.=$result->getId().",";
+                echo "<tr>";
+                echo "<td align='center'> {$result->getNumeroCaja()} </td>";
+                echo "<td> {$result->getNombres()} </td>";
+                echo "<td> {$result->getNombreUbicacion()} </td>";
+                echo "<td> <font color='#3366FF'><b>{$result->getNombrePausa()}</b></font>  </td>";
+                $result2 = $db->query("SELECT COUNT(*) as total FROM turnos_transferidos
+                    WHERE {$result->getId()} IN (permiso_cajas) AND fecha_emision='$fecha' AND por_atender=0");
+                while($row = $db->fetchArray($result2)) {
+                    $cont_t_transferidos=$row['total'];
+                }
+                echo "<td align='center'> $cont_t_transferidos </td>";
+                $result2 = $db->query("SELECT COUNT(*) as total FROM turnos t, caja c
+                    WHERE c.id=t.caja_id AND rechazado=1 AND fecha_emision='$fecha' AND c.id={$result->getId()};");
+                while($row = $db->fetchArray($result2)) {
+                    $cont_t_anulados=$row['total'];
+                }
+                echo "<td align='center'> $cont_t_anulados </td>";
+                echo "</tr>";
+            }
+
+            //ver los que están atendiendo
+            $condicion="{#Turnos}.fecha_emision='$fecha' AND {#Turnos}.por_atender=1 AND {#Turnos}.atendido=0" ;
+            $query = new ActiveRecordJoin(array(
+                            "entities" => array("Caja", "Usuario", "Usercaja","Ubicacion","Turnos"),
+                            "fields" => array(
+                                    "{#Caja}.id",
+                                    "{#Caja}.numero_caja",
+                                    "{#Usuario}.nombres",
+                                    "{#Ubicacion}.nombre_ubicacion"
+                            ),
+                            "conditions" => $condicion,
+                            "order"=>"{#Caja}.numero_caja"
+            ));
+            foreach($query->getResultSet() as $result) {
+                $forma_cajas_ids.=$result->getId().",";
+                echo "<tr>";
+                echo "<td align='center'> {$result->getNumeroCaja()} </td>";
+                echo "<td> {$result->getNombres()} </td>";
+                echo "<td> {$result->getNombreUbicacion()} </td>";
+                echo "<td> <font color='#009900'><b>Atendiendo</b></font> </td>";
+                $result2 = $db->query("SELECT COUNT(*) as total FROM turnos_transferidos
+                    WHERE {$result->getId()} IN (permiso_cajas) AND fecha_emision='$fecha' AND por_atender=0");
+                while($row = $db->fetchArray($result2)) {
+                    $cont_t_transferidos=$row['total'];
+                }
+                echo "<td align='center'> $cont_t_transferidos </td>";
+                $result2 = $db->query("SELECT COUNT(*) as total FROM turnos t, caja c
+                    WHERE c.id=t.caja_id AND rechazado=1 AND fecha_emision='$fecha' AND c.id={$result->getId()};");
+                while($row = $db->fetchArray($result2)) {
+                    $cont_t_anulados=$row['total'];
+                }
+                echo "<td align='center'> $cont_t_anulados </td>";
+                echo "</tr>";
+            }
+
+            $forma_cajas_ids= substr($forma_cajas_ids,0, strlen($forma_cajas_ids)-1);
+            //poner los demás operadores como inactivos
+            if ($forma_cajas_ids!="") {
+                $condicion="{#Caja}.id NOT IN ($forma_cajas_ids)" ;
+                $query = new ActiveRecordJoin(array(
+                                "entities" => array("Caja", "Usuario", "Usercaja","Ubicacion"),
+                                "fields" => array(
+                                        "{#Caja}.id",
+                                        "{#Caja}.numero_caja",
+                                        "{#Usuario}.nombres",
+                                        "{#Ubicacion}.nombre_ubicacion"
+                                ),
+                                "conditions" =>$condicion,
+                                "order"=>"{#Caja}.numero_caja"
+                ));
+            } else {
+                $query = new ActiveRecordJoin(array(
+                                "entities" => array("Caja", "Usuario", "Usercaja","Ubicacion"),
+                                "fields" => array(
+                                        "{#Caja}.id",
+                                        "{#Caja}.numero_caja",
+                                        "{#Usuario}.nombres",
+                                        "{#Ubicacion}.nombre_ubicacion"
+                                ),
+                                "order"=>"{#Caja}.numero_caja"
+                ));
+            }
+            foreach($query->getResultSet() as $result) {
+                echo "<tr>";
+                echo "<td align='center'> {$result->getNumeroCaja()} </td>";
+                echo "<td> {$result->getNombres()} </td>";
+                echo "<td> {$result->getNombreUbicacion()} </td>";
+				//_____________________________________________________
+				 $result2 = $db->query("SELECT estado FROM sesiones WHERE caja_id = {$result->getId()};");
+                while($row = $db->fetchArray($result2)) {
+                    $estado=$row['estado'];
+                }
+				if($estado == 'Activo')
+				$color = '#01CF00';
+				else
+				$color = 'red';
+				
+				
+                echo "<td> <font color='$color'><b>$estado</b></font></td>";
+				//_____________________________________________________
+                $result2 = $db->query("SELECT COUNT(*) as total FROM turnos_transferidos
+                    WHERE {$result->getId()} IN (permiso_cajas) AND fecha_emision='$fecha' AND por_atender=0");
+                while($row = $db->fetchArray($result2)) {
+                    $cont_t_transferidos=$row['total'];
+                }
+                echo "<td align='center'> $cont_t_transferidos </td>";
+                $result2 = $db->query("SELECT COUNT(*) as total FROM turnos t, caja c
+                    WHERE c.id=t.caja_id AND rechazado=1 AND fecha_emision='$fecha' AND c.id={$result->getId()};");
+                while($row = $db->fetchArray($result2)) {
+                    $cont_t_anulados=$row['total'];
+                }
+                echo "<td align='center'> $cont_t_anulados </td>";
+                echo "</tr>";
+            }
+
+            ?>
+        </tbody>
+    </table>
+</div>
+
+<!--SELECT c.id, numero_caja, nombres, nombre_ubicacion, nombre_pausa
+FROM caja c, usuario u, usercaja uc, ubicacion ubi,  pausas p, caja_pausas cp
+WHERE  c.id=uc.caja_id AND u.id=uc.usuario_id
+AND ubi.id=c.ubicacion_id
+AND c.id=cp.caja_id AND p.id=cp.pausas_id AND u.id=cp.usuario_id AND fecha_inicio='2011-08-03' AND cp.estado=1;-->
+
+<!--Atendiendo
+SELECT c.id, numero_caja, nombres, nombre_ubicacion, por_atender
+FROM caja c, usuario u, usercaja uc, ubicacion ubi, turnos t
+WHERE  c.id=uc.caja_id AND u.id=uc.usuario_id
+AND ubi.id=c.ubicacion_id
+AND c.id=t.caja_id
+AND fecha_emision='2011-08-03' AND por_atender=1 AND atendido=0;
+-->
+
+<!--Demás
+SELECT c.id, numero_caja, nombres, nombre_ubicacion
+FROM caja c, usuario u, usercaja uc, ubicacion ubi
+WHERE  c.id=uc.caja_id AND u.id=uc.usuario_id
+AND ubi.id=c.ubicacion_id
+AND c.id NOT IN (1,2);
+-->
+
+<!--/*Cantidad de turnos transferidos*/
+SELECT COUNT(*) FROM turnos_transferidos
+WHERE 1 IN (permiso_cajas) AND fecha_emision='2011-08-03' AND por_atender=0;
+
+/*Cantidad de turnos anulados*/
+SELECT COUNT(*) FROM turnos t, caja c
+WHERE c.id=t.caja_id AND rechazado=1 AND fecha_emision='2011-08-03' AND c.id=1;
+-->

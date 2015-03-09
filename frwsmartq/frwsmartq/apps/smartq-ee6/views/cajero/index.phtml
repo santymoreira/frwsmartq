@@ -1,0 +1,429 @@
+<?php echo Tag::javascriptBase() ?>
+<?php echo View::getContent(); ?>
+<script type="text/javascript" src="../../js/administracion_cookies.js"></script>
+<style>
+    .boton_operador {
+        background: #28597A;
+        /*background-image:url("../img/boton.png");*/
+        background: -webkit-gradient(linear, left top, left bottom, from(#93BDD9), to(#384954));
+        background: -moz-linear-gradient(top, #93BDD9, #384954);
+        border-top: 1px solid #96D1F8;
+        color: #fff;
+        font-size: 22px;
+        /*font-family: Helvetica, Arial, Sans-Serif;*/
+        /*padding: 13px 26px;*/
+        text-decoration: none;
+        vertical-align: text-bottom;
+        -moz-border-radius: 14px;
+        -webkit-border-radius: 14px;
+        border-radius: 14px;
+        -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+        -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+        box-shadow: rgba(0,0,0,1) 0 1px 0;
+        text-shadow: rgba(0,0,0,.4) 0 1px 0;
+        width: 150px;
+        height: 40px;
+    }
+    .bloquear{
+        background: #ccc;
+    }
+    .fondo_operador{
+        background-image:url("../../img/fondo.png");
+        background-repeat:repeat-x;
+        height:100%;
+    }
+</style>
+
+<div  id='mainContent'  title="Operador">
+    <fieldset class='ui-corner-all ui-widget-content ui-state-default fondo_operador'>
+        <legend></legend>
+        <table border="0">
+            <tr>
+                <td align="center">
+                    <?php
+                    echo Tag::image($carpeta . "/sistema/logo_operador.png", "height: 50px");
+                    ?>
+                </td>
+                <td align="center"><a href="salir" title="Salir" style="border:0px;text-decoration:none;color:transparent;"><span id="btnexit"></span></a></td>
+            </tr>
+            <tr>
+                <td align="center"><input name="pausar" id="pausar" type="button" value="pausar" class="boton_operador" ></td>
+                <?php
+//                if ($tipo_calificacion=='D') { //Ninguno
+//                    echo '<td align="center"><input name="terminar_turno" id="terminar_turno" type="button" value="terminar turno" class="boton_operador"></td>';
+//                }
+//
+                if ($tipo_calificacion != 'D')
+                    echo '<td align="center"><input name="calificar" id="calificar" type="button" value="calificar" class="boton_operador"></td>';
+                ?>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input name="siguiente" id="siguiente" type="button" value="SIGUIENTE" class="boton_operador" style="width:264px" title="Llamar siguiente turno"></td>
+            </tr>
+            <tr>
+                <td colspan="2">Módulo: <?php echo Tag::textField("numcaja", "size: 2", "style: border:none; background-color:transparent; font-size: 12px", "readonly: readonly"); ?> 
+                    Usuario: <?php echo Tag::textField("usuario", "size: 15", "style: border:none;  background-color:transparent; font-size: 12px", "readonly: readonly"); ?>
+                    <br>
+                    <label><span class="texto_normal">Id usuario: </span></label><?php echo Tag::textField("id_usuario", "size: 15", "style: border:none;  background-color:transparent; font-size: 12px", "readonly: readonly"); ?>					
+                    <label><span class="texto_normal">Ip: </span></label><?php echo Tag::textField("ip", "size: 15", "style: border:none;  background-color:transparent; font-size: 12px", "readonly: readonly"); ?>
+
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+    <input type="hidden" name="hora_hoy" id="hora_hoy" value="<?php //echo date("H:i:s");             ?>" />
+
+    <!--INICIO DIALOG-FORM4 PARA PAUSAS-->
+    <div id="dialog-form4" title="Pausar">
+        <p class="validateTips">Seleccione.</p>
+        <div id="cargando_pausas" style="display:none; color: green;">Cargando...<?php echo "<td>" . Tag::image("cargando.gif", "width: 30px", "height: 30px"); ?></div>
+        <div id="div_pausas">
+        </div>
+    </div>
+    <!--INICIO DIALOG-FORM4 PARA PAUSAS-->
+
+</div>
+<?php
+echo Tag::hiddenField("mensaje", "size: 55", "style: border:1; background-color:transparent; font-size: 9px; color:#C00521", "readonly: readonly");
+
+echo Tag::hiddenField("idcaja", "size: 1");
+echo Tag::hiddenField("tipo_calificacion", "size: 1");            //si puede o no transferir todos los turnos
+echo Tag::hiddenField("activo_siguiente", "size: 1", "value: 0");
+echo Tag::hiddenField("activo_calificar", "size: 1", "value: 0");
+echo Tag::hiddenField("caja_pausas_id", "size: 1");
+echo Tag::hiddenField("esta_pausado", "size: 1", "value: no");
+
+if ($tipo_calificacion == 'A') //Teclado
+    echo '<input id="valor1" name="valor1" type="text"  maxlength="1"  size= "1" onKeyUp= "enviar_calificacion()" style="border: 0; color:#fff;">';
+//echo '<input id="valor1" name="valor1" type="text"  maxlength="1"  size= "1" onKeyUp= "enviar_calificacion()" style="border: 0; color:#fff; background-color:transparent">';
+?>
+
+
+<!--Inicio-->
+<script>
+    GuardarCookie('nombre',0,0);
+    //para llamada automatica al presionar una tecla
+    setInterval('estadoTimbre()',"2000"); //actualizar cada 2 segundos
+    setInterval('estadoCalificar()',"2000"); //actualizar cada 2 segundos
+    function estadoTimbre(){
+        
+        $.post("<?php echo Utils::getKumbiaUrl("cajero/estadoTimbre") ?>",{
+            ip:$("#ip").val()
+        }, function(json){
+            if (json.estado == 1){
+                if($("#activo_calificar").val() == 0){
+                    functionSiguiente(); 
+                }
+                
+                /*if($("#activo_siguiente").val() == 1){
+                    functionCalificar(1);
+                }
+                else{
+                    functionSiguiente(); 
+                }*/
+            }
+        },"json");
+            
+    }
+    
+    function estadoCalificar(){
+        
+        $.post("<?php echo Utils::getKumbiaUrl("cajero/estadoCalificar") ?>",{
+            ip:$("#ip").val()
+        }, function(json){
+            if (json.estado == 1){
+                if($("#activo_siguiente").val() == 1){
+                    functionCalificar(1);
+                }
+            }
+        },"json");
+            
+    }
+    
+    var tipo_calificacion = $("#tipo_calificacion").val();
+    var tipocalificacion = '';
+    var idGrupoPregunta = 0;
+    if(tipo_calificacion.length > 1){
+        tipocalificacion = tipo_calificacion.substr(0, 1);
+        idGrupoPregunta = tipo_calificacion.substr(2);
+        tipo_calificacion = tipocalificacion;
+    }
+    //alert(tipo_calificacion);
+
+    $("#calificar").addClass('bloquear');   
+    $("#calificar").attr('disabled','disabled');
+
+    $("#calificar").click(function(){
+        functionCalificar(0);
+    });
+    
+    function functionCalificar(tipo){
+        
+        $.post("<?php echo Utils::getKumbiaUrl("cajero/inicioAtencion") ?>", {
+            caja:$("#numcaja").val(),
+            idcaja:$("#idcaja").val(),
+            id_usuario:$("#id_usuario").val(),
+            hora_hoy:$("#hora_hoy").val()
+        }, function(json){
+            $("#activo_siguiente").val(0);
+            $("#activo_calificar").val(1);
+        }, "json");
+        
+        $("#calificar").attr('disabled','disabled');    $('#calificar').addClass('bloquear');
+        $("#siguiente").attr('disabled','disabled');    $("#siguiente").addClass('bloquear');           
+        if (tipo_calificacion=="A") {
+            $("#valor1").focus();
+        } else if (tipo_calificacion=="B") {  //Pantalla Simple
+            abrirPantallaSecundaria('pantallacalificadorCajas?ip='+ $("#ip").val()+'&tipo='+tipo);
+        } else if (tipo_calificacion=="C") {   //Pantalla Matriz
+            abrirPantallaSecundaria('pantallacalificadorMatrizCajas?ip='+ $("#ip").val()+'&id='+idGrupoPregunta+'&tipo='+tipo);
+        }
+    }
+    
+    //Inicio calificaci�n por teclado "A"
+    //al presionar el cliente una tecla se activa siguiente y pausar
+    function enviar_calificacion() {
+        $("#siguiente").attr('disabled','');        $('#siguiente').removeClass('bloquear');
+        $("#pausar").attr('disabled','');           $('#pausar').removeClass('bloquear');
+        $("#mostrar").attr('disabled','');          $('#mostrar').removeClass('bloquear');
+        $("#ocultar").attr('disabled','');          $('#ocultar').removeClass('bloquear');
+        $("#transferir").attr('disabled','');       $('#transferir').removeClass('bloquear');
+        $("#transferir_todos").attr('disabled',''); $('#transferir_todos').removeClass('bloquear');
+
+        $.post("<?php echo Utils::getKumbiaUrl("cajero/terminarTurnoTeclado") ?>", {
+            calificacion_teclado:$("#valor1").val() //valor de la calificacion
+        }, function(json){
+            //if (ver_tiempo_atencion==1)
+            //    pausa();    //para el tiempo de atencion
+        }, "json");
+        $("#valor1").val("");
+    }
+    //Fin calificaci�n por teclado
+</script>
+<script>
+    /*Se abre al loguearse*/
+    var bandera = 0; //con 0 retorna, 1 no retorna
+    if ( (tipo_calificacion=='B') | (tipo_calificacion=='C') ){   //B=Pantalla Simple C=Pantalla matriz
+        //setInterval('activar_siguiente()',"1000");
+        //if ($("#calificador").val()=="1")
+        abrirPantallaSecundaria('pantallainicial'); //abrirInicial();
+    }
+
+    //Prmite abrir una ventana para publicador o calificador(simple o matriz)
+    function abrirPantallaSecundaria(pantalla){
+        var w = screen.width;
+        var h = screen.height;
+        window.open( pantalla,'Calificador','width=' + w + ',height='+ h +',menubar=no,scrollbars=no,toolbar=no,location=no,directories=no,resizable=yes,top=0,left=1000');
+    }
+
+    //Se usa esta funcion cuando el tipo de calificacion es
+    //B: pantalla con 4 botones
+    //C: pantalla con matriz
+    function activar_siguiente(){
+        if(bandera == 1)return;
+        var valor=MostrarCookie('nombre');
+        var timbre = MostrarCookie('timbre');
+        $("#cookie").val(valor);
+        if (valor==1){
+            if(timbre==1){
+                //functionSiguiente();
+                GuardarCookie('nombre',0,0);
+                GuardarCookie('timbre',0,0);
+            }else{
+                $("#activo_siguiente").val(0);
+            }
+            $("#activo_calificar").val(0);
+            $("#siguiente").attr('disabled','');    $('#siguiente').removeClass('bloquear');
+            //$("#pausar").attr('disabled','');       $('#pausar').removeClass('bloquear');
+            $("#mostrar").attr('disabled','');          //una vez calificato, puede ver sus t. transferidos
+            if ($("#txt_transferir_uno").val()==1)      //una vez calificado, si tiene permiso tonces muestra transferir
+                $("#transferir").attr('disabled','');       $('#transferir').removeClass('bloquear');
+            if ($("#txt_transferir_todos").val()==1)
+                $("#transferir_todos").attr('disabled','');     $('#transferir_todos').removeClass('bloquear');
+            //pausa();    //para el tiempo
+        } else {
+            $("#transferir").attr('disabled','disabled');       $('#transferir').addClass('bloquear');
+        }
+    }
+</script>
+
+<script>
+    $("#siguiente").click(function(){
+        functionSiguiente();
+    });
+    
+    function functionSiguiente(){
+        $.post("<?php echo Utils::getKumbiaUrl("cajero/hora") ?>",{
+        },function(data){
+            document.getElementById("hora_hoy").value = data;
+            //alert(data);
+        },'ajax');
+        
+        $.post("<?php echo Utils::getKumbiaUrl("cajero/siguientecaja") ?>",{
+            caja:$("#numcaja").val(),
+            idcaja:$("#idcaja").val(),
+            id_usuario:$("#id_usuario").val()
+        }, function(json){
+            $("#calificar").attr('disabled','');                
+            $('#calificar').removeClass('bloquear');
+            $("#siguiente").attr('disabled','disabled');    
+            $("#siguiente").addClass('bloquear');
+            $("#activo_siguiente").val(1);
+            $("#activo_calificar").val(0);
+        },"json");
+        $("#pausar").attr('disabled','');   $('#pausar').removeClass('bloquear');
+        //alert("entro");
+    }
+
+    $("#pausar").click(function(){
+       
+        //$("#dialog-form4" ).dialog( "open" );
+        if ($("#esta_pausado").val()!="no"){      //sio es dif de "no" tonces si esta en pausa
+            $("#transferir_todos").attr('disabled','');     $('#transferir_todos').removeClass('bloquear');
+            $("#siguiente").attr('disabled','');            $('#siguiente').removeClass('bloquear');
+            $("#pausar").attr({'value': 'pausar'});     //regresa a label "pausar"
+            $.post("<?php echo Utils::getKumbiaUrl("cajero/actualizarPausa")  ?>", {
+                cajapausa_id: $("#esta_pausado").val()
+            },function(json){
+            },'json');
+            $("#esta_pausado").val("no");
+        } else {    //no esta en pausa
+            $.post("<?php echo Utils::getKumbiaUrl("cajero/verPausas") ?>", {
+            },function(json){
+                document.getElementById("div_pausas").innerHTML =json.lista_pausas;
+            },'json');
+            $("#dialog-form4" ).dialog( "open" );
+        }
+
+    });
+	
+    $( "#dialog-form4" ).dialog({
+        autoOpen: false,
+        height: 320,
+        width: 300,
+        modal: true,
+        buttons: {
+            "Aceptar": function() {
+                var bValid = true;
+                var id_caja_pausas="";
+                //Antes de aceptar debe terminar el turno si el txt turno_terminado!=1
+                if ($("#turno_terminado").val()==0){ //no se ha terminado el turno
+                    //alert ($("#turno_terminado").val());
+                    $("#terminar_turno").attr('disabled','disabled');       $('#terminar_turno').addClass('bloquear');
+                    $("#transferir").attr('disabled','');                   $('#transferir').removeClass('bloquear');
+                    $("#transferir_todos").attr('disabled','');             $('#transferir_todos').removeClass('bloquear');
+                    if (ver_tiempo_atencion==1){
+                        pausa();
+                    }
+                    //$("#aux_terminar_turno").val(1);    //se ha terminarno el turno y en siguiente no puede terminar otra vez
+                    $.post("<?php echo Utils::getKumbiaUrl("cajero/terminarTurno") ?>", {
+                        num:$("#numcaja").val() //sirve para ver si tengo que actualizar primero el turno
+                        /*anulado:$("#anulado").val(), //sirve para ver si el actual turnos est� anulado o no
+                        caja:$("#numcaja").val(),
+                        idcaja:$("#idcaja").val()*/
+                    }, function(json){
+                    }, "json");
+                }
+
+                $.post("<?php echo Utils::getKumbiaUrl("cajero/pausar") ?>", {
+                    pausas_id: $("#caja_pausas_id").val()
+                },function(json){
+                    id_caja_pausas= json.id_caja_pausas;
+                    $("#esta_pausado").val(id_caja_pausas);
+                },'json');
+                alert ("Pausado!");
+                $( this ).dialog( "close" );
+                $("#transferir").attr('disabled','disabled');       $('#transferir').addClass('bloquear');
+                $("#transferir_todos").attr('disabled','disabled'); $('#transferir_todos').addClass('bloquear');
+                $("#siguiente").attr('disabled','disabled');        $('#siguiente').addClass('bloquear');
+                //updateTips("Seleccione");
+                $("#pausar").attr({'value': 'Continuar'});
+            },
+            Cancel: function() {
+                //updateTips("Seleccione");
+                $( this ).dialog( "close" );
+            }
+        },
+        close: function() {
+            //allFields.val( "" ).removeClass( "ui-state-error" );
+        }
+    });
+
+	
+</script>
+
+<!--****** RESTAURAR VENTANA ****** -->
+<script>
+    function restaurar(){
+        var w = screen.width * 0.78;
+        var h = screen.height * 0.60;
+        window.statusbar.visible = false;
+        window.scrollbars.visible = false;
+        window.menubar.visible = false;
+        window.toolbar.visible = false;
+        window.locationbar.visible = false;
+        window.personalbar.visible = false;
+        window.directories.visible = false;
+        window.innerWidth = 350;
+        window.innerHeight = 240;
+        window.screenX = w;
+        window.screenY = h;
+        //alwaysLowered = false;
+        setTimeout("restaurar()",2000);
+    }
+    restaurar();
+</script>
+<script>
+    function sig(){
+        document.getElementById('siguiente').click();
+    }
+    function cal(){
+        document.getElementById('calificar').click();
+    }
+    function nuevo_ciclo(){
+        //document.getElementById('siguiente').click();
+        window.open('pantallainicial','Calificador','width=640,height=480,menubar=no,scrollbars=no,toolbar=no,location=no,directories=no,resizable=no,top=0,left=1500');
+        activar_siguiente();
+    } 
+
+    function caja_pausas_id(val){
+        $("#caja_pausas_id").val(val);
+    }
+ 
+</script>
+
+<script>
+    function callkeydownhandler(evnt) {
+        var ev = (evnt) ? evnt : event;
+        var code=(ev.which) ? ev.which : event.keyCode;
+  
+        //alert("El código de la tecla pulsada es: " + code);
+   
+        if(code==118)
+            sig();
+        if(code==121)
+            cal();   
+    }
+    if (window.document.addEventListener) {
+        window.document.addEventListener("keydown", callkeydownhandler, false);
+    } else {
+        window.document.attachEvent("onkeydown", callkeydownhandler);
+    }
+</script>
+<script>
+    function timbre() {
+        $.post("<?php echo Utils::getKumbiaUrl("cajero/timbre") ?>",{
+            idcaja:$("#idcaja").val()
+        },function(data){
+            //alert(data);
+            if(data == 1)
+                document.getElementById('siguiente').click();
+            else if(data == 2)
+                document.getElementById('calificar').click();
+        },'ajax');	
+        setTimeout("timbre()",1000);
+    }
+    //timbre();
+</script>
+
+

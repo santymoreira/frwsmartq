@@ -1,0 +1,28 @@
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Formato para reporte</legend>
+    <?php echo Tag::radioField("formatoreporte",array('A4'=>'A4','carta'=>'Carta'))?>
+</fieldset>
+
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Control de logs</legend>
+    <p><?php echo Tag::checkboxField("logentradasalida") ?><label>Entrada y salida del sistema</label></p>
+    <p><?php echo Tag::checkboxField("logmodificacion") ?><label>Modificaci&oacute;n de registros</label></p>
+    <p><?php echo Tag::checkboxField("logvisualizacion") ?><label>Visualizaci&oacute;n de registros</label></p>
+</fieldset>
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Usuario admin</legend>
+            <table cellpadding="5">
+                <tr>
+                    <td><label><span>Nueva contrase&ntilde;a</span></label><br/>
+                      <?php echo Tag::passwordField('claveadmin','size: 20','maxlength: 20') ?>
+                    </td>
+                    <td>
+                        <label><span>Confirmar contrase&ntilde;a</span></label><br/>
+                      <?php echo Tag::passwordField('claveadminr','size: 20','maxlength: 20',"equalTo: #claveadmin") ?>
+                    </td>
+                </tr>
+            </table>
+</fieldset>
+<fieldset class="ui-corner-all ui-widget-content"><legend for="simbolomoneda">S&iacute;mbolo moneda</legend>
+<p><?php echo Tag::textField('simbolomoneda','size: 5','maxlength: 5','class: required','title=Por favor ingrese un valor en el campo simbolo de modeda'); ?></p>
+</fieldset>

@@ -1,0 +1,21 @@
+<div id='mainContent'>
+
+    <?php //echo View::getContent();
+    View::renderPartial("toolbarform");
+    echo Tag::form('permiso/guardar');
+    ?>
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend>Datos de Permiso</legend>
+        <p><label class='labelform' ><span for='menu_id'><b>Menu</b>:</span></label><?php echo Tag::select("menu_id", $Menu->find("order: nombre"), "using: id,nombre", "use_dummy: yes","dummyValue: ''","class:  required") ?></p>
+        <p><label class='labelform' ><span for='grupo_id'><b>Grupo</b>:</span></label><?php echo Tag::select("grupo_id", $Grupo->find("order: nombre_largo"), "using: id,nombre_largo", "use_dummy: yes","dummyValue: ''","class:  required") ?></p>
+        <!--<p><label class='labelform' ><span for='hora_inicio'><b>Hora Inicio</b>:</span></label><?php //echo Tag::textField("hora_inicio", "size: 0", "maxlength: 0","class: ") ?></p>
+        <p><label class='labelform' ><span for='hora_fin'><b>Hora Fin</b>:</span></label><?php //echo Tag::textField("hora_fin", "size: 0", "maxlength: 0","class: ") ?></p>-->
+        <p><label class='labelform' ><span for='permiso'><b>Permiso</b>:</span></label><?php echo Tag::checkboxField("permiso");?></p>
+        <!--<p><label class='labelform' ><span for='creacion_at'><b>Creacion At</b>:</span></label><?php //echo Tag::textField("creacion_at", "size: 45", "maxlength: 45","class: ") ?></p>-->
+    </fieldset>
+    <!--<div class='ui-corner-all ui-widget-content'>
+        <?php //echo Tag::submitButton("Crear"); echo Tag::button("Cancelar","onclick: window.location='index';"); ?>
+    </div>-->
+<?php echo Tag::endForm(); ?>
+
+</div>

@@ -1,0 +1,350 @@
+<fieldset class='ui-corner-all ui-widget-content'>
+    <legend><label style="color:red"><b>Ayuda</b></label></legend>
+    <p><label><b>Dirección IP: </b>Sirve para que aparezca el nombre de usuario automáticamente en la PC con el monitor extendido.</label></p>
+</fieldset>
+
+
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend><b>Tipo de Pantalla</b></legend>
+    <table border="0px"  align="center">
+        <?php
+        
+        if ($modulo_atencion_con_ticket == 1) {
+            echo "<tr>
+                <td>
+                    <input type='radio' id='r1' name='radio_tipo_pantalla' onclick='mostrar_datos_tono()' value='A' unchecked> Pantalla para atención con tickets
+                </td><td></td>
+            </tr>";
+        }
+        if ($modulo_atencion_sin_ticket == 1) {
+            echo "<tr>
+                <td>
+                    <input type='radio' id='r2' name='radio_tipo_pantalla' onclick='mostrar_datos_tono()' value='B'> Pantalla para atención sin tickets
+                </td>
+                <td>
+                <p><label class='labelform' ><span for='activar_difusion'><b>Llamado con tecla</b>:</span></label>". Tag::checkboxField("llamado_con_tecla") ."</p>
+                </td>
+            </tr>";
+        }
+         if ($moduloPublicidad == 1) {
+            echo "<tr>
+                <td>
+                    <input type='radio' id='r3' name='radio_tipo_pantalla' onclick='mostrar_datos_tono()' value='C' > Pantalla Publicidad
+                </td><td></td>
+            </tr>";
+        }
+        if (($modulo_atencion_con_ticket != 1) & ($modulo_atencion_sin_ticket != 1))
+            echo "No tiene acceso a ningún módulo de pantalla. Consulte con el proveedor del sistema SmartQ";
+        ?>
+    </table>
+</fieldset>
+
+
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend><b>Pantalla</b></legend>
+    <p><label class='labelform' ><span for='numero'>Número:</span></label><?php echo Tag::textField("numero", "size: 5", "maxlength: 2", "class: ") ?></p>
+    <p><label class='labelform' ><span for='descripcion'>Descripción:</span></label><?php echo Tag::textField("descripcion", "size: 45", "maxlength: 45", "class: required") ?></p>
+    <p><label class='labelform' ><span for='ip_equipo'>Dirección IP:</span></label><?php echo Tag::textField("ip_equipo", "size: 20", "maxlength: 15", "class: ") ?></p>
+    <!--<p><label class='labelform' ><span for='plantilla'>Plantilla:</span></label><?php echo Tag::textField("plantilla", "size: 20", "maxlength: 150", "class: ") ?></p>-->
+
+
+    <!-- Opcional -->
+    <div id="colores" style="display: none">
+    <p><label class='labelform' ><span for='color_turnos'><b>Color Turnos</b>:</span></label><?php echo Tag::textField("color_turnos", "size: 10", "maxlength: 10", "class: color") ?></p>
+    <p><label class='labelform' ><span for='color_noticias'><b>Color Noticias</b>:</span></label><?php echo Tag::textField("color_noticias", "size: 10", "maxlength: 10", "class: color") ?></p>
+    <p><label class='labelform' ><span for='color_reloj'><b>Color Reloj</b>:</span></label><?php echo Tag::textField("color_reloj", "size: 10", "maxlength: 10", "class:  color") ?></p>
+    </div>
+
+    <!--<p><label class='labelform' ><span for='efecto_turno_superior'><b>Efecto Turno Superior</b>:</span></label><?php //echo Tag::checkboxField("efecto_turno_superior");      ?></p>-->
+</fieldset>
+
+<?php
+
+$condicion = "{#Grupo}.id = 6";
+$query = new ActiveRecordJoin(array(
+    "entities" => array("Usuario", "Grupo", "Grupousuario"),
+    "fields" => array(
+        "{#Usuario}.id",
+        "{#Usuario}.nombres"),
+    "conditions" => $condicion
+        ));
+$listausuarios = array();
+foreach ($query->getResultSet() as $result) {
+    $listausuarios[$result->getId()] = $result->getNombres();
+}
+?>
+<?php
+
+$condicion1 = "{#Grupo}.id = 8";
+$query1 = new ActiveRecordJoin(array(
+    "entities" => array("Usuario", "Grupo", "Grupousuario"),
+    "fields" => array(
+        "{#Usuario}.id",
+        "{#Usuario}.nombres"),
+    "conditions" => $condicion1
+        ));
+$listausuarios1 = array();
+foreach ($query1->getResultSet() as $result1) {
+    $listausuarios1[$result1->getId()] = $result1->getNombres();
+}
+?>
+
+<div id="usuario" style="display: none">
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend><b>Usuario</b></legend>
+    <p><label class='labelform' ><span for='usuarios'>Asignar a Usuario:</span></label><?php echo Tag::selectStatic("usuarios", $listausuarios, "class:  required") ?></p>
+</fieldset>
+</div>
+<div id="usuarioP" style="display: none">
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend><b>Usuario</b></legend>
+    <p><label class='labelform' ><span for='usuarios'>Asignar a Usuario:</span></label><?php echo Tag::selectStatic("usuariosP", $listausuarios1, "class:  required") ?></p>
+</fieldset>
+</div>
+
+
+
+<?php
+//INICIO ubicacion de la pantalla
+$ubicacion = new Ubicacion();
+$buscaUbicacion = $ubicacion->find();
+
+foreach ($buscaUbicacion as $result) {
+    $listaubicacion[$result->getId()] = $result->getNombreUbicacion();
+}
+?>
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend><b>Ubicación de la Pantalla</b></legend>
+    <p><label class='labelform' ><span for='ubicacion'>Ubicación:</span></label><?php echo Tag::selectStatic("ubicacion", $listaubicacion, "class:  required") ?></p>
+</fieldset>
+
+<div id="tonollamada" style="display: none">
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Configuración del tono de llamado</legend>
+    <p><label class='labelform' ><span for='RadioGroup0_0'><b>Timbre</b>:</span></label><input type="radio" name="rTono" id="rTono1" onclick="mostrar_datos_tono()" /></p> <!-- class="required" REQUIRED -->
+    <p><label class='labelform' ><span for='RadioGroup0_1'><b>Voz</b>:</span></label><input type="radio" name="rTono"  id="rTono2" onclick="mostrar_datos_tono()" class="required"/></p>
+    <div id="div_datos_tono" style="display: none">
+        <input id="formato_voz" type="radio" value="caja-#" name="formato_voz" onclick="cambiar_valor()" class="">Caja #<br>
+        <input id="formato_voz" type="radio" value="modulo-#" name="formato_voz" onclick="cambiar_valor()" class="">Módulo #<br>
+        <input id="formato_voz" type="radio" value="ventanilla-#" name="formato_voz" onclick="cambiar_valor()" class="">Ventanilla #<br>
+        <input id="formato_voz" type="radio" value="pase_a_la_caja-#" name="formato_voz" onclick="cambiar_valor()" class="">Pase a la Caja #<br>
+        <input id="formato_voz" type="radio" value="pase_al_modulo-#" name="formato_voz" onclick="cambiar_valor()" class="">Pase al Módulo #<br>
+        <input id="formato_voz" type="radio" value="pase_a_la_ventanilla-#" name="formato_voz" onclick="cambiar_valor()" class="">Pase a la Ventanilla #<br>
+    </div>
+    <p><label class='labelform'><span for='tiempo_tono'><b>Tiempo</b>:</span></label><?php echo Tag::numericField("tiempo_tono", "size: 10", "maxlength: 3", "class: required") ?></p>
+</fieldset>
+
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Tipo de voz</legend>
+    <input id="tipo_voz" type="radio" value="M" name="tipo_voz" > Masculino <br> <!-- class="required" REQUIRED -->
+    <input id="tipo_voz" type="radio" value="F" name="tipo_voz" > Femenino      <!-- class="required" REQUIRED -->
+</fieldset>
+
+</div>
+
+<!-- prueba
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Diseño de la pantalla</legend>
+    <p>
+        <label class='labelform' >
+            <span for='RadioGroup0_0'><b>Logo</b>:
+            </span>
+        </label>
+        <input type="radio" name="rTono" id="rTono1" onclick="mostrar_datos_tono()" class="required"/>
+
+    </p>
+    <p><label class='labelform' ><span for='RadioGroup0_1'><b>Título</b>:</span></label><input type="radio" name="rTono"  id="rTono2" onclick="mostrar_datos_tono()" class="required"/></p>
+    <p><label class='labelform' ><span for='RadioGroup0_1'><b>Video</b>:</span></label><input type="radio" name="rTono"  id="rTono3" onclick="mostrar_datos_tono()" class="required"/></p>
+    <p><label class='labelform' ><span for='RadioGroup0_1'><b>Logo 2</b>:</span></label><input type="radio" name="rTono"  id="rTono4" onclick="mostrar_datos_tono()" class="required"/></p>
+
+    <div id="div_datos_tono" style="display: none">
+        <input id="formato_voz" type="radio" value="caja-#" name="formato_voz" onclick="cambiar_valor()" class="">Caja #<br>
+        <input id="formato_voz" type="radio" value="modulo-#" name="formato_voz" onclick="cambiar_valor()" class="">Módulo #<br>
+        <input id="formato_voz" type="radio" value="ventanilla-#" name="formato_voz" onclick="cambiar_valor()" class="">Ventanilla #<br>
+        <input id="formato_voz" type="radio" value="pase_a_la_caja-#" name="formato_voz" onclick="cambiar_valor()" class="">Pase a la Caja #<br>
+        <input id="formato_voz" type="radio" value="pase_al_modulo-#" name="formato_voz" onclick="cambiar_valor()" class="">Pase al Módulo #<br>
+        <input id="formato_voz" type="radio" value="pase_a_la_ventanilla-#" name="formato_voz" onclick="cambiar_valor()" class="">Pase a la Ventanilla #<br>
+    </div>
+
+</fieldset>
+ -->
+
+<script>
+    function cambiar_valor(){
+        var v= $('input:radio[name=formato_voz]:checked').val();
+        if(v=="caja-#")
+            $("#tiempo_tono").val(5);
+        else if(v=="modulo-#")
+            $("#tiempo_tono").val(5);
+        else if(v=="ventanilla-#")
+            $("#tiempo_tono").val(5);
+        else if(v=="pase_a_la_caja-#" | v=="pase_al_modulo-#")
+            $("#tiempo_tono").val(5);
+        else
+            $("#tiempo_tono").val(6);
+    }
+    
+    //$("#usuarios option[value=188]").attr("selected", true);
+    //$('input:radio[name=rd_datos_tono][value=caja-#]').attr('checked', true);
+    mostrar_datos_tono();
+    function mostrar_datos_tono() {
+        if ($('#rTono2').is(':checked') == true) {       //si selecciono voz
+            $("#div_datos_tono").css('display', 'inline');
+            $("#tiempo_tono").val(5);
+        } else {
+            $("#div_datos_tono").css('display', 'none');
+            $("#tiempo_tono").val(5);
+        }
+
+        if ($('#r1').is(':checked') == true) {  
+             $("#colores").css('display', 'inline');
+             $("#tonollamada").css('display', 'inline');
+             $("#edicion").css('display', 'none');
+             $("#disenar").css('display', 'none');
+             $("#usuario").css('display', 'inline');
+             $("#usuarioP").css('display', 'none');
+           }
+
+         if ($('#r2').is(':checked') == true) {  
+             $("#colores").css('display', 'inline');
+             $("#tonollamada").css('display', 'inline');
+             $("#edicion").css('display', 'none');
+             $("#disenar").css('display', 'none');
+             $("#usuario").css('display', 'inline');
+             $("#usuarioP").css('display', 'none');
+
+           }
+
+        if ($('#r3').is(':checked') == true) {  
+             $("#colores").css('display', 'none');
+             $("#tonollamada").css('display', 'none');
+             $("#edicion").css('display', 'inline');
+             $("#disenar").css('display', 'inline');
+             $("#usuarioP").css('display', 'inline');
+             $("#usuario").css('display', 'none');
+           }
+
+           
+    }
+
+    $("#rTono1").click(function() {
+        document.getElementById('tono').value = 0;
+    });
+    $("#rTono2").click(function() {
+        document.getElementById('tono').value = 1;
+    });
+</script>
+
+
+<div id="edicion" style="display: none">
+<fieldset class="ui-corner-all ui-widget-content">
+<legend>Diseño de la pantalla</legend>
+    <table >
+        <tr>
+            <td>
+                <p>
+                    <label class='labelform' >
+                        <span for='chkpublicidad'>Logo:</span>
+                    </label>
+                    <?php
+                    echo Tag::checkboxField("chkpublicidad");?>
+                                <input style="display: none" type="text" name="logo" id="logo" />
+                </p>
+                <p><label class='labelform' >
+                        <span for='chkbienvenida'>Título:</span>
+                    </label>
+                    <?php
+                    echo Tag::checkboxField("chkbienvenida");?>
+                    <input style="display: none" type="text" name="titulo" id="titulo" />
+                    </p>
+                
+                <p><label class='labelform' ><span for='chkturnoespera'>Publicidad 1:</span></label>
+                    <?php
+                    echo Tag::checkboxField("chkturnoespera");?>
+                    <input style="display: none" type="text" name="publicidad" id="publicidad" /></p>
+
+
+
+            </td>
+            <td>
+                <table width="100%" cellpadding="5">
+                    <tr>
+                        <td align="center">
+                            <?php
+                            //echo Tag::image($carpeta."/sistema/logo_ticket.bmp", "width: 110px");
+                            ?>
+                        </td>
+                    </tr>
+                </table>
+
+                
+
+            </td>
+        </tr>
+    </table>
+        </fieldset>
+</div>
+
+    <script>
+
+        //verificar();
+        function verificar(){
+            if($('#chkbienvenida').is(':checked'))
+                document.getElementById("div_frase").innerHTML = "<input type='text' id='div_frase' name='bienvenida1' style='text-align:center' value='<?php 'Empresa' ?>'>";
+            if($('#chkturnoespera').is(':checked'))
+                document.getElementById("div_turnos_espera").innerHTML = "Publicidad 1";
+        
+        }
+        $('#chkbienvenida').click(function(){
+            if($(this).is(':checked')){
+                $("#titulo").css('display', 'inline');
+                document.getElementById("div_frase").innerHTML = "<label><strong>PEOPLE WEB</strong></label>";
+                this.focus;
+            }else{
+                 $("#titulo").css('display', 'none');
+                document.getElementById("div_frase").innerHTML = "";
+            }
+        });
+
+
+
+        $('#chkturnoespera').click(function(){
+            if($(this).is(':checked')){
+                $("#publicidad").css('display', 'inline');
+                document.getElementById("div_turnos_espera").innerHTML = "<label><strong>Publicidad</strong></label>";
+            }else{
+                $("#publicidad").css('display', 'none');
+                document.getElementById("div_turnos_espera").innerHTML = "";
+            }
+        });
+
+
+
+                $('#chkpublicidad').click(function(){
+            if($(this).is(':checked')){
+                 $("#logo").css('display', 'inline');
+                document.getElementById("div_publicidad").innerHTML = "<img src='../../public/img/peopleweb/sistema/logo_operador.png' height='42' width='42'>";
+                 
+            }else{
+                $("#logo").css('display', 'none');
+                document.getElementById("div_publicidad").innerHTML = "";
+
+            }
+        });
+
+
+    </script>
+
+    <!--
+
+                 <div id="div_publicidad" align="left" style="width:12px; margin:10px ;font-size:40px">
+
+                 </div>
+                <div id="div_frase" align="center" style="font-size:14px"></div>
+
+                <div id="div_fecha" align="center" style="font-size:58px">
+                    <object data='../../public/img/peopleweb/sistema/animacion_dispensador.swf' height='300' width='300'></object>
+                </div>
+                <div id="div_turnos_espera" align="center" style="font-size:14px"></div>
+                <div id="div_tiempo_espera" align="center" style="font-size:14px"></div>
+            </div> -->

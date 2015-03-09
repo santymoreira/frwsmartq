@@ -1,0 +1,159 @@
+<?php
+$pantalla_ticket = '';
+$db = DbBase::rawConnect();
+$result2 = $db->query("SELECT 	pantalla_ticket	FROM configuracionsistema ;");
+while ($row = $db->fetchArray($result2)) {
+    $pantalla_ticket = $row['pantalla_ticket'];
+}
+$tamanio_letra = (($pantalla_ticket == 1) ? '100px' : '60px' );
+?>
+Mensajes:<div id="chat"></div>
+Llamando:<input id="llamando" type="text" value="" style="font-size: 12px"/> <!-- 1==voz, 1!= timbre -->
+Ubicacion: <input id="ubicacion" type="text" value="<?php echo $ubicacion_id;?>" style="font-size: 12px"/> <!-- ubicacion de la pantalla -->
+<input id="tono" type="hidden" value="<?php echo $tono;?>" style="font-size: 12px"/> <!-- 1==voz, 1!= timbre -->
+<input id="formato_voz" type="hidden" value="<?php echo $formato_voz;?>" style="font-size: 12px"/><br> <!--  -->
+<input id="tiempo_tono" type="hidden" value="<?php echo $tiempoTono;?>" style="font-size: 12px"/> <!-- tiempo que dura la reproduccion -->
+<input id="tamanio_letra" type="text" value="<?php echo $tamanio_letra; ?>" style="font-size: 12px"/> <!-- Tamaño de la letra dependiendo del tipo de pantalla -->
+<input id="numcaja" type="text" value="" style="font-size: 12px"/> <!-- Se pone el n�mero de caja -->
+
+
+
+<input id="mensaje" type="hidden" value="" style="font-size: 12px"/> <!-- Se pone el mensaje "Pase a la caja #" -->
+
+<input id="pantalla_ticket" type="hidden" value="<?php echo $pantalla_ticket; ?>" style="font-size: 12px"/> <!-- '0' = con rss y videos , '1' = solo mensaje centrado" -->
+<input id="mensaje_parte1" type="hidden" value="" style="font-size: 12px"/> <!-- solo se utiliza cuando es mensaje centrado en pantalla" -->
+Mensaje parte2<input id="mensaje_parte2" type="text" value="" style="font-size: 12px"/> <!-- solo se utiliza cuando es mensaje centrado en pantalla" -->
+
+
+
+Duracion:<input id="duracion" type="text" value="" style="font-size: 12px"/> <!-- Duraci�n de efecto del mensaje -->
+<input id="tiempo" type="hidden" value="" style="font-size: 12px"/> <!-- Tiempo de duracion del video -->
+<input id="nombre" type="hidden" value="" style="font-size: 12px"/> <!-- Se pone la direccion del video para embeber -->
+<input id="reproducir" type="hidden" value="" style="font-size: 12px"/> <!-- Se pone 1 para reproducir el timbre -->
+<input id="duracion" type="hidden" value="" style="font-size: 12px"/> <!-- Duraci�n de efecto del mensaje -->
+<input id="reproduciendo" type="hidden" value="0" style="font-size: 12px"/> <!-- Que reproduzca una sola vez -->
+Tipo Voz: <input id="tipo_voz" type="text" value="<?php echo $tipo_voz;?>" style="font-size: 12px"/> <!-- M=masculino/F=femenido -->
+
+<style type="text/css">
+    #div_fondo {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 99%;    
+    }
+    #div_borde {
+        position: absolute;
+        left: 0px;
+        top: 125px;
+    }
+    #div_fondo_noticias{
+        top:125px;
+        left:670px;
+        background-repeat:no-repeat;
+        position:absolute;
+    }
+    #div_caja{
+        background-repeat:no-repeat;
+        position:absolute;
+    }
+    #div_logo_pw {
+        position: absolute;
+        top:700px;
+        left:940px;
+    }
+    #div_fecha_hora{
+        top:30px;
+        left:826px;
+        position:absolute;
+    }
+    #hora{
+        font-size:30px;
+        background-color:transparent;
+        border:0;
+        color:#<?php echo $colorReloj ?>;
+        text-align: center;
+        font-family:impact;
+    }
+    #fecha{
+        font-size:30px;
+        background-color:transparent;
+        border:0;
+        color:#<?php echo $colorReloj ?>;
+        text-align: center;
+        font-family:impact;
+        /*text-shadow: -1px 0 #fff, 0 1px #fff,
+          1px 0 #fff, 0 -1px #fff*/
+    }
+
+    .turno_actual{
+        border:0;
+        background: transparent;
+        color: #1243A6;
+        font-size: 60px;
+        font-family: arial, helvetica, sans-serif;
+    }
+
+    .titulo_noticia{
+        font-size:35px;
+        color:#ED8524;
+    }
+</style>
+
+<div id="div_fondo"><img src="../../img/<?php echo $carpeta ?>/sistema/fondo_pantalla.jpg" width="100%" height="100%" alt="fondo pantalla" /></div>
+<?php
+if ($pantalla_ticket == 0) {
+    ?>
+    <div id="div_borde"><img src="../../img/<?php echo $carpeta ?>/sistema/borde_pantalla_sin_ticket.png" width="664" height="510" alt="borde" /></div>
+    <div id="midiv" style="top:140px; left:13px; position:absolute;"></div> <!-- Div para el video -->
+
+    <div id="div_fondo_noticias"><img src="../../img/<?php echo $carpeta ?>/sistema/fondo_noticias_pantalla_sin_ticket.png" width="350" height="510" alt="borde" /></div>
+    <div id="div_noticias" style="top:160px; left:680px; width: 325px; position:absolute; text-align:justify"></div>
+
+
+    <div id="div_caja" style="top:640px; left:25px;"><img src="../../img/<?php echo $carpeta ?>/sistema/pase_pantalla_sin_ticket.png" width="980" height="100" alt="borde" /></div>
+    <div id="llamar" style="top:640px; left:40px; position:absolute; width:950px"> <!-- Div para llamado a caja -->
+        <input id="t1" name="t1" value=" " class="turno_actual" readonly="readonly" style="text-align:center; width:100%; font-family: Arial Black ">
+    </div>
+    <?php
+}
+if ($pantalla_ticket == 1) {
+    ?>
+    <div id="div_caja" style="top:200px; left:2%; width:96%; height: 70%;">
+        <img src="../../img/<?php echo $carpeta ?>/sistema/pase_pantalla_sin_ticket.png" width="100%" height="100%" alt="borde" />
+    </div>
+    <div id="llamar" style="top:275px; left:5%; position:absolute; width:90%; height: 50%;"> <!-- Div para llamado a caja -->
+        <img id="imgEeq" src="" />
+        <input id="t1" name="t1" value=" " class="turno_actual" readonly="readonly" style="text-align:center; width:100%; font-family: Arial Black ">
+        <input id="t2" name="t2" value=" " class="turno_actual" readonly="readonly" style="text-align:center; width:100%; font-family: Arial Black">	
+        <!--<input id="t3" name="t3" value=" " class="turno_actual" readonly="readonly" style="text-align:center; width:100%; font-family: Arial Black">-->	
+    </div>
+    <?php
+}
+?>
+
+
+
+<?php
+$logo = '';
+$db = DbBase::rawConnect();
+$result2 = $db->query("SELECT 	logo_sinticket	FROM configuracionsistema ;");
+while ($row = $db->fetchArray($result2)) {
+    $logo_sinticket = $row['logo_sinticket'];
+}
+if ($logo_sinticket == 1) {
+    ?>
+    <div id="div_logo_pw"><embed wmode="transparent" src="../../img/logoinferior.swf" width="80" height="62"> </embed></div>
+    <?php
+}
+?>
+<div class="media" id="media"></div> <!-- Div para la llamada hablada -->
+<div id="div_fecha_hora">
+<?php echo Tag::textField("hora", "size: 11", "maxlength: 20", "class:  numeric"); ?><br>
+<?php echo Tag::textField("fecha", "size: 11", "maxlength: 20", "class:  numeric"); ?>
+</div>
+
+
+
+
+

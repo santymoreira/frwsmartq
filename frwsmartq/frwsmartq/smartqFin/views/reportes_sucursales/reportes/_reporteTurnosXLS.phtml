@@ -1,0 +1,22 @@
+<div id="div_reporte_turnos_xls">
+    <div class="ocultar">
+        <table align="center">
+            <tr>
+                <td>
+                    <?php
+                    $fun = new Funciones();
+                    echo $fun->excel();
+                    ?>
+                </td>
+                <td>
+                    <?php
+                    //echo $fun->imprimir();
+                    ?>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!--<div  id="div_xls"  style="OVERFLOW: auto; width: 100%; margin: 0 auto"></div>-->
+    <div  id="div_xls"></div>
+</div>

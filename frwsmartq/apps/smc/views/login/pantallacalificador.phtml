@@ -1,0 +1,146 @@
+<script type="text/javascript" src="../../js/administracion_cookies.js"></script>
+<style>
+    .fondo_operador{
+        background-image:url("../../img/fondo.png");
+        background-repeat:repeat-x;
+        height:100%;
+    }
+    .boton_calificacion1{
+        color:#fff;
+        font-weight:bold;
+        font-size: 45pt;
+        width: 350px;
+        height: 85px;
+    }
+    .boton_calificacion2{
+        border:0;
+        background: -webkit-gradient(linear, left top, left bottom, from(#93BDD9), to(#384954));
+
+        /*background: -moz-linear-gradient(top, #05A344, #384954);*/
+        border-top: 0px solid #96D1F8;
+
+        /*color: #F39900;
+        font-size: 25px;
+        font-family: Helvetica, Arial, Sans-Serif;
+        padding: 13px 26px;
+        text-decoration: none;
+        vertical-align: text-bottom;*/
+        -moz-border-radius: 14px;
+        -webkit-border-radius: 14px;
+        border-radius: 14px;
+        -moz-box-shadow: rgba(50,80,80,50) 0 7px 0; /*Borde del bot髇*/
+        -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+        box-shadow: rgba(0,0,0,1) 0 1px 0;
+        text-shadow: rgba(0,0,0,.4) 0 1px 0;
+        /*width: 80px;
+        height: 30px;*/
+        font-size: 45pt;
+        width: 350px;
+        height: 75px;
+    }
+    .boton_excelente{
+        background-color:#0042ff;
+    }
+    .boton_muy_bueno{
+        background-color:#05A344;
+    }
+    .boton_bueno{
+        background-color:#E28A12;
+    }
+    .boton_regular{
+        background-color:#CC0000;
+    }
+
+    #div_contenido {
+        position: absolute;
+        left: 161px;
+        top: 115px;
+        width:523px;
+        height:362px;
+        z-index:5;
+    }
+</style>
+<?php
+$arrayPane[]=array('position'=>'middle','options'=>'resizable: false','partial'=>'plantilla_calificacion');
+Tag::pane($arrayPane);
+?>
+<div id="div_numero_encabezado" class="encabezado" ></div>
+<div id="div_contenido" ></div>
+
+<?php echo Tag::hiddenField("idcaja", "size: 1");?>
+<?php echo Tag::hiddenField("calificador", "size: 1");?>
+<?php Tag::textField("usuario","size: 5"); ?>
+
+<script>
+    document.getElementById("div_numero_encabezado").innerHTML = modulo;
+
+    window.onresize=Resize;
+    Resize();
+    function Resize(){
+        var ancho=screen.width  //esta variable si utilizo
+        //var alto=screen.height  //esta variable si utilizo
+        if (ancho>='400' & ancho<='600'){ //pantalla vertical peque馻
+            document.getElementById("div_contenido").innerHTML =
+                "<table border='0' width='100%'>"+
+                "   <tr align='center'>"+
+                "       <td style='padding-bottom:10px'><br><br><br><input name='anular' id='excelente' type='button' value='Excelente' class='boton_calificacion1 boton_excelente' title='Calificaci贸n Excelente' onclick=calificar('Excelente') ><br><br><br><br><br></td>"+
+                "   </tr>"+
+                "   <tr align='center'>"+
+                "       <td style='padding-bottom:10px'><input name='calificar' id='muy_bueno' type='button' value='Muy Bueno' class='boton_calificacion1 boton_muy_bueno' title='Calificaci贸n Muy Bueno' onclick=calificar('Muy_Bueno')><br><br><br><br><br></td>"+
+                "   </tr>"+
+                "   <tr align='center'>"+
+                "       <td style='padding-bottom:10px'><input name='atender' id='bueno' type='button' value='Bueno' class='boton_calificacion1 boton_bueno' title='Calificaci贸n Bueno' onclick=calificar('Bueno')><br><br><br><br><br></td>"+
+                "   </tr>"+
+                "   <tr align='center'>"+
+                "       <td style='padding-bottom:10px'><input name='rellamar' id='regular' type='button' value='Regular' class='boton_calificacion1 boton_regular' title='Calificaci贸n Regular' onclick=calificar('Regular')><br><br><br><br><br></td>"+
+                "   </tr>"+
+                "</table>"
+        } else if (ancho>='700' & ancho<='900'){  //pantalla horizontal peque馻
+            document.getElementById("div_contenido").innerHTML =
+                "<table border='0' width='100%'>"+
+                "   <tr align='center'>"+
+                "       <td style='padding-bottom:10px'><input name='anular' id='excelente' type='button' value='Excelente' class='boton_calificacion2 boton_excelente' title='Calificaci贸n Excelente' onclick=calificar('Excelente') ><br></td>"+
+                "   </tr>"+
+                "   <tr align='center'>"+
+                "       <td style='padding-bottom:10px'><input name='calificar' id='muy_bueno' type='button' value='Muy Bueno' class='boton_calificacion2 boton_muy_bueno' title='Calificaci贸n Muy Bueno' onclick=calificar('Muy_Bueno')><br></td>"+
+                "   </tr>"+
+                "   <tr align='center'>"+
+                "       <td style='padding-bottom:10px'><input name='atender' id='bueno' type='button' value='Bueno' class='boton_calificacion2 boton_bueno' title='Calificaci贸n Bueno' onclick=calificar('Bueno')><br></td>"+
+                "   </tr>"+
+                "   <tr align='center'>"+
+                "       <td style='padding-bottom:10px'><input name='rellamar' id='regular' type='button' value='Regular' class='boton_calificacion2 boton_regular' title='Calificaci贸n Regular' onclick=calificar('Regular')></td>"+
+                "   </tr>"+
+                "</table>"
+        } else {  //pantalla horizontal peque馻
+            document.getElementById("div_contenido").innerHTML =
+                "<table border='0' width='100%'>"+
+                "   <tr align='center'>"+
+                "       <td style='padding-bottom:10px'><input name='anular' id='excelente' type='button' value='Excelente' class='boton_calificacion2 boton_excelente' title='Calificaci贸n Excelente' onclick=calificar('Excelente') ><br></td>"+
+                "   </tr>"+
+                "   <tr align='center'>"+
+                "       <td style='padding-bottom:10px'><input name='calificar' id='muy_bueno' type='button' value='Muy Bueno' class='boton_calificacion2 boton_muy_bueno' title='Calificaci贸n Muy Bueno' onclick=calificar('Muy_Bueno')><br></td>"+
+                "   </tr>"+
+                "   <tr align='center'>"+
+                "       <td style='padding-bottom:10px'><input name='atender' id='bueno' type='button' value='Bueno' class='boton_calificacion2 boton_bueno' title='Calificaci贸n Bueno' onclick=calificar('Bueno')><br></td>"+
+                "   </tr>"+
+                "   <tr align='center'>"+
+                "       <td style='padding-bottom:10px'><input name='rellamar' id='regular' type='button' value='Regular' class='boton_calificacion2 boton_regular' title='Calificaci贸n Regular' onclick=calificar('Regular')></td>"+
+                "   </tr>"+
+                "</table>"
+        }
+    }
+
+    //INICIO ABRIR ENVIAR CALIFICACION Y ABRIR PANTALLA INICIAL
+    //Funci髇 que permite primero guardar la calificaci髇 y luego abre la pantalla inicial
+    function calificar(calificacion){
+        if (calificacion=="Muy_Bueno")
+            calificacion="Muy Bueno";
+        $.post("<?php echo Utils::getKumbiaUrl("operador/terminarTurnoPantalla")?>",{
+            calificacion: calificacion
+        }, function(json){
+        },"json");
+        window.open('pantallainicial','Calificador','width=640,height=480,menubar=no,scrollbars=no,toolbar=no,location=no,directories=no,resizable=no,top=0,left=1500');
+        GuardarCookie('nombre',1,1);
+    }
+    //INICIO ABRIR ENVIAR CALIFICACION Y ABRIR PANTALLA INICIAL
+</script>

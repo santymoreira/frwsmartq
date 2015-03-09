@@ -1,0 +1,223 @@
+
+<!--
+Contenr para publicar seg�n el horario
+-->
+<input id="tiempo" type="hidden" value="" style="font-size: 12px"/> <!-- Tiempo de duracion del video -->
+<input id="nombre" type="hidden" value="" style="font-size: 12px"/> <!-- Se pone la direccion del video para embeber -->
+<input id="reproducir" type="hidden" value="" style="font-size: 12px"/> <!-- Se pone 1 para reproducir el timbre -->
+<input id="duracion" type="hidden" value="" style="font-size: 12px"/> <!-- Duraci�n de efecto del mensaje -->
+<style type="text/css">
+    .fondo{
+        background-image:url("../../img/<?php echo $fondo_pantalla; ?>");
+        height:766px;
+        background-repeat:no-repeat;
+    }
+
+    .borde{
+        background-image:url("../../img/borde.png");
+        background-repeat:no-repeat;
+    }
+
+    .txtmensaje{
+        border:0;
+        background: transparent;
+        color: #000000;
+        font-size:35px;
+        font-family: arial, helvetica, sans-serif;
+        width:740px;
+    }
+
+    #borde{
+        top:125px;
+        left:0px;
+        background-repeat:no-repeat;
+        position:absolute;
+    }
+    #noticia{
+        top:684px;
+        left:23px;
+        background-repeat:no-repeat;
+        position:absolute;
+    }
+    #menu{
+        top:125px;
+        left:666px;
+        background-repeat:no-repeat;
+        position:absolute;
+    }
+    #logo{
+        top:0px;
+        left:0px;
+        background-repeat:no-repeat;
+        position:absolute;
+    }
+    .noticiavertical{
+        font-size:35px;
+    }
+    #div_fecha_hora{
+        top:30px;
+        left:846px;
+        position:absolute;
+    }
+    #hora{
+        font-size:30px;
+        background-color:transparent;
+        border:0;
+        color:#000;
+        text-align: center;
+        font-family:impact;
+    }
+    #fecha{
+        font-size:30px;
+        background-color:transparent;
+        border:0;
+        color:#000;
+        text-align: center;
+        font-family:impact;
+    }
+    #div_empresa{
+        top:30px;
+        left:180px;
+        position:absolute;
+    }
+    #nombre_empresa{
+        font-size:40px;
+        background-color:transparent;
+        border:0;
+        color:#ffffff;
+        text-align: center;
+    }
+
+
+</style>
+
+<form name="MojiForm">
+    <div  id='mainContent' class="fondo">
+
+        <div id="div_empresa">
+            <?php
+            //echo Tag::textField("nombre_empresa","size: 30", "maxlength: 30","class: ");
+            ?>
+        </div>
+
+        <div id="div_fecha_hora">
+            <?php echo Tag::textField("hora","size: 11", "maxlength: 20","class:  numeric"); ?><br>
+            <?php echo Tag::textField("fecha","size: 11", "maxlength: 20","class:  numeric"); ?> 
+        </div>
+
+        <div id="media1"></div> <!-- Div para el timbre -->
+
+        <div id="borde">
+            <?php echo Tag::image('borde.png', 'alt: Imagen', 'width: 664px', 'height: 527px') ?>
+        </div>
+
+        <div id="logo">
+            <?php //echo Tag::image('logo.png', 'alt: Imagen', 'width: 130px', 'height: 130px') ?>
+        </div>
+
+        <div id="logo_institucion" style="top:0px; left:20px; position:absolute">
+            <embed  wmode="transparent" src="../../img/<?php echo $flash_pantalla;?>" width="150" height="150"> </embed>
+        </div>
+
+        <div id="noticia">
+            <?php echo Tag::image('noticia.png', 'alt: Imagen', 'height: 56px') ?>
+        </div>
+
+        <div id="midiv" style="top:140px; left:13px; position:absolute; z-index:1;">
+        </div> <!-- Div para la publicacion seg�n el horario -->
+
+        <div id="menu">
+            <?php echo Tag::image('turnos defensoria.png', 'alt: Imagen', 'width: 355px', 'height: 527px') ?>
+        </div>
+
+
+        <div id="t_actual" style="top:215px; left:662px; position:absolute">
+            <input type="text" id="t1" name="t1" value=" " readonly="readonly" style="border:0px;background: transparent;color: #FFF;font-size: 92px;font-family: Impact;text-align: center;width:200px">
+        </div>
+        <div id="m_actual" style="top:215px; left:870px; position:absolute">
+            <input type="text" id="ta1" name="ta1" value=" " readonly="readonly" style="border:0px;background: transparent;color: #FFF;font-size: 92px;font-family: Impact;text-align: center;width:200px">
+        </div>
+
+        <div id="t_anterior1" style="top:324px; left:662px; position:absolute">
+            <input type="text" id="t2" name="t2" value=" " readonly="readonly" style="border:0px;background: transparent;color: #E5E5E5;font-size: 74px;font-family: Impact;text-align: center;width:200px">
+        </div>
+        <div id="m_anterior1" style="top:324px; left:870px; position:absolute">
+            <input type="text" id="ta2" name="ta2" value=" " readonly="readonly" style="border:0px;background: transparent;color: #E5E5E5;font-size: 74px;font-family: Impact;text-align: center;width:142px">
+        </div>
+
+        <div id="t_anterior2" style="top:400px; left:662px; position:absolute">
+            <input type="text" id="t3" name="t3" value=" " readonly="readonly" style="border:0px;background: transparent;color: #E5E5E5;font-size: 74px;font-family: Impact;text-align: center;width:200px">
+        </div>
+        <div id="m_anterior2" style="top:400px; left:870px; position:absolute">
+            <input type="text" id="ta3" name="ta3" value=" " readonly="readonly" style="border:0px;background: transparent;color: #E5E5E5;font-size: 74px;font-family: Impact;text-align: center;width:142px">
+        </div>
+
+        <div id="t_anterior3" style="top:477px; left:662px; position:absolute">
+            <input type="text" id="t4" name="t4" value=" " readonly="readonly" style="border:0px;background: transparent;color: #E5E5E5;font-size: 74px;font-family: Impact;text-align: center;width:200px" >
+        </div>
+        <div id="m_anterior3" style="top:477px; left:870px; position:absolute">
+            <input type="text" id="ta4" name="ta4" value=" " readonly="readonly" style="border:0px;background: transparent;color: #E5E5E5;font-size: 74px;font-family: Impact;text-align: center;width:142px">
+        </div>
+
+        <div id="t_anterior4" style="top:555px; left:662px; position:absolute">
+            <input type="text" id="t5" name="t5" value=" " readonly="readonly" style="border:0px;background: transparent;color: #E5E5E5;font-size: 74px;font-family: Impact;text-align: center;width:200px">
+        </div>
+        <div id="m_anterior4" style="top:555px; left:870px; position:absolute">
+            <input type="text" id="ta5" name="ta5" value=" " readonly="readonly" style="border:0px;background: transparent;color: #E5E5E5;font-size: 74px;font-family: Impact;text-align: center;width:142px">
+        </div>
+
+        <div id="logo_inferior" style="top:656px; left:822px; position:absolute">
+            <embed wmode="transparent" src="C:/logoinferior.swf" width="180" height="92"> </embed>
+        </div>
+
+        <div style="top:690px; left:40px; position:absolute">
+            <!--<center>
+                <input name="MojiInput" class="txtmensaje" readonly="readonly" style="text-align:center; ">
+            </center>-->
+            <marquee direction="left" align="middle" scrollamount="<?php echo $velocidad_publicacion;?>" width="739" height="46" id="Marquesina" bgcolor="transparent">
+                <!--<marquee onmouseover=this.stop() onmouseout=this.start() direction="up" scrollAmount="2" style="width:200;height:250">-->
+                <font class="noticiavertical">
+                    <?php
+                    if ($publicar_noticias==1) {
+                        $formarnoticias="";
+                        $fecha_hoy=date("Y-m-d");
+                        $noticias= new Noticias();
+                        $buscaNoticia= $noticias->find("publicar=1 AND '$fecha_hoy' BETWEEN fecha_inicio_publicacion AND fecha_fin_publicacion");
+                        foreach($buscaNoticia as $result) {
+                            $formarnoticias.="<b><i>".$result->getTitulo().": </i></b>".$result->getNoticia()."&nbsp;&nbsp;&nbsp;&nbsp;";
+                        }
+                        echo $formarnoticias;
+                    }
+                    ?>
+                </font>
+            </marquee>
+        </div>
+    </div>
+</form>
+
+
+<script>
+    setInterval("reloj()",1000)
+    function reloj(){
+        momentoActual = new Date()
+        hora = momentoActual.getHours()
+        minuto = momentoActual.getMinutes()
+        segundo = momentoActual.getSeconds()
+        dia= momentoActual.getDate();
+        mes= momentoActual.getMonth()+1;
+        anio= momentoActual.getFullYear();
+        if (String(dia).length == 1)
+            dia="0"+dia;
+        if (String(mes).length == 1)
+            mes="0"+mes;
+        if (String(hora).length == 1)
+            hora="0"+hora;
+        if (String(minuto).length == 1)
+            minuto="0"+minuto;
+        if (String(segundo).length == 1)
+            segundo="0"+segundo;
+        horaImprimible = hora + " : " + minuto + " : " + segundo;
+        $("#hora").val(horaImprimible);
+        $("#fecha").val(dia + " / " + mes + " / " + anio);
+    }
+</script>

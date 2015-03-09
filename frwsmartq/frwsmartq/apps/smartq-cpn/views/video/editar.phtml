@@ -1,0 +1,28 @@
+<div id='mainContent'>
+
+    <?php //echo View::getContent();
+    //echo Tag::form('video/guardar/true');
+    ?>
+    <?php
+    View::renderPartial("toolbarform");
+    echo Tag::form("video/guardar/true");
+    ?>
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend><b>Datos de Video</b></legend>
+        <p><label class='labelform' ><span for='nombre'><b>Nombre</b>:</span></label><?php echo Tag::textField("nombre", "size: 50", "maxlength: 100","class:  required") ?></p>
+        <p><label class='labelform' ><span for='ubicacion'><b>Ubicación</b>:</span></label><?php echo Tag::textField("ubicacion", "size: 38", "maxlength: 100","class:  required","value: localhost/", "readonly: readonly") ?></p>
+        <p><label class='labelform' ><span for='duracion'><b>Duración</b>:</span></label><?php echo Tag::numericField("duracion", "size: 11", "maxlength: 11","class:  numeric, required") ?><label class='labelform'>segundos</label></p>
+        <p><label class='labelform' ><span for='activo'><b>Estado (Activo/Inactivo)</b>:</span></label><?php echo Tag::checkboxField("activo");?></p>
+        <!--<p><label class='labelform' ><span for='activo'><b>Activo</b>:</span></label><?php //echo Tag::textField("activo", "size: 4", "maxlength: 4","class:  numeric") ?></p>-->
+    </fieldset>
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend><label style="color:red"><b>Ayuda</b></label></legend>
+        <p><label><b>Nombre: </b>Los videos deben ser de extensión <b>.mp4</b> o <b>.webm</b></label></p>
+        <p><label><b>Ubicación: </b>Es la ubicación de los videos en una PC local (localhost)</label></p>
+    </fieldset>
+    <!--<div class='ui-corner-all ui-widget-content'>
+        <?php //echo Tag::submitButton("Grabar"); echo Tag::button("Cancelar","onclick: window.location='../index';"); ?>
+    </div>-->
+    <?php echo Tag::endForm(); ?>
+
+</div>

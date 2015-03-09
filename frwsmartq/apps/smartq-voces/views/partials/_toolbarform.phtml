@@ -1,0 +1,54 @@
+<?php
+$control=Router::getController();
+echo "<script type='text/javascript'>";
+if(@$save && !isset($forzarsalida))
+    echo " window.opener.recargargrd$control();";
+if(@$exit)
+    echo " window.close();";
+echo "</script>";
+?>
+<table width="100%" class=" ui-widget-header ui-corner-all" style="margin-bottom:5px;">
+<tr>
+    <td >
+        <div style="width: 100%; height: auto;" >
+            <table cellspacing="2" cellpadding="0">
+                    <tr>
+                        <td><button type="button" title="Guardar" class="ui-state-default ui-corner-all button_toolbar" id="btnsave" ></button></td>
+                        <td><button type="button" title="Guardar &amp; salir" class="ui-state-default ui-corner-all button_toolbar" id="btnsaveexit"></button></td>
+                        <td class="bc_separator_show">
+                            <div style="border-left: 1px solid rgb(108, 120, 121); width: 1px; height: 30px;"> </div>
+                        </td>
+                        <td><button type="button" title="Recargar" class="ui-state-default ui-corner-all button_toolbar" id="btnrfrsh"></button></td>
+                        <!--<td><button type="button" title="Ayuda" class="button" id="btnhelp"></button>
+                        </td>-->
+                    </tr>
+            </table>
+        </div>
+    </td>
+</tr>
+</table>
+<?php echo View::getContent();?>
+<script type="text/javascript">
+    
+    $(function(){
+
+        $(".button_toolbar").click(function(){
+            var $form=$("form").get(0);
+            switch($(this).attr("id")){
+                case 'btnsave':
+                    
+                    $($form).submit();break;
+                case 'btnsaveexit':
+                    
+                    $($form).attr("action",$($form).attr("action")+"?exit=1");
+                    $($form).submit();
+                   
+                    break;
+                case 'btnrfrsh': 
+                    window.location.reload();
+                    break;
+            }
+        });
+    });
+
+</script>

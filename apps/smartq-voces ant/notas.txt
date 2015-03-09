@@ -1,0 +1,9 @@
+﻿pantalla como imagenes (no responsive)
+calificador con tablet
+Cambios:
+controller/calificador_controller (nuevo)
+controller/operador2_controller (nuevo)
+controller/turnos_controller
+models/turnos
+views/calificador (nuevo)
+views/operador2 (nuevo)

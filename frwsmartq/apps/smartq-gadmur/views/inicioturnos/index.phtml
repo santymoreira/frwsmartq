@@ -1,0 +1,19 @@
+<div id='mainContent'>
+
+    <?php echo View::getContent();
+    //echo Tag::jqGrid("caption: 'Inicioturnos'");
+    ?>
+
+    <?php
+    View::renderPartial("toolbarform");
+    echo Tag::form("inicioturnos/guardar/true");
+    ?>
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend>Seteo de Turnos</legend>
+        <p><label class='labelform' ><span for='inicioturno'><b>Inicio de turnos</b>:</span></label><?php echo Tag::textField("inicio_turno", "size: 5", "maxlength: 3","class: required") ?></p>
+        <p><label class='labelform' ><span for='finturno'><b>Fin de turnos</b>:</span></label><?php echo Tag::textField("fin_turno",  "size: 5", "maxlength: 3","class: required") ?></p>
+    </fieldset>
+
+    <?php echo Tag::endForm(); ?>
+
+</div>

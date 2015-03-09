@@ -1,0 +1,30 @@
+<!--<div>
+    <table  align="center">
+        <!--<tr>
+            <td>
+                <b><?php //echo Tag::radioField("radio_modelos",array ('A'=>'Pantalla 1')) ?></b>
+            </td>
+            <td>
+                <b><?php //echo Tag::radioField("radio_modelos",array ('B'=>'Pantalla 2')) ?></b>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <b><?php //echo Tag::image('Dibujo1.JPG', 'alt: Imagen') ?></b>
+            </td>
+            <td>
+                <b><?php //echo Tag::image('Dibujo2.JPG', 'alt: Imagen') ?></b>
+            </td>
+
+        </tr>
+        <tr>
+            <td>
+                <b><?php echo Tag::radioField("radio_pantalla",array ('A'=>'Pantalla')) ?></b>
+            </td>
+    </table>
+</div>-->
+
+<fieldset class='ui-corner-all ui-widget-content'>
+    <legend>Seleccione el tipo de pantalla</legend>
+    <p><label class='labelform' style="width:300px"><span for='pantalla'><b>Pantalla</b>:</span></label><?php echo Tag::checkboxField("pantalla");?></p>
+</fieldset>

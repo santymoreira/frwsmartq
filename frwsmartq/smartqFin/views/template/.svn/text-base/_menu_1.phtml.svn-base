@@ -1,0 +1,28 @@
+<?php
+//print_r($menu_usuario);die();
+foreach ($menu_usuario as $menu){
+    $tabs[]=array('caption'=>$menu['nombre_modulo'],'content'=>Tag::treeview($menu['idModulo'], $menu['menu'],"options: animated: 'fast',collapsed: true, unique: true","class: filetree"));
+}
+Tag::accordion($tabs,"options: event: 'mouseover', fillSpace: true,clearStyle: true ");
+
+
+?>
+<script type="text/javascript">
+function cargarPagina(url,tipo){
+
+    if(url=="operador"){
+       var Xpos=(screen.width/2)+280;
+       var Ypos=(screen.height/2)+280;
+      window.open(url,'popup','width=320,height=280,scrollbars=no,left='+Xpos+',top='+Ypos);
+      }else{
+        if(tipo=='popup'){
+           var Xpos=(screen.width/2)-285;
+           var Ypos=(screen.height/2)-220;
+           window.open(url,'popup','width=300,height=280,scrollbars=no,left='+Xpos+',top='+Ypos);
+        }else{
+            $("#content-center").load(url,function(){
+            });
+        }
+    }
+}
+</script>

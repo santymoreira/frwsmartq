@@ -1,0 +1,159 @@
+<?php
+    //Se establece la conexión a la base de datos.
+    $mysql_usuario = "smartq";
+    $mysql_password = "123";
+    $mysql_host = "192.168.25.29";
+    $mysql_database = "db_smartq";
+
+    $conexion = mysql_connect($mysql_host, $mysql_usuario, $mysql_password, true);
+
+    //Seleccionar la base datos y la conexión, si existe un error se captura el error con die.
+    mysql_select_db($mysql_database, $conexion) || die('No pudo conectarse: '.mysql_error());
+
+    //Preparar la consulta
+    $consulta = "SELECT logo, titulo, video, publicidad FROM pantalla WHERE tipo_pantalla = 'Pantalla Publicidad' LIMIT 1";
+    //Ejecutar la consulta
+    $resultado = mysql_query($consulta, $conexion) or die(mysql_error());
+
+//Se crea una tabla para mostrar los resultados
+$tabla = "<table border='1' cellpadding='10'>\n";
+$tabla .= "<th>Logo</th><th>Titulo</th><th>video</th><th>Publicidad</th></tr>\n";
+//Extraer fila a fila con un búcle while
+
+while($fila = mysql_fetch_assoc($resultado)){
+    
+    $logo = $fila["logo"];
+    $video = $fila["video"];
+    $titulo = $fila["titulo"];
+    $publicidad = $fila["publicidad"];    
+
+    $tabla .= "<tr>
+
+       <td>".$fila["logo"]."</td>
+
+       <td>".$fila["video"]."</td>
+
+       <td>".$fila["titulo"]."</td>
+
+       <td>".$fila["publicidad"]."</td>
+ 
+      </tr>\n";
+}
+$tabla .= "</table>\n";
+    mysql_close($conexion);
+?>
+
+<html>
+    <head>
+
+    </head>
+    <body>
+
+        <?php echo "
+        <img id = 'ontop' src= ".$logo.">" ?>
+
+        <iframe id="video-background" width="560" height="315" src="../../videos/redbull.mp4" frameborder="0" allowfullscreen></iframe>
+
+        <iframe id="video-background" width="560" height="315" src="<?php echo $fila['video']?>" frameborder="0" allowfullscreen></iframe>
+
+        <img id = "logo" src="<?php echo $fila['titulo']?>">
+
+        <img id = "publicidad" src="<?php echo $fila['publicidad']?>">
+
+        
+<!--
+        <div>
+            <label>Logo:</label>
+            <input type='text' name='logo' value=".$logo">
+        </div>
+
+        <div>
+            <label>video:</label>
+            <input type='text' name='logo' href='<?php echo $logo?>'>
+        </div>
+
+        <div>
+            <label>Titulo:</label>
+            <input type='text' name='logo' value='<?php echo $fila['titulo']?>'>
+        </div>
+
+        <div>
+            <label>Publicidad:</label>
+            <input type='text' name='logo' value='<?php echo $fila['publicidd']?>'>
+        </div> -->
+
+    </body>
+</html> 
+
+<style type="text/css">
+    body {
+    	margin: 0;
+    	padding: 0;
+    }
+
+    #video-background {
+    	height: 100%;
+    	position: fixed;
+    	width: 100%;
+    }
+
+    #onTop {
+
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    z-index: 2;
+    top: 0px;
+    left: 0px;
+}
+
+#publicidad {
+    
+    width: 974px;
+    height: 50px;
+    position: absolute;
+    z-index: 2;
+    /*
+    * Resolucion 1024 x 768
+    */
+    top: 716px;
+    left: 0px;
+}
+
+#logo {
+    
+    background: yellow;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    z-index: 2;
+    
+    /*
+    * Resolucion 1024 x 768
+    */
+    top: 716px;
+    left: 974px;
+
+}
+
+#content {
+    background: #fff  ; /* Para Internet Explorer */
+    background: rgba(255,255,255,.5);
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgb(200,200,200);
+    font-size: 2rem;
+    margin: 0 auto;
+    padding: 50px 0;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgb(255, 255, 255);
+    width: 80%;
+}
+
+#foo {
+
+    display: none;
+    position: absolute;
+    top: 60%;
+    width: 100%;
+}
+</style>

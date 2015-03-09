@@ -1,0 +1,282 @@
+<?php //echo Tag::javascriptBase()    ?>
+<!--<script type="text/javascript" src="../../js/administracion_cookies.js"></script>-->
+<style>
+    .td_grupo{
+        background-color: #6DA6D1;
+        color: #fff;
+        font-size: 14px;
+    }
+    .td_servicio{
+        background-color: #E3F1FC;
+    }
+    .boton_operador{
+        color: #E17009;
+        width: 80px;
+        height: 35px;
+        font-family: "Arial";
+        font-size: 14px;
+    }
+    .bloquear{
+        /*background: #ccc;*/
+        /*color: #fff;*/
+    }
+    #div_titulo_paso{
+        font-size: 14px;
+    }
+    .td_turno{
+        padding-left:8px;
+        padding-right:8px;
+    }
+</style>
+<div id='mainContent'>
+    <div class="ui-accordion-header ui-helper-reset ui-state-default ui-corner-all">
+        <div id="div_titulo_paso" style="float: left">
+
+        </div>
+        <div align="left" style="padding-left: 300px">
+            <input type="button" value="Ir a Paso 1" id="btn_turnos" class="boton_operador"/>
+            <input type="button" value="Ir a Paso 2" id="btn_operadores" class="boton_operador"/>
+            <input type="button" value="Finalizar" id="btn_transferir" class="boton_operador"/>
+        </div>
+    </div>
+
+    <div>
+        <br>
+        <?php
+//echo Tag::hiddenField("idcaja", "size: 1");
+    echo Tag::hiddenField("turnos_id","size: 1");     //los turnos que va a transferir
+    echo Tag::hiddenField("modulos_id","size: 1");    //los modulos a los que asigna
+    echo Tag::hiddenField("ubicaciones_id","size: 1");            //ubicaci�n para el turno transferido
+    ?>
+    </div>
+<!--<p class="validateTips">Seleccione.</p>-->
+    <fieldset class='ui-corner-all ui-widget-content'>
+        <legend>Transferencia de Turnos</legend>
+        <div id="div_turnos_todos">Cargando...<?php echo Tag::image("cargando.gif", "width: 30px", "height: 30px"); ?></div>
+        <div id="div_operadores_todos"></div>
+    </fieldset>
+</div>
+
+
+<script>
+    $("#div_titulo_paso").html("Paso 1.<br>Seleccionar los turnos");
+
+    var url="<?php echo Utils::getKumbiaUrl("admturnos/listarGruposServicios") ?>";
+    $("#div_turnos_todos").load(url,function(){
+    });
+
+    $("#btn_turnos").attr('disabled','disabled');   $('#btn_turnos').addClass('bloquear');
+    $("#btn_operadores").attr('disabled','');   $('#btn_operadores').removeClass('bloquear');
+    $("#btn_transferir").attr('disabled','disabled');   $('#btn_transferir').addClass('bloquear');
+
+
+    //$("#desde").datepicker({ dateFormat: 'yy-mm-dd' });
+</script>
+
+<script>
+    //abre el div de los turnos clasificados por servicios
+    function abrir_div_turnos(val){
+        var chks=$("div[name^='div_servicio_']");
+        for (var x=0; x < chks.length; x++) {
+            nombre= chks[x].id;
+            $("#"+nombre).hide();
+        }
+        $("#div_servicio_"+val).show();
+    }
+
+    //cierra el div de los turnos clasificados por servicios
+    function cerrar_div_turnos(val){
+        $("#div_servicio_"+val).hide();
+    }
+
+    //abre el div de los operadores clasificados por ubicaci�n
+    function abrir_div_operadores(val){
+        var chks=$("div[name^='div_ubicacion_']");
+        for (var x=0; x < chks.length; x++) {
+            nombre= chks[x].id;
+            $("#"+nombre).hide();
+        }
+        $("#div_ubicacion_"+val).show();
+    }
+
+    //cierra el div de los operadores clasificados por ubicaci�n
+    function cerrar_div_operadores(val){
+        $("#div_ubicacion_"+val).hide();
+    }
+
+    //seleccionar los turnos respectivos del servicio
+    //cada turnos tiene la clase c_ seguido del id del servicio
+    function check_all(val){
+        var chks=$(".c_"+val);
+        chks.attr("checked","checked");
+    }
+
+    //deseleccionar los turnos respectivos del servicio
+    //cada turnos tiene la clase c_ seguido del id del servicio
+    function uncheck_all(val){
+        $("#turnos_id").val("");
+        var chks=$(".c_"+val);
+        chks.attr("checked","");
+    }
+
+    //selecciona todods los modulos respectivos de la ubicaci�n
+    //cada modulo tiene la clase c_todos seguido del id de la ubicaci�n
+    function check_all_modulos(val){
+        $("#ubicaciones_id").val(val);
+        var chks=$(".c_modulos_"+val);
+        chks.attr("checked","checked");
+        seleccionar(val);
+    }
+
+    //deselecciona todods los modulos respectivos de la ubicaci�n
+    //cada modulo tiene la clase c_todos seguido del id de la ubicaci�n
+    function uncheck_all_modulos(val){
+        $("#modulos_id").val("");
+        var chks=$(".c_modulos_"+val);
+        chks.attr("checked","");
+    }
+
+    //selecciona todods los modulos al transferir turno actual
+    function check_all_modulos_turno_actual(){
+        var chks=$(".c_modulos_turno_actual");
+        chks.attr("checked","checked");
+        seleccionar_turno_actual();
+    }
+
+    //deselecciona todods los modulos al transferir turno actual
+    function uncheck_all_modulos_turno_actual(){
+        var chks=$(".c_modulos_turno_actual");
+        chks.attr("checked","");
+    }
+
+    function caja_pausas_id(val){
+        $("#caja_pausas_id").val(val);
+    }
+</script>
+
+<!--Inicio-->
+<script>
+    $("#btn_turnos").click(function(){
+        $("#div_turnos_todos").html('Cargando...<img width="30px" height="30px" alt="" src="/frwsmartq/img/cargando.gif">');
+        $("#div_titulo_paso").html("Paso 1.<br>Seleccionar los turnos");
+        $("#div_operadores_todos").hide();
+
+        var url="<?php echo Utils::getKumbiaUrl("admturnos/listarGruposServicios") ?>";
+        $("#div_turnos_todos").load(url,function(){
+        });
+
+        $("#btn_turnos").attr('disabled','disabled');   $('#btn_turnos').addClass('bloquear');
+        $("#btn_operadores").attr('disabled','');   $('#btn_operadores').removeClass('bloquear');
+        $("#btn_transferir").attr('disabled','disabled');   $('#btn_transferir').addClass('bloquear');
+
+        $("#div_turnos_todos").show();
+    })
+
+    $("#btn_operadores").click(function(){  //2. abrir vista de operadores
+        $("#div_operadores_todos").html('Cargando...<img width="30px" height="30px" alt="" src="/frwsmartq/img/cargando.gif">');
+        var chks=$("input:checked[name^='chk_turno']");     //seleccionar los values de cada turno
+        var cont=0;
+        var ids_turnos="";
+        for (var x=0; x < chks.length; x++) {
+            ids_turnos=ids_turnos+chks[x].value+",";
+            cont+=1;
+        }
+
+        if (cont==0){
+            alert("Seleccione al menos un turno");
+        } else {
+            $("#div_titulo_paso").html("Paso 2.<br>Seleccionar los operadores");
+            $("#btn_turnos").attr('disabled','');   $('#btn_turnos').removeClass('bloquear');
+            $("#btn_operadores").attr('disabled','disabled');   $('#btn_operadores').removeClass('bloquear');
+            $("#btn_transferir").attr('disabled','');   $('#btn_transferir').removeClass('bloquear');
+
+            $("#turnos_id").val(ids_turnos);
+            $("#continuar").attr('disabled','disabled');
+            $('#continuar').addClass('bloquear');
+            document.getElementById("div_operadores_todos").innerHTML = "";
+            $("#div_turnos_todos").hide();
+            $.post("<?php echo Utils::getKumbiaUrl("admturnos/listaOperadoresTodos")?>", {
+                //ids_turnos:$("#ids_turnos").val()
+            },function(json){
+                document.getElementById("div_operadores_todos").innerHTML =
+                    cont+" turnos a transferir <br><br>"+json.mensaje;
+            },'json');
+            $("#div_operadores_todos").show(1000);
+        }
+    })
+</script>
+
+
+<script>
+    //Selecciona los ids de los m�dulos para transferir el turno o los turnos_todos
+    function seleccionar(val){
+        var chks1=$("input:checkbox[name^='chk_modulos_todos_']");
+        var nombre="";
+        for (var x=0; x < chks1.length; x++) {
+            nombre= chks1[x].id;
+            var clase = chks1[x].className;
+            var nom_clase="c_modulos_"+val;
+            if (clase==nom_clase){
+                //$("#"+nombre).attr("checked", "checked");
+            } else {
+                $("#"+nombre).attr("checked", "");
+            }
+        }
+
+        $("#ubicaciones_id").val(val);
+        var chks=$("input:checkbox[name^='chk_modulos_']");
+        var ids="";
+        //chks.attr("checked",$(this).is(":checked"))
+        for (var x=0; x < chks.length; x++) {
+            if (chks[x].checked) {
+                ids=ids+chks[x].value+",";
+            }
+        }
+        $("#modulos_id").val(ids);
+    }
+    //    function seleccionar_turno_actual(){
+    //        var chks=$("input:checkbox[name^='chk_modulos_turno_actual_']");
+    //        var ids="";
+    //        for (var x=0; x < chks.length; x++) {
+    //            if (chks[x].checked) {
+    //                ids=ids+chks[x].value+",";
+    //            }
+    //        }
+    //        $("#modulos_id").val(ids);
+    //    }
+</script>
+
+<script>
+    $("#btn_transferir").click(function(){  //3. transferir
+
+        var chks=$("input:checkbox[name^='chk_modulos_todos_']");
+        var cont=0;
+        for (var x=0; x < chks.length; x++) {
+            if (chks[x].checked) {
+                cont=cont+1;
+            }
+        }
+
+        if (cont==0){
+            alert("Seleccione al menos un Operador");
+        } else {
+            $("#div_titulo_paso").html("Paso 3.<br>Transferir");
+            $.post("<?php echo Utils::getKumbiaUrl("admturnos/transferirTodos")?>", {
+                //remitente:     $("#idcaja").val(),           //para guardar remitente con el id del modulo
+                //remitente:      $("#numcaja").val(),           //para guardar remitente con numero de modulo
+                modulos_id:     $("#modulos_id").val(),      //a los modulos que pasa
+                turnos_id:      $("#turnos_id").val(),       //los ids de los turnos que transfiere
+                ubicaciones_id: $("#ubicaciones_id").val()       //ubicaciones para todos
+            },function(json){
+
+            },'json');
+
+            alert ("Transferidos");
+            $("#btn_turnos").attr('disabled','');   $('#btn_turnos').removeClass('bloquear');
+            $("#btn_operadores").attr('disabled','disabled');   $('#btn_operadores').addClass('bloquear');
+            $("#btn_transferir").attr('disabled','disabled');   $('#btn_transferir').addClass('bloquear');
+        }
+    })
+</script>
+
+

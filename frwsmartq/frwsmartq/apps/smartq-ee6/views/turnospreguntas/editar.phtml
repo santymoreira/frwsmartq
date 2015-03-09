@@ -1,0 +1,20 @@
+<div id='mainContent'>
+
+	<?php echo View::getContent();
+		 echo Tag::form('turnospreguntas/guardar/true');
+	?>
+	<fieldset class='ui-corner-all ui-widget-content'>
+		<legend>Datos de Turnospreguntas</legend>
+		<p><label class='labelform' ><span for='preguntas_id'><b>Preguntas</b>:</span></label><?php echo Tag::select("preguntas_id", $Preguntas->find("order: orden"), "using: id,nom_pregunta", "use_dummy: yes","dummyValue: ''","class: ") ?></p>
+		<p><label class='labelform' ><span for='caja_id'><b>Caja</b>:</span></label><?php echo Tag::select("caja_id", $Caja->find("order: numero_caja"), "using: id,numero_caja", "use_dummy: yes","dummyValue: ''","class: ") ?></p>
+		<p><label class='labelform' ><span for='turnos_id'><b>Turnos</b>:</span></label><?php echo Tag::select("turnos_id", $Turnos->find("order: id"), "using: id,id", "use_dummy: yes","dummyValue: ''","class: ") ?></p>
+		<p><label class='labelform' ><span for='puntuacion'><b>Puntuacion</b>:</span></label><?php echo Tag::textField("puntuacion", "size: 3", "maxlength: 3","class:  numeric") ?></p>
+		<p><label class='labelform' ><span for='fecha'><b>Fecha</b>:</span></label><?php echo Tag::textField("fecha", "size: 0", "maxlength: 0","class:  dateISO") ?></p>
+		<p><label class='labelform' ><span for='hora'><b>Hora</b>:</span></label><?php echo Tag::textField("hora", "size: 0", "maxlength: 0","class: ") ?></p>
+	</fieldset>
+	<div class='ui-corner-all ui-widget-content'>
+		<?php echo Tag::submitButton("Grabar"); echo Tag::button("Cancelar","onclick: window.location='../index';"); ?>
+	</div>
+	<?php echo Tag::endForm(); ?>
+
+</div>
