@@ -5,7 +5,7 @@
                 <?php
                 //$servicio=new Servicio();
                 //$buscaServicios = $servicio->find("estado = 1", "order: nombre asc");
-                $condition = "estado = 1";
+                $condition = "{#Servicio}.estado = 1";
                 $buscaServicios = new ActiveRecordJoin(array(
                     "entities" => array("Servicio", "Ubicacion"),
                     "fields" => array(
