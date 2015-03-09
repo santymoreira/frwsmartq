@@ -94,7 +94,7 @@ foreach ($buscaUbicacion as $result) {
                 </td>
             </tr>";
         }
-        if ($moduloPublicidad == 1) {
+         if ($moduloPublicidad == 1) {
             echo "<tr>
                 <td>" . Tag::radioField("radio_tipo_pantalla", array('C' => 'Pantalla Publicidad')) .
             "</td><td></td>
@@ -165,7 +165,15 @@ if ($tono == "")
             $("#div_datos_tono").css('display', 'none');
             $("#tiempo_tono").val(5);
         }
+       
     }
+
+
+    $( document ).ready(function() {
+         if ($('radio:contains("C")').is(':checked') == true) {       //si selecciono voz
+            alert("hola");
+        }
+    });
 
     $("#rTono1").click(function() {
         document.getElementById('tono').value = 0;

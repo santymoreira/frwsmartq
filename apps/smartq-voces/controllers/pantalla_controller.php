@@ -201,10 +201,14 @@ class PantallaController extends ApplicationController {
             $tipo_pantalla = $pantalla->getTipoPantalla();
             //Tag::displayTo("radio_modelos", $value);
             $value2 = "";
-            if ($tipo_pantalla == "Pantalla Operador")
+            if ($tipo_pantalla == "Pantalla Operador"){
                 $value2 = "A";
-            else if ($tipo_pantalla == "Pantalla Cajero")
-                $value2 = "B";
+            }
+            else if ($tipo_pantalla == "Pantalla Cajero"){
+                $value2 = "B";}else{
+                    $tipo_pantalla == "Pantalla Publicidad";
+                    $value2 = "C";
+                }
             Tag::displayTo("radio_tipo_pantalla", $value2);
 
             $horariopublicidad = new Horariopublicidad();
