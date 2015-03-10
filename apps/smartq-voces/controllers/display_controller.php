@@ -198,7 +198,9 @@ class DisplayController extends ApplicationController {
 
             if ($this->tipoPantalla == "Pantalla Cajero") {
                 $this->redirect("display/pantalla_sin_ticket");
-            } else {
+            } else if ($this->tipoPantalla == "Pantalla Publicidad"){
+                $this->redirect("display/pantallas");
+            }else {
                 $this->redirect("display/pantalla");
             }
         }
@@ -208,6 +210,10 @@ class DisplayController extends ApplicationController {
      * Cuando se loguea como pantalla con ticket
      */
     public function pantallaAction() {
+        $this->setPersistance(true);
+    }
+
+    public function pantallasAction() {
         $this->setPersistance(true);
     }
 

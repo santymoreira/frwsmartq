@@ -99,7 +99,7 @@ class GrupoController extends ApplicationController {
             foreach ($this->array_roles as $key => $value) {
                 $rol_id = $key;
             }
-            if(!in_array($rol_id, array(4,5,6,7))) {
+            if(!in_array($rol_id, array(4,5,6,7,8))) {
                 //-- si el rol tiene menus
                 $modulo = new Modulo();
                 $menu = new Menu();
@@ -142,6 +142,8 @@ class GrupoController extends ApplicationController {
         } else if ($rol_id == 7) { //operador sin ticket
             Router::routeTo("controller: cajero", "action: index");
         } else if ($rol_id == 6) { //pantalla
+            $this->redirect("display");
+        } else if ($rol_id == 8) { //pantalla
             $this->redirect("display");
         } else {
             $this->redirect("template"); //muestra el menu del usuario administrador
