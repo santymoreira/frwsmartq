@@ -33,7 +33,7 @@ if ($ventana == 1) {//$tipo_pantalla = 'vertical';
 }
 //__________________________FIN
 
-$arrayPane[] = array('position' => 'middle', 'options' => 'resizable: false', 'partial' => $tipo_pantalla);
+$arrayPane[] = array('position' => 'middle', 'options' => 'resizable: false', 'partial' => 'contentp');
 Tag::pane($arrayPane);
 //$horariopublicidad= new Horariopublicidad();
 //echo Tag::textField('txt_aux',"value: $colorReloj");
@@ -234,7 +234,7 @@ echo Tag::hiddenField('tipo');  //para el tipo de publicacion V/D/P
                 '<param name="autoStart" value="true">' +
                 '<param name="showControls" value="false">' +
                 '<param name="Volume" value="-500">' +
-                '<embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" src="' + $('#nombre').val() + '" name="MediaPlayer1" width=640 height=500 autostart=1 showcontrols=0 volume=-500>' +
+                '<embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" src="' + $('#nombre').val() + '" name="MediaPlayer1" width=1000 height=500 autostart=1 showcontrols=0 volume=-500>' +
                 '</object>';
         document.getElementById("midiv").innerHTML = embeber_video;
     }
