@@ -261,7 +261,7 @@ foreach ($buscaUbicacion as $result) {
                 <p><label class='labelform' ><span for='chkturnoespera'>Publicidad 1:</span></label>
                     <?php
                     echo Tag::checkboxField("chkturnoespera");?>
-                    <input style="display: none" type="text" name="publicidad" id="publicidad" /></p>
+                    <input style="display: none" type="text" value="1" name="publicidad" id="publicidad" /></p>
 
 
 
@@ -310,14 +310,14 @@ foreach ($buscaUbicacion as $result) {
 
         $('#chkturnoespera').click(function(){
             if($(this).is(':checked')){
-                $("#publicidad").css('display', 'inline');
+
+                $("#publicidad").val('1');
                 document.getElementById("div_turnos_espera").innerHTML = "<label><strong>Publicidad</strong></label>";
             }else{
-                $("#publicidad").css('display', 'none');
+                $("#publicidad").val('0');
                 document.getElementById("div_turnos_espera").innerHTML = "";
             }
         });
-
 
 
                 $('#chkpublicidad').click(function(){

@@ -328,16 +328,16 @@ class PantallaController extends ApplicationController {
         $pantalla->setUsuarioId($usuario);
         $pantalla->setIpSenalTv($ip_senal_tv);
         $pantalla->setLlamadoConTecla($llamado_con_tecla);
-        $a = ($logo != "") ? $pantalla->setLogo($logo) : $pantalla->setLogo("../../public/img/peopleweb/sistema/logo_operador.png");
-        $a = ($titulo != "") ? $pantalla->setTitulo($titulo) : $pantalla->setTitulo("PEOPLE WEB");
-        $a = ($video != "") ? $pantalla->setVideo($video) : $pantalla->setVideo("../../public/img/peopleweb/sistema/animacion_dispensador.swf");
-        $a = ($publicidad != "") ? $pantalla->setPublicidad($publicidad) : $pantalla->setPublicidad("Publicidad");
+        $a = ($logo != "" && $radio_tipo_pantalla=="C") ? $pantalla->setLogo($logo) : $pantalla->setLogo("0");
+        $a = ($titulo != "" && $radio_tipo_pantalla=="C") ? $pantalla->setTitulo($titulo) : $pantalla->setTitulo("0");
+        $a = ($video != "" && $radio_tipo_pantalla=="C") ? $pantalla->setVideo($video) : $pantalla->setVideo("0");
+        $a = ($radio_tipo_pantalla=="C") ? $pantalla->setPublicidad($publicidad) : $pantalla->setPublicidad("0");
+        //$a = ($publicidad != "" && $radio_tipo_pantalla=="C") ? $pantalla->setPublicidad($publicidad) : $pantalla->setPublicidad("0");
         //$pantalla->setLogo($logo);
         //$pantalla->setTitulo($titulo);
         //$pantalla->setVideo($video);
         //$pantalla->setPublicidad($publicidad);
         //$pantalla->setPlantilla(trim($this->getPostParam("plantilla")));
-
 
         $action = ($isEdit == true) ? "editar" : 'nuevo';
 
@@ -712,10 +712,6 @@ class PantallaController extends ApplicationController {
         }
         //impresion de la respuesta formato json
         echo $this->jsonEncode($jqgrid);
-
-
-
-
 
 
     }

@@ -368,6 +368,13 @@ class DisplayController extends ApplicationController {
         $nombre = "";
         $t = "";
 
+        $icono="a";
+        $tema="b";
+        $rs="c";
+
+
+
+
         //obtener el id de la sesión actual();
         $datosUsuario = SessionNamespace::get("datosUsuarioSMC");
         $iduser = $datosUsuario->getId();
@@ -382,6 +389,16 @@ class DisplayController extends ApplicationController {
         $buscaPantalla = $pantalla->findFirst("usuario_id= $iduser");
         $idpantalla = $buscaPantalla->getId();
 
+        $db = DbBase::rawConnect();
+        $result = $db->query("SELECT logo,titulo,publicidad  FROM pantalla WHERE id=$idpantalla");
+        while ($row = $db->fetchArray($result)) {
+            $icono = $row['0'];
+            $tema = $row['1'];
+            $rs = $row['2'];
+        }
+  
+
+    
         //Contar el total de videos asignados a la Pantalla
         $contarVideo = $pantalla_videos->find("pantalla_id= $idpantalla");
         $total_registros = count($contarVideo);
@@ -435,7 +452,8 @@ class DisplayController extends ApplicationController {
             }
         }
         $n = $ubicacion . '/' . $nombre;
-        $respuesta = array("tiempo" => $t, "nombre" => $n);
+        //$respuesta = array("tiempo" => $t, "nombre" => $n, "icono" =>$icono );
+        $respuesta = array("tiempo" => $t, "nombre" => $n, "icono" =>$icono, "tema" => $tema, "rs" => $rs);
         return ($respuesta);
     }
 

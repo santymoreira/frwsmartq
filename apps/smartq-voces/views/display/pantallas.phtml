@@ -225,18 +225,34 @@ echo Tag::hiddenField('tipo');  //para el tipo de publicacion V/D/P
         }, function(json) {
             $("#tiempo").val(json.tiempo);
             $("#nombre").val(json.nombre);
+            $("#logo").val(json.icono);
+            $("#titu").val(json.tema);
+            var rs=json.rs;
+
+
         }, "json");
+        
         var embeber_video = '<object id="MediaPlayer1" CLASSID="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"' +
-                'standby="Loading Microsoft Windows? Media Player components..." type="application/x-oleobject" width="640" height="490">' +
+                'standby="Loading Microsoft Windows? Media Player components..." type="application/x-oleobject" width="100%" height="100%">' +
                 '<param name="fileName" value="' + $('#nombre').val() + '">' +
                 '<param name="animationatStart" value="true">' +
                 '<param name="transparentatStart" value="true">' +
                 '<param name="autoStart" value="true">' +
                 '<param name="showControls" value="false">' +
+                '<param name="allowFullScreen" value="true"></param>' +
+                '<param name="scale" value="exactfit">' +
                 '<param name="Volume" value="-500">' +
-                '<embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" src="' + $('#nombre').val() + '" name="MediaPlayer1" width=1000 height=500 autostart=1 showcontrols=0 volume=-500>' +
+                '<embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" src="' + $('#nombre').val() + '" name="MediaPlayer1" width="100%" height="100%" scale="exactfit" autostart=1 showcontrols=0 volume=-500 allowfullscreen="true">' +
                 '</object>';
+        var imagen = '';
         document.getElementById("midiv").innerHTML = embeber_video;
+       // document.getElementById("logo").val = $("#logo").val();
+        document.getElementById("titu").val = $("#titu").val();
+        document.getElementById("logo").src = $("#logo").val();
+        if (rs==1) {
+            $("#div_fondo_noticias").css('display', 'none');
+            $("#div_noticias").css('display', 'none');
+        }
     }
 </script>
 
