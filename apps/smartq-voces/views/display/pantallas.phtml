@@ -227,7 +227,8 @@ echo Tag::hiddenField('tipo');  //para el tipo de publicacion V/D/P
             $("#nombre").val(json.nombre);
             $("#logo").val(json.icono);
             $("#titu").val(json.tema);
-            var rs=json.rs;
+            $("#rss").val(json.rs);
+            
 
 
         }, "json");
@@ -249,7 +250,10 @@ echo Tag::hiddenField('tipo');  //para el tipo de publicacion V/D/P
        // document.getElementById("logo").val = $("#logo").val();
         document.getElementById("titu").val = $("#titu").val();
         document.getElementById("logo").src = $("#logo").val();
-        if (rs==1) {
+        document.getElementById("rss").src = $("#rss").val();
+
+        //alert($("#rss").val());
+        if ($("#rss").val()!=1) {
             $("#div_fondo_noticias").css('display', 'none');
             $("#div_noticias").css('display', 'none');
         }
