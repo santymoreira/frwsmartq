@@ -194,10 +194,11 @@ class PantallaController extends ApplicationController {
             Tag::displayTo('descripcion', $pantalla->getDescripcion());
             Tag::displayTo('ip_equipo', $pantalla->getIpEquipo());
             Tag::displayTo('creacion_at', $pantalla->getCreacionAt());
-                        Tag::displayTo('logo', $pantalla->getLogo());
+            Tag::displayTo('logo', $pantalla->getLogo());
             Tag::displayTo('titulo', $pantalla->getTitulo());
             Tag::displayTo('video', $pantalla->getVideo());
             Tag::displayTo('publicidad', $pantalla->getPublicidad());
+            Tag::displayTo('chkturnoespera', $pantalla->getPublicidad());
             $tipo_pantalla = $pantalla->getTipoPantalla();
             //Tag::displayTo("radio_modelos", $value);
             $value2 = "";
@@ -328,9 +329,9 @@ class PantallaController extends ApplicationController {
         $pantalla->setUsuarioId($usuario);
         $pantalla->setIpSenalTv($ip_senal_tv);
         $pantalla->setLlamadoConTecla($llamado_con_tecla);
-        $a = ($logo != "" && $radio_tipo_pantalla=="C") ? $pantalla->setLogo($logo) : $pantalla->setLogo("0");
-        $a = ($titulo != "" && $radio_tipo_pantalla=="C") ? $pantalla->setTitulo($titulo) : $pantalla->setTitulo("0");
-        $a = ($video != "" && $radio_tipo_pantalla=="C") ? $pantalla->setVideo($video) : $pantalla->setVideo("0");
+        $a = ($logo != "" && $radio_tipo_pantalla=="C") ? $pantalla->setLogo($logo) : $pantalla->setLogo("");
+        $a = ($titulo != "" && $radio_tipo_pantalla=="C") ? $pantalla->setTitulo($titulo) : $pantalla->setTitulo("");
+        $a = ($video != "" && $radio_tipo_pantalla=="C") ? $pantalla->setVideo($video) : $pantalla->setVideo("");
         $a = ($radio_tipo_pantalla=="C") ? $pantalla->setPublicidad($publicidad) : $pantalla->setPublicidad("0");
         //$a = ($publicidad != "" && $radio_tipo_pantalla=="C") ? $pantalla->setPublicidad($publicidad) : $pantalla->setPublicidad("0");
         //$pantalla->setLogo($logo);
