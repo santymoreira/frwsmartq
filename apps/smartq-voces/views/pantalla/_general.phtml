@@ -57,19 +57,21 @@ foreach ($query->getResultSet() as $result) {
     <p><label class='labelform' ><span for='ip_equipo'>Dirección IP:</span></label><?php echo Tag::textField("ip_equipo", "size: 20", "maxlength: 15", "class: ") ?></p>
     <!--<p><label class='labelform' ><span for='plantilla'>Plantilla:</span></label><?php echo Tag::textField("plantilla", "size: 20", "maxlength: 150", "class: ") ?></p>-->
 
-<?php if ($tp!='Pantalla Publicidad') {
+<?php if ($tp=='Pantalla Publicidad') {
     ?>
+<div id="colores" style="display: none">
 
-        <div id="colores" >
+<?php }else{ ?>
+<div id="colores">
+<?php
+}
+?>
     <p><label class='labelform' ><span for='color_turnos'><b>Color Turnos</b>:</span></label><?php echo Tag::textField("color_turnos", "size: 10", "maxlength: 10", "class: color") ?></p>
     <p><label class='labelform' ><span for='color_noticias'><b>Color Noticias</b>:</span></label><?php echo Tag::textField("color_noticias", "size: 10", "maxlength: 10", "class: color") ?></p>
     <p><label class='labelform' ><span for='color_reloj'><b>Color Reloj</b>:</span></label><?php echo Tag::textField("color_reloj", "size: 10", "maxlength: 10", "class:  color") ?></p>
     </div>
 </fieldset>
-<?php
 
-}
-?>
 <?php
 
 
@@ -163,7 +165,16 @@ while ($row = $db->fetchArray($result2)) {
 if ($tono == "")
     $tono = 0;$tono = $tono;
 ?>
-<fieldset class="ui-corner-all ui-widget-content">
+
+
+<?php if ($tp=='Pantalla Publicidad') {
+    ?>
+<div id="tonollamada" style="display: none">
+<?php }else{?>
+    <div id="tonollamada" >
+    <?php } ?>
+
+    <fieldset class="ui-corner-all ui-widget-content">
     <legend>Configuración del tono de llamado</legend>
     <p><label class='labelform' ><span for='RadioGroup0_0'><b>Timbre</b>:</span></label><input type="radio" name="rTono" id="rTono1" onclick="mostrar_datos_tono()" <?php if ($tono == 0) echo 'checked="checked"'; ?>/></p>
     <p><label class='labelform' ><span for='RadioGroup0_1'><b>Voz</b>:</span></label><input type="radio" name="rTono"  id="rTono2" onclick="mostrar_datos_tono()" <?php if ($tono == 1) echo 'checked="checked"'; ?> /></p>
@@ -187,6 +198,11 @@ if ($tono == "")
     echo Tag::radioField("tipo_voz", array('F' => 'Femenino'));
     ?>
 </fieldset>
+</div>
+
+
+
+
 <script>
     function cambiar_valor(){
         var v= $('input:radio[name=formato_voz]:checked').val();
@@ -217,11 +233,7 @@ if ($tono == "")
     }
 
 
-    $( document ).ready(function() {
-         if ($('radio:contains("C")').is(':checked') == true) {       //si selecciono voz
-            alert("hola");
-        }
-    });
+   
 
     $("#rTono1").click(function() {
         document.getElementById('tono').value = 0;
@@ -229,4 +241,10 @@ if ($tono == "")
     $("#rTono2").click(function() {
         document.getElementById('tono').value = 1;
     });
+</script>
+<script type="text/javascript">
+     $('input:radio[value=C]').click(function () {
+
+    alert("hola")
+});
 </script>
