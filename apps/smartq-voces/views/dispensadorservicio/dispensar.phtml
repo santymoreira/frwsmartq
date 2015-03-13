@@ -65,7 +65,7 @@ else if ($tipoDispensador == "botonera_pantalla")         //botonera con pantall
         }, function(json) {
             document.getElementById("impresion").innerHTML = "<div style='float: left;width: 5%;margin-top: 50px;margin-bottom: 0px;'><img style='display:block;width:20px;height:80px;' src='../images/SmartQ_monocromatico_vertical.bmp'></div><div style='float: left;width: 75%;margin-top: 0;margin-bottom: 0px;'><p style='margin: 0px 0;'><img style='display:block;margin-left: auto;margin-right: auto;height:50px;width:100px;' src='../images/logo_ticket1.bmp'></p><p style='text-align:center;margin: 0px 0px; width:100%'><label style='font-size:8px;'>Ambato Tierrita Linda</label></p><p style='text-align:center;margin: 0px 0;'><label style='font-size:50px;'>"+letra+json.turnos+"</label></p><p style='text-align:center;margin: 0px 0;'><label style='font-size:8px;'>"+json.fecha+"</label></p><p style='text-align:center;margin: 0px 0;'><label style='font-size:8px;'>"+nombre_servicio+'  =>  '+nombre_ubicacion+"</label></p><p style='text-align:center;margin: 0px 0;'><label style='font-size:8px;'>Clientes en Espera: "+json.esperando+"</label></p><p style='text-align:center;margin: 0px 0;'><label style='font-size:8px'>Tiempo de Espera(h/m/s): "+json.tiempo+"</label></p></div><div style='float: left;width: 20%;margin-bottom: 0px;'><img style='display:block;margin-top: 50px;width:20px;height:80px;' src='../images/telefono_peopleweb.bmp'></div>";
                 $("#impresion").css('display', 'inline');
-                $('#impresion').jqprint();
+                //$('#impresion').jqprint();
                 $("#impresion").css('display', 'none');
         }, 'json');
     }

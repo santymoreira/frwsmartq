@@ -585,7 +585,19 @@ class DispensadorservicioController extends ApplicationController {
         printer_close($handle);
         //FIN IMPRIMIR TURNO
     */
-        
+         $data="hola";
+        echo("<script>console.log('PHP: ".$data."');</script>")
+
+        $pdf=new PDF_AutoPrint();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial','',20);
+        $pdf->Text(90, 5, 'Print me!');
+        //$pdf->Image('leon.jpg' , 80 ,22, 35 , 38,'JPG', 'http://www.desarrolloweb.com');
+        //Open the print dialog
+        $pdf->AutoPrint(false);
+        //$pdf->Output();
+        $pdf->Output('filename.pdf','F');
+
         return  array("esperando" => $total_turnos_esperando, "turnos" => $turno, "tiempo" => $tiempo_espera, "fecha" => $fecha);
         //return (json_encode(array("esperando" => $total_turnos_esperando, "atendidos" => $total_turnos_atendidos, "tiempo" => $tiempo_espera)));
     }
