@@ -594,7 +594,7 @@ class DispensadorservicioController extends ApplicationController {
         $pdf=new PDF_AutoPrint();
         $pdf->AddPage();
         $pdf->SetFont('Arial','',20);
-        $pdf->Image('C://logo_ticket.jpg',70,-5,60,40);
+        //$pdf->Image('C://logo_ticket.jpg',70,-5,60,40);
         $pdf->Text(70, 40, 'Ambato Tierrita Linda');
         $pdf->SetFont('Arial','',60);
         $pdf->Text(80,60,$letra . $turno);

@@ -274,7 +274,8 @@ class PantallaController extends ApplicationController {
         $radio_modelos = $this->getPostParam("radio_modelos");
         $radio_tipo_pantalla = $this->getPostParam("radio_tipo_pantalla");
         $formato_voz = $this->getPostParam("formato_voz");
-        $tipo_voz = $this->getPostParam("tipo_voz");
+        $retVal = ($this->getPostParam("tipo_voz")=="") ? $tipo_voz="M" : $tipo_voz = $this->getPostParam("tipo_voz"); ;
+        
         $tono = $this->getPostParam("tono");
         if ($tono=="")
             $tono = 0;  //1=voz, 0=timbre
