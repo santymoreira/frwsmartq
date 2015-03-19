@@ -104,8 +104,25 @@ foreach ($query1->getResultSet() as $result1) {
 
 <input id="tipoU" type="hidden" value="<?php echo $tp; ?>">
 
-<div id="contenedor">
 
+<?php if ($tp=='Pantalla Publicidad') {
+    ?>
+<div id="usuarioP" >
+
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend><b>Usuario</b></legend>
+    <p><label class='labelform' ><span for='usuarios'>Asignar a Usuario:</span></label><?php echo Tag::selectStatic("usuariosP", $listausuarios1, "class:  required") ?></p>
+</fieldset>
+</div>
+
+    <div id="usuario" style="display: none">
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend><b>Usuario</b></legend>
+    <p><label class='labelform' ><span for='usuarios'>Asignar a Usuario:</span></label><?php echo Tag::selectStatic("usuarios", $listausuarios, "class:  required") ?></p>
+</fieldset>
+</div>
+
+<?php }else{ ?>
 <div id="usuarioP" style="display: none">
 
 <fieldset class="ui-corner-all ui-widget-content">
@@ -115,15 +132,15 @@ foreach ($query1->getResultSet() as $result1) {
 </div>
 
 
-    <div id="usuario" style="display: none">
+    <div id="usuario" >
 <fieldset class="ui-corner-all ui-widget-content">
     <legend><b>Usuario</b></legend>
     <p><label class='labelform' ><span for='usuarios'>Asignar a Usuario:</span></label><?php echo Tag::selectStatic("usuarios", $listausuarios, "class:  required") ?></p>
 </fieldset>
 </div>
-
-</div>
-
+<?php
+}
+?>
 
 
 <?php
@@ -307,9 +324,9 @@ if ($tono == "")
         $("#tonollamada").css('display', 'none'); 
         $("#edicion").css('display', 'inline'); 
         $("#disenar").css('display', 'inline');
-         $("#usuarioP").css('display', 'none');
+         $("#usuarioP").css('display', 'inline');
           $("#usuarioP").css('display', 'none');
-          document.getElementById("contenedor").innerHTML = "<fieldset class='ui-corner-all ui-widget-content'><legend><b>Usuario</b></legend><p><label class='labelform' ><span for='usuarios'>Asignar a Usuario:</span></label><?php echo Tag::selectStatic('usuariosP', $listausuarios1, 'class:  required') ?></p></fieldset>"
+ 
 
 });
           $('input:radio[value=A]').click(function () {
@@ -320,7 +337,7 @@ if ($tono == "")
         $("#edicion").css('display', 'none'); 
         $("#disenar").css('display', 'none');
         //$("#tipoU").val()=="Pantalla Operador";
-        document.getElementById("contenedor").innerHTML = "<fieldset class='ui-corner-all ui-widget-content'><legend><b>Usuario</b></legend><p><label class='labelform' ><span for='usuarios'>Asignar a Usuario:</span></label><?php echo Tag::selectStatic('usuarios', $listausuarios, 'class:  required') ?></p></fieldset>"
+
 });
         $('input:radio[value=B]').click(function () {
         $("#colores").css('display', 'inline'); 
@@ -330,7 +347,7 @@ if ($tono == "")
         $("#edicion").css('display', 'none'); 
         $("#disenar").css('display', 'none');
         //$("#tipoU").val()=="Pantalla Operador";
-                document.getElementById("contenedor").innerHTML = "<fieldset class='ui-corner-all ui-widget-content'><legend><b>Usuario</b></legend><p><label class='labelform' ><span for='usuarios'>Asignar a Usuario:</span></label><?php echo Tag::selectStatic('usuarios', $listausuarios, 'class:  required') ?></p></fieldset>"
+
 });
 </script>
 

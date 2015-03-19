@@ -593,16 +593,19 @@ class DispensadorservicioController extends ApplicationController {
          require_once 'Library/Fpdf/impresion.php';
         $pdf=new PDF_AutoPrint();
         $pdf->AddPage();
+
+        $pdf->Image('public/iess.png',30,0,70,27,'png');
         $pdf->SetFont('Arial','',20);
-        //$pdf->Image('C://logo_ticket.jpg',70,-5,60,40);
-        $pdf->Text(70, 40, 'Ambato Tierrita Linda');
+        $pdf->Text(40, 35, 'Renovar para actuar, actuar para servir.');
         $pdf->SetFont('Arial','',60);
-        $pdf->Text(80,60,$letra . $turno);
+        $pdf->Image('public/SmartQ_monocromatico_vertical.png',20,50,25,45);
+        $pdf->Image('public/telefono_peopleweb.png',170,40,12,75);
+        $pdf->Text(75,55,$letra . $turno);
         $pdf->SetFont('Arial','',20);
-        $pdf->Text(70,70,$palabra." => ".$nombre_ubicacion);
-        $pdf->Text(70,80,$fecha);
-        $pdf->Text(70,90,"Clientes en espera: " . $total_turnos_esperando);
-        $pdf->Text(60,100,"Tiempo de espera (h/m/s): " . $tiempo_espera);
+        $pdf->Text(55,70,$palabra." => ".$nombre_ubicacion);
+        $pdf->Text(65,80,$fecha);
+        $pdf->Text(65,90,"Clientes en espera: " . $total_turnos_esperando);
+        $pdf->Text(50,100,"Tiempo de espera (h/m/s): " . $tiempo_espera);
 
         //src='../images/SmartQ_monocromatico_vertical.bmp
         // $pdf->Image('SmartQ_monocromatico_vertical.bmp',10,8,22);
@@ -610,6 +613,7 @@ class DispensadorservicioController extends ApplicationController {
         //Open the print dialog
         $pdf->AutoPrint(false);
         //$pdf->Output();
+
         $pdf->Output('public/filename.pdf','F');
         return  array("esperando" => $total_turnos_esperando, "turnos" => $turno, "tiempo" => $tiempo_espera, "fecha" => $fecha);
         //return (json_encode(array("esperando" => $total_turnos_esperando, "atendidos" => $total_turnos_atendidos, "tiempo" => $tiempo_espera)));

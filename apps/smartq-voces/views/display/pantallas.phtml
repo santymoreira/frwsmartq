@@ -195,19 +195,7 @@ echo Tag::hiddenField('tipo');  //para el tipo de publicacion V/D/P
     //FIN PASAR TV
 
     //INICIO PASAR PUBLICIDAD
-    function verPublicidad(archivo) {
-        document.getElementById("midiv").innerHTML = "<object width='640' height='500' attr1='attrValue1' attr2='attrValue2'" +
-                "codebase='http://www.apple.com/qtactivex/qtplugin.cab'" +
-                "classid='clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B'>" +
-                "<param name='src'      value='../../img/" + archivo + "'>" +
-                "<param name='autoplay' value='true'>" +
-                "<param name='param1'   value='paramValue1'>" +
-                "<param name='param2'   value='paramValue2'>" +
-                "<embed width='640' height='500' src='../../img/" + archivo + "' autoplay='true'" +
-                "attr1='attrValue1' attr2='attrValue2' param1='paramValue1' param2='paramValue2'" +
-                "pluginspage='http://www.apple.com/quicktime/download/' > </embed>" +
-                "</object>";
-    }
+
     var t;
     function recargar() {
         t = $('#tiempo').val();

@@ -138,7 +138,7 @@ class GrupoController extends ApplicationController {
             $this->redirect("dispensadorservicio"); //muestra el dispensador de servicios
         } else if ($rol_id == 5) { //operador con ticket
             //Router::routeTo("controller: operador", "action: index");
-            Router::routeTo("controller: operador2", "action: index");   //tabler
+            Router::routeTo("controller: operador", "action: index");   //tabler
         } else if ($rol_id == 7) { //operador sin ticket
             Router::routeTo("controller: cajero", "action: index");
         } else if ($rol_id == 6) { //pantalla
