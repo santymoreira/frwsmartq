@@ -1,3 +1,4 @@
+
 <?php
 
 /**
@@ -598,8 +599,8 @@ class DispensadorservicioController extends ApplicationController {
         $pdf->SetFont('Arial','',20);
         $pdf->Text(40, 35, 'Renovar para actuar, actuar para servir.');
         $pdf->SetFont('Arial','',60);
-        $pdf->Image('public/SmartQ_monocromatico_vertical.png',20,50,25,45);
-        $pdf->Image('public/telefono_peopleweb.png',170,40,12,75);
+        $pdf->Image('public/SmartQ_monocromatico_vertical.png',15,50,25,45);
+        $pdf->Image('public/telefono_peopleweb.png',180,35,12,75);
         $pdf->Text(75,55,$letra . $turno);
         $pdf->SetFont('Arial','',20);
         $pdf->Text(55,70,$palabra." => ".$nombre_ubicacion);

@@ -228,13 +228,8 @@ echo Tag::hiddenField('tipo');  //para el tipo de publicacion V/D/P
             $("#logo").val(json.icono);
             $("#titu").val(json.tema);
             $("#rss").val(json.rs);
-            
 
-
-        }, "json");
-        
-        var embeber_video = '<object id="MediaPlayer1" style="padding-bottom: 56.25%;padding-top: 25px;" CLASSID="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=5,1,52,701"' +
-                'standby="Loading Microsoft Windows? Media Player components..." type="application/x-oleobject" width="auto" height="auto">' +
+            /*
                 '<param name="fileName" value="' + $('#nombre').val() + '">' +
                 '<param name="animationatStart" value="true">' +
                 '<param name="transparentatStart" value="true">' +
@@ -243,20 +238,70 @@ echo Tag::hiddenField('tipo');  //para el tipo de publicacion V/D/P
                 '<param name="allowFullScreen" value="true"></param>' +
                 '<param name="scale" value="exactfit">' +
                 '<param name="Volume" value="-500">' +
-                '<embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" src="' + $('#nombre').val() + '" name="MediaPlayer1" width="100%" height="100%" scale="exactfit" autostart=1 volume=-500 allowfullscreen="true">' +
+            */
+            
+
+
+        }, "json");
+        
+        var embeber_video = '<object id="MediaPlayer1" CLASSID="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" width="100%" height="100%" codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715"' +
+                'standby="Loading Microsoft Windows? Media Player components..." type="application/x-oleobject">' +
+                '<param name="fileName" value="' + $('#nombre').val() + '">' +
+                '<param name="AutoSize" value="true">' +
+                '<param name="AutoStart" value="true">' +
+                '<param name="Balance" value="0">' +
+                '<param name="DisplaySize" value="0">' +
+                '<param name="Mute" value="false">' +
+                '<param name="PlayCount" value="0">' +
+                '<param name="Rate" value="1.0">' +
+                '<param name="ShowAudioControls" value="false">' +
+                '<param name="ShowControls" value="false">' +
+                '<param name="ShowDisplay" value="false">' +
+                '<param name="ShowStatusBar" value="false">' +
+                '<param name="ShowTracker" value="true">' +
+                '<param name="StretchToFit" value="false">' +
+                '<param name="TransparentAtStart" value="false">' +
+                '<param name="Volume" value="100">' +
+
+                '<embed type="application/x-mplayer2" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" src="' + $('#nombre').val() + '" name="MediaPlayer1"  ' +
+                        'AutoSize="1"' +
+                        'AutoStart="1"'+
+                        'Balance="0"'+
+                        'DisplaySize="0"'+
+                        'Mute="0"'+
+                        'PlayCount="0"'+
+                        'Rate="1.0"'+
+                        'ShowAudioControls="0"'+
+                        'ShowControls="0"'+
+                        'ShowDisplay="0"'+
+                        'ShowStatusBar="0"'+
+                        'ShowTracker="1"'+
+                        'StretchToFit="0"'+
+                        'TransparentAtStart="0">'+
                 '</object>';
         var imagen = '';
-        document.getElementById("midiv").innerHTML = embeber_video;
+        //document.getElementById("midiv").innerHTML = embeber_video;
        // document.getElementById("logo").val = $("#logo").val();
+       document.getElementById("titu").style.backgroundColor="black"; 
         document.getElementById("titu").val = $("#titu").val();
         document.getElementById("logo").src = $("#logo").val();
-        document.getElementById("rss").src = $("#rss").val();
+        
+
+        if ($("#rss").val()==1) {
+             $("#div_noticias").css('display', 'inline');
+             $("#div_fondo_noticias").css('display', 'inline');
+             
+            //document.getElementById("rss").src = $("#rss").val();
+        } else{
+             $("#div_noticias").css('display', 'none');
+             $("#div_fondo_noticias").css('display', 'none');
+        };
+        
+
+        document.getElementById("midiv").innerHTML = embeber_video;
 
         //alert($("#rss").val());
-        if ($("#rss").val()!=1) {
-            $("#div_fondo_noticias").css('display', 'none');
-            $("#div_noticias").css('display', 'none');
-        }
+        
     }
 </script>
 

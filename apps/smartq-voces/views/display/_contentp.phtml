@@ -29,17 +29,19 @@ while ($row = $db->fetchArray($result2)) {
     }
 
     #MediaPlayer1 {
-    z-index: -200;
+        position: absolute;
+        z-index: -100;
     }
 
     #midiv{
-        height: 80%;
+    height: 100%;
     position: fixed;
-    width: 99%;
+    width: 100%;
+    z-index: -100;
     }
 
     #onTop {
-        position: relative;
+        position: absolute;
     }
 
     #div_fondo_noticias {
@@ -49,14 +51,16 @@ while ($row = $db->fetchArray($result2)) {
     }
         #div_logo_pw {
         position: absolute;
-        top:77%;
-        left:93%;
+        top:80%;
+        left:92%;
     }
 
         #titulo {
         position: absolute;
-        top:2%;
-        left:50%;
+top: 5%; 
+  left: 50%;
+    width: 100%;
+
     }
 
 </style>
@@ -67,14 +71,15 @@ while ($row = $db->fetchArray($result2)) {
 
 
 <div id ="onTop">
-    <img  id="logo"  width="50" height="83"/>
+    <img  id="logo"  width="100" height="160"/>
 </div>
 
 <div id ="titulo">
-    <input id='titu' type="text" style="border:0;" value="">
+    <input id='titu' type="text" style="color: #468052; font-weight: bold; font-family: Verdana, Geneva, Arial, Helvetica, sans-serif; background-color: white; border:0; font-size: 30pt" > 
+
 </div>
 
-<div id="div_fondo_noticias"><img src="../../img/<?php echo $carpeta ?>/sistema/noticia.png" width="140%" height="80%" alt="fondo noticias" /></div>
+<div id="div_fondo_noticias" style="display:none;"><img src="../../img/<?php echo $carpeta ?>/sistema/noticia.png" width="140%" height="80%" alt="fondo noticias" /></div>
 
 <div id="div_logo_pw"><embed wmode="transparent" src="../../public/img/logoinferior.swf" width="100%" height="100%"> </embed></div>
 
@@ -148,10 +153,10 @@ while ($row = $db->fetchArray($result2)) {
 </div>
 -->
 
-<div id="div_noticias" style="top:90%; left:25%; position:absolute; width:65%">
+<div id="div_noticias" style="top:90%; left:28%; position:absolute; width:62%; display:none;">
 
 </div>
 
-<input id="rss" value="1" type="hidden"/>
+<input id="rss" value="0" type="hidden"/>
 <!--<marquee onmouseover=this.stop() onmouseout=this.start() direction="up" scrollAmount="2" style="width:200;height:250">-->
 
