@@ -177,7 +177,7 @@ class DispensadorservicioController extends ApplicationController {
         echo $msg;
     }
 
-    public function obtenerDatosGridAction() {
+    public function obtenerDatosGridAction1() {
         $this->setResponse('ajax');  // asignamos el tipo de respuesta para esta accion
         $pagina = $this->getPostParam('page'); // obtener el numero de pagina
         $limite = $this->getPostParam('rows'); // obtener el n�mero de filas que queremos tener en el grid

@@ -1,8 +1,6 @@
 <!--
 FUNCIONA MUY BIEN
 ES PARA EMITIR TURNOS NORMALES
-
-
 -->
 
 
@@ -19,11 +17,40 @@ ES PARA EMITIR TURNOS NORMALES
         //inicio buscar ubicaci?n
         //SELECT nombre_ubicacion FROM servicio s, ubicacion u WHERE u.id=s.ubicacion_id GROUP BY nombre_ubicacion;
         $db = DbBase::rawConnect();
+
+        $i=0;
+        $gs=$db->query("SELECT nombre_grupo_servicio FROM gruposervicio");
+         while ($row = $db->fetchArray($gs)) {
+            $nombreS[$i]=$row[0];
+            $i++;
+
+        }
+
+        for ($j=1; $j <= $i; $j++) { 
+            $gs1=$db->query("SELECT COUNT(*) FROM servicio WHERE gruposervicio_id=$j");
+             while ($row1 = $db->fetchArray($gs1)) {
+            $numero[$j]=$row1[0];
+            //$i++;
+            }
+        }
+
+
+         
+
+        
+        echo $i;
+        echo $numero[4];
+
+
         $result2 = $db->query("SELECT u.id, nombre_ubicacion FROM servicio s, ubicacion u WHERE u.id=s.ubicacion_id GROUP BY nombre_ubicacion");
 
+        $contador=1;
         while ($row = $db->fetchArray($result2)) {
+            
             $id_ubicacion = $row[0];
             $ubicacion = $row[1];
+
+
 
             //Inicio por ubicaci?n
             $sql = new ActiveRecordJoin(array("entities" => array("Servicio", "Dispensador", "Dispensadorservicio", "Ubicacion"),
@@ -40,7 +67,7 @@ ES PARA EMITIR TURNOS NORMALES
                         //"{#Servicio}.prioridad"
                         ),
                         //"groupFields" => array("{#Servicio}.estilo_letra"),
-                        "order" => "estilo_letra, nombre asc",
+                        "order" => "gruposervicio_id desc,estilo_letra, nombre asc",
                         "conditions" => "{#Dispensadorservicio}.dispensador_id=$id_dispensador AND {#Ubicacion}.id=$id_ubicacion")
             );
             $cont = 0;
@@ -57,7 +84,11 @@ ES PARA EMITIR TURNOS NORMALES
             echo "<table width='100%' align='center'>";
 //            else
 //                echo "<table width='50%' align='center'>";
+            $contadorServicio=1;
+            $contador=1;
             foreach ($sql->getResultSet() as $result) {
+
+                $numeroGrupo=$numero[$contadorServicio];
                 //$color = "#" . $result->getEstiloLetra();
                 $nombre = $result->getNombre();
                 $nombre_ubicacion = $result->getNombreUbicacion();
@@ -71,30 +102,9 @@ ES PARA EMITIR TURNOS NORMALES
 
                     echo "<tr><td width=50% align='center' style='padding:2px'><center>";
                     echo "<table>";
-
-                    /* echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="emitir_turno('.$result->getId().",".$result->getGruposervicioId().","."'$letra'".",'$nombre'".",'$nombre_ubicacion'".",'$prioridad'".",'$letra_alias'".')">';
-                      if ($habilitar_t_e==1)
-                      echo '<input name="txt_servicio_'.$result->getId().'" id="txt_servicio_'.$result->getId().'" type="text" value="" style="color:#000; background:#fff; width: 22px; text-align: right" readonly="readonly">';
-                      if ($ac_serv_especial==1) {
-                      $prioridad=1;
-                      $value=$result->getLetraAlias().". ".$result->getNombre();
-                      echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="emitir_turno('.$result->getId().",".$result->getGruposervicioId().","."'$letra_alias'".",'$nombre'".",'$nombre_ubicacion'".",'$prioridad'".",'$letra_alias'".')">';
-                      } */
-                    //echo "<tr><td align='center' id='tbl_turno'><spam class='label_servicio'>$value</spam></td></tr>";
                     echo "<tr><td align='center'>";
-                    //______________________________________________________
-                    /* if ($atencion_preferencial != 1) {
-                      echo '<input name="btn_servicio" type="button" value="' . $value . '" class="boton_dispensador" style="color:' . $color . '" onclick="emitir_turno(' . $result->getId() . "," . $result->getGruposervicioId() . "," . "'$letra'" . ",'$nombre'" . ",'$nombre_ubicacion'" . ",'$prioridad'" . ",'$letra_alias'" . ')">';
-                      }
-                      //______________________________________________________
-                      if ($habilitar_t_e == 1)
-                      echo '<input name="txt_servicio_' . $result->getId() . '" id="txt_servicio_' . $result->getId() . '" type="text" value="" style="color:#000; background:#fff; width: 22px; text-align: right" readonly="readonly">';
-                      if ($atencion_preferencial == 1) {
-                      $prioridad = 1;
-                      $value = $result->getLetraAlias() . ". " . $result->getNombre();
-                      //echo '<input name="btn_servicio" type="button" value="PREFERENCIAL" class="boton_dispensador" style="color:' . $color . '" onclick="emitir_turno(' . $result->getId() . "," . $result->getGruposervicioId() . "," . "'$letra_alias'" . ",'$nombre'" . ",'$nombre_ubicacion'" . ",'$prioridad'" . ",'$letra_alias'" . ')">';
-                      echo '<input name="btn_servicio" type="button" value="' . $value . '" class="boton_dispensador_preferencial" style="color:' . $color . '; background-image:url(imagen.jpg);" onclick="emitir_turno(' . $result->getId() . "," . $result->getGruposervicioId() . "," . "'$letra_alias'" . ",'$nombre'" . ",'$nombre_ubicacion'" . ",'$prioridad'" . ",'$letra_alias'" . ')">';
-                      } */
+
+
 
                     if ($atencion_preferencial == 2) {
                         //if ($atencion_preferencial == 1) {
@@ -113,28 +123,28 @@ ES PARA EMITIR TURNOS NORMALES
                         }
                     }
 
+
+
                     echo "</td></tr>";
 
                     echo "</table>";
                     echo "</center></td></tr>";
                 } else {
                     $cont = $cont + 1;
-                    if ($cont % 2 <> 0) {
+                     $contador = $contador + 1;
+                    if ($cont % 2 <> 0 || $contador>$numeroGrupo) {
+
+                        if ($contador>$numeroGrupo) {
+                            $contadorServicio++;
+                            $contador=1;
+                            # code...
+                        }
+
                         if ($result->getEstado() == 1) {
-                            echo "<tr><td width=50% align='center' style='padding:4px'><center>";
+                            echo "<tr><td width=50% align='center' style='padding:8px'><center>";
 
                             echo "<table>";
 
-                            /* echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="emitir_turno('.$result->getId().",".$result->getGruposervicioId().","."'$letra'".",'$nombre'".",'$nombre_ubicacion'".",'$prioridad'".",'$letra_alias'".')">';
-                              if ($habilitar_t_e==1)
-                              echo '<input name="txt_servicio_'.$result->getId().'" id="txt_servicio_'.$result->getId().'" type="text" value="" style="color:#000; background:#fff; width: 22px; text-align: right" readonly="readonly">';
-                              if ($ac_serv_especial==1) {
-                              $prioridad=1;
-                              $value=$result->getLetraAlias().". ".$result->getNombre();
-                              echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="emitir_turno('.$result->getId().",".$result->getGruposervicioId().","."'$letra_alias'".",'$nombre'".",'$nombre_ubicacion'".",'$prioridad'".",'$letra_alias'".')">';
-                              } */
-                            //modificado style="color:' . $color . '"
-                            //echo "<tr><td align='center' id='tbl_turno_2'><spam class='label_servicio'>$value</spam></td></tr>";
                             echo "<tr><td align='center'>";
                             if ($atencion_preferencial == 2) {
                                 //if ($atencion_preferencial == 1) {
@@ -161,22 +171,13 @@ ES PARA EMITIR TURNOS NORMALES
                             echo "</center></td>";
                         }
                     } else {
+                                //if ($contador>$numeroGrupo) {$contadorServicio++;$contador=1;}
                         if ($result->getEstado() == 1) {
                             echo "<td align='center' style='padding:4px'><center>";
 
                             echo "<table id='tbl_turno'>";
 
-                            /* echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="emitir_turno('.$result->getId().",".$result->getGruposervicioId().","."'$letra'".",'$nombre'".",'$nombre_ubicacion'".",'$prioridad'".",'$letra_alias'".')">';
-                              if ($habilitar_t_e==1)
-                              echo '<input name="txt_servicio_'.$result->getId().'" id="txt_servicio_'.$result->getId().'" type="text" value="" style="color:#000; background:#fff; width: 22px; text-align: right" readonly="readonly">';
-                              if ($ac_serv_especial==1) {
-                              $prioridad=1;
-                              $value=$result->getLetraAlias().". ".$result->getNombre();
-                              echo '<input name="btn_servicio" type="button" value="'.$value.'" class="boton_dispensador" style="color:'.$color.'" onclick="emitir_turno('.$result->getId().",".$result->getGruposervicioId().","."'$letra_alias'".",'$nombre'".",'$nombre_ubicacion'".",'$prioridad'".",'$letra_alias'".')">';
-                              } */
 
-                            //modificado style="color:' . $color . '"
-                            //echo "<tr><td align='center'><spam class='label_servicio'>$value</spam></td></tr>";
                             echo "<tr><td align='center'>";
                             if ($atencion_preferencial == 2) {
                                 $prioridad = 1;
