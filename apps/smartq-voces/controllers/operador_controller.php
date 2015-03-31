@@ -146,7 +146,7 @@ class OperadorController extends ApplicationController {
 
         $fecha_hoy = date("Y-m-d");
 
-        $this->normal = $this->getPostParam('normal');   //resive 1 porque es atencion normal
+        $this->normal = $this->getPostParam('normal');   //recibe 1 porque es atencion normal
         //Primero termina el turno anterior si es que existe, para esto debe cumplir
         //* que exista dato anterior en num
         //* que antes no haya sido anulado (en anular ya termina el turno)

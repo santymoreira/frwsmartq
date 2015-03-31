@@ -287,14 +287,17 @@ class ServicioController extends ApplicationController {
             $wh = "id NOT IN ($id) AND";
 
         $action = ($isEdit == true) ? "editar" : 'nuevo';
-        if ($letra == $letraAlias) {
-            Flash::error("La letra $letra no puede ser igual a $letraAlias en preferencial.");
-        } else {
+       // if ($letra == $letraAlias) {
+
+            #polo
+            //Flash::error("La letra $letra no puede ser igual a $letraAlias en preferencial.");
+        //} else {
             $db = DbBase::rawConnect();
             //SELECT id,nombre,letra, letra_alias FROM servicio WHERE id NOT IN (23) AND letra IN('W','J') OR letra_alias IN ('W','J')
             $result = $db->query("SELECT id,nombre,letra, letra_alias FROM servicio where $wh $wh2");
             $existe_letra = $db->numRows($result);
 
+            /*
             if ($existe_letra >= 1) {
                 while ($row = $db->fetchArray($result)) {
                     $letra_asignada = $row['letra'];
@@ -307,6 +310,8 @@ class ServicioController extends ApplicationController {
                 else
                     Flash::error("La letra $letraAlias está asignada a un servicio.");
             } else {
+
+                */
                 if ($servicio->save() == false) {
                     Flash::error('Hubo un error guardando el registro.');
                 } else {
@@ -320,8 +325,8 @@ class ServicioController extends ApplicationController {
                     }
                     Flash::success('Registro guardado con éxito.');
                 }
-            }
-        }
+            //}
+        //}
         $this->routeTo("action: $action", "id: $id");
         // $this->routeTo('action: index');
     }
