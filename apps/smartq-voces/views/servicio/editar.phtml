@@ -103,9 +103,17 @@
             <b>Sugerido en base a datos registrados:</b><?php echo Tag::textField("tiempo_maximo_sugerido", "size: 5", "maxlength: 10", "class: ", "readonly: readonly") ?></p>
 <!--        <p><label class='labelform' style="width:200px"><span for='nombre'><b>Color de letra en dispensador</b>:</span></label><?php //echo Tag::textField("color", "size: 10", "maxlength: 10", "class: color") ?></p>-->
 
-        <p><label class='labelform' style="width:200px"><span for='atencion_preferencial'><b>Habilitar Atención Preferencial</b>:</span></label><?php echo Tag::checkboxField("atencion_preferencial"); ?></p>
-        <p><label class='labelform' style="width:200px"><span for='letra_alias'><b>Letra si es Turno Preferencial</b>:</span></label><?php echo Tag::textField("letra_alias", "size: 1", "maxlength: 1", "class: ") ?>
-        <p><label class='labelform' style="width:200px"><span for='mostrar_atencion_normal'><b>No Mostrar Atención Normal</b>:</span></label><?php echo Tag::checkboxField("mostrar_atencion_normal"); ?></p>
+
+       <!-- <p><label class='labelform' style="width:200px"><span for='atencion_preferencial'><b>Habilitar Atención Preferencial</b>:</span></label><?php echo Tag::checkboxField("atencion_preferencial"); ?></p> -->
+
+
+        <p><label class='labelform' style="width:200px"><span for='letra_alias'><b>Letra Prioridad (A-C)</b>:</span></label><?php echo Tag::textField("letra_alias", "size: 1", "maxlength: 1", "class: ") ?>
+
+        <!--
+        <p><label class='labelform' style="width:200px"><span for='mostrar_atencion_normal'><b>No Mostrar Atención Normal</b>:</span></label><?php echo Tag::checkboxField("mostrar_atencion_normal"); ?></p> -->
+
+
+
         <div id="mensaje_letra_alias" style="color:red">
         </div>		
         </p>

@@ -3,7 +3,6 @@ FUNCIONA MUY BIEN
 ES PARA EMITIR TURNOS NORMALES
 -->
 
-
 <div id="div_botones" align="center">
     <?php
 //    if ($total_servicios <= 6)
@@ -36,19 +35,18 @@ ES PARA EMITIR TURNOS NORMALES
          while ($row = $db->fetchArray($gs)) {
             $codigos[$i]=$row[0];
             $nombreS[$i]=$row[1];
-
             //echo $codigos[$i];
             //echo "-";
-            
             //echo $codigos[$i];
             $i++;
             //echo $i;
-
         }
+
 
         for ($j=1; $j <= $i; $j++) { 
 
-            $gs1=$db->query("SELECT COUNT(*) FROM servicio WHERE gruposervicio_id=$codigos[0]");
+            $vr=$j-1;
+            $gs1=$db->query("SELECT COUNT(*) FROM servicio WHERE gruposervicio_id=$codigos[$vr]");
              while ($row1 = $db->fetchArray($gs1)) {
             $numero[$j]=$row1[0];
             //$i++;
@@ -64,8 +62,6 @@ ES PARA EMITIR TURNOS NORMALES
                     echo "</td></tr>";
                     echo "</table>";
                     echo "</center></td></tr>";
-
-
 
 
             //Inicio por ubicaci?n
@@ -99,12 +95,9 @@ ES PARA EMITIR TURNOS NORMALES
                 echo "<center><label size=60 style='color: white; font-size: 12px; border-style: none; background-color:transparent'>" . $ubicacion . "</label></center>";
                     
 
-            
-
             //echo "TOTAL SERVICIOS:".$total_servicios; die();
 //            if ($total_servicios <= 6)
             echo "<table width='100%' align='center'>";
-
 
 
 //            else
@@ -118,6 +111,9 @@ ES PARA EMITIR TURNOS NORMALES
             foreach ($sql->getResultSet() as $result) {
 
                 $numeroGrupo=$numero[$contadorServicio];
+
+                $numeroGrupo;
+
                 //$color = "#" . $result->getEstiloLetra();
                 $nombre = $result->getNombre();
                 $nombre_ubicacion = $result->getNombreUbicacion();
@@ -168,8 +164,14 @@ ES PARA EMITIR TURNOS NORMALES
                     $cont = $cont + 1;
                      $contador = $contador + 1;
 
+                     
+                     
+
 
                     if ($contador % 2 <> 0 || $contador>$numeroGrupo) {
+
+                    //echo $contador;
+
                     //if ($contador>$numeroGrupo) {
 
                          // if ($contador==1) {
@@ -215,6 +217,8 @@ ES PARA EMITIR TURNOS NORMALES
                             echo "<table>";
 
                             echo "<tr><td align='center'>";
+
+
 
                             if ($atencion_preferencial == 2) {
                                 //if ($atencion_preferencial == 1) {

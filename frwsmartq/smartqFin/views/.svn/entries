@@ -1,275 +1,0 @@
-10
-
-dir
-1
-svn+ssh://pedroz@192.168.1.200/var/www/svn/framework_smartq/apps/smartq/views
-svn+ssh://pedroz@192.168.1.200/var/www/svn/framework_smartq
-
-
-
-2012-01-20T17:31:49.761133Z
-1
-nelsonl
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-c85af541-835d-49d6-8c23-500cfd155074
-
-partials
-dir
-
-status
-dir
-
-controlacceso
-dir
-
-layouts
-dir
-
-detalleturno
-dir
-
-cajero
-dir
-
-banner
-dir
-
-video
-dir
-
-serie
-dir
-
-login
-dir
-
-preguntas
-dir
-
-userdispensador
-dir
-
-estilopantalla
-dir
-
-indices
-dir
-
-permiso
-dir
-
-timbre
-dir
-
-indices_sucursales
-dir
-
-usuario
-dir
-
-index.phtml
-file
-
-
-
-
-2012-01-20T17:42:36.242916Z
-edc612e62d077c35ddb1316b043dd575
-2012-01-20T17:31:49.761133Z
-1
-nelsonl
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-499
-
-userpantalla
-dir
-
-pantalla
-dir
-
-empresa
-dir
-
-grupo
-dir
-
-usercaja
-dir
-
-serievideo
-dir
-
-caja
-dir
-
-feed
-dir
-
-grupousuario
-dir
-
-sistema
-dir
-
-display
-dir
-
-caja_pausas
-dir
-
-usuariomenu
-dir
-
-reportes_sucursales
-dir
-
-turnos_transferidos
-dir
-
-dispensadorservicio
-dir
-
-servicio
-dir
-
-turnospreguntas
-dir
-
-horariopublicidad
-dir
-
-turnos
-dir
-
-pausas
-dir
-
-ubicacion
-dir
-
-displayturno
-dir
-
-detallehorario
-dir
-
-colas
-dir
-
-sucursal
-dir
-
-horario
-dir
-
-reportes
-dir
-
-userdisplay
-dir
-
-calificacion
-dir
-
-pantallavideos
-dir
-
-sincturnos
-dir
-
-noticias
-dir
-
-operador
-dir
-
-pantallapublicidad
-dir
-
-pantallafeed
-dir
-
-inicioturnos
-dir
-
-sesiones
-dir
-
-listacaja
-dir
-
-sinccajas
-dir
-
-modulo
-dir
-
-gruposervicio
-dir
-
-publicidad
-dir
-
-serviciocaja
-dir
-
-categoriafeeds
-dir
-
-uservideo
-dir
-
-turnoseteo
-dir
-
-displaycajas
-dir
-
-estilopantallaoperador
-dir
-
-template
-dir
-
-sinchistorial
-dir
-
-dispensador
-dir
-
-configuracionsistema
-dir
-

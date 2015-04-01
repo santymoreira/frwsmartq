@@ -1,92 +1,0 @@
-10
-
-dir
-1
-svn+ssh://pedroz@192.168.1.200/var/www/svn/framework_smartq/apps/smartq
-svn+ssh://pedroz@192.168.1.200/var/www/svn/framework_smartq
-
-
-
-2012-01-20T17:31:49.761133Z
-1
-nelsonl
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-c85af541-835d-49d6-8c23-500cfd155074
-
-schema
-dir
-
-notas.txt
-file
-
-
-
-
-2012-01-20T17:42:36.274117Z
-4496a3929d3f7c552d5dad43f672cc18
-2012-01-20T17:31:49.761133Z
-1
-nelsonl
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-79
-
-models
-dir
-
-logs
-dir
-
-_shared
-dir
-
-config
-dir
-
-images
-dir
-
-controllers
-dir
-
-css
-dir
-
-js
-dir
-
-views
-dir
-

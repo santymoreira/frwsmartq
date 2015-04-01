@@ -177,7 +177,7 @@ class DispensadorservicioController extends ApplicationController {
         echo $msg;
     }
 
-    public function obtenerDatosGridAction1() {
+    public function obtenerDatosGridAction() {
         $this->setResponse('ajax');  // asignamos el tipo de respuesta para esta accion
         $pagina = $this->getPostParam('page'); // obtener el numero de pagina
         $limite = $this->getPostParam('rows'); // obtener el n�mero de filas que queremos tener en el grid
@@ -409,8 +409,32 @@ class DispensadorservicioController extends ApplicationController {
         $nombre_servicio = $this->getPostParam('nombre_servicio');
         $nombre_ubicacion = utf8_decode($this->getPostParam('nombre_ubicacion'));
 
-        $prioridad = $this->getPostParam('prioridad');
+        /*
+        $db = DbBase::rawConnect();
+        $res = $db->query("SELECT letra_alias FROM servicio WHERE id=$serv");
+        while ($ro = $db->fetchArray($res)) {
+            $let=$ro['letra_alias'];
+        }        */
+
+
+        //$prioridad = $this->getPostParam('prioridad');
         $letra_alias = $this->getPostParam('letra_alias');
+
+        switch ($letra_alias) {
+        case "A":
+            $prioridad=1;
+        break;
+        case "B":
+            $prioridad=2;
+        break;
+        case "C":
+            $prioridad=3;
+        break;
+}
+
+
+        //$prioridad = $this->getPostParam('prioridad');
+        
 
         //$palabra = $this->cambiarTildes($nombre_servicio);
         $palabra= utf8_decode($nombre_servicio);
@@ -422,11 +446,13 @@ class DispensadorservicioController extends ApplicationController {
         $hora = date("H:i:s");
         $turno = new Turnos();
 
+
         if ($prioridad == 1)
             $buscaMaxturno = $turno->maximum("numero_alias", "conditions: fecha_emision= '$fech' AND servicio_id= $serv AND prioridad= 1");
         else
             $buscaMaxturno = $turno->maximum("numero", "conditions: servicio_id= $serv and fecha_emision= '$fech'");
         $maxturno= $buscaMaxturno;
+        
 
         //guardar el turno
         $maxturno +=1;
@@ -442,6 +468,8 @@ class DispensadorservicioController extends ApplicationController {
         $turno->setAdmRevisado(0);
         $turno->setPrioridad($prioridad);
         $turno->setCalificacion('NO CALIFICADO');
+
+
         if ($prioridad == 1) {
             $turno->setNumero(0);
             $turno->setNumeroAlias($maxturno);

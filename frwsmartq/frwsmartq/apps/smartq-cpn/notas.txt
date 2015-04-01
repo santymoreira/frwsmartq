@@ -1,3 +1,0 @@
-CPN matriz
-Es como estaba hasta antes de poner la version con sockets
-copiado el 14/04/2014

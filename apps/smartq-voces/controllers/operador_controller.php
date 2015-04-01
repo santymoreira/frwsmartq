@@ -171,7 +171,7 @@ class OperadorController extends ApplicationController {
                 . "SELECT t.id, tiempo_maximo, numero, letra, ubicacion_id, hora_emision, letra_alias, numero_alias, prioridad "
                 . "FROM turnos t, servicio s WHERE s.id=t.servicio_id AND  t.estado=0 AND por_atender=0 AND atendido=0 AND rechazado=0 "
                 . "AND (caja_id=$idcaja OR caja_id IS NULL) AND fecha_emision= '$fecha_hoy' AND "
-                . "servicio_id IN (SELECT servicio_id FROM serviciocaja WHERE caja_id=$idcaja AND llamar=1) ORDER BY prioridad DESC, id ASC");
+                . "servicio_id IN (SELECT servicio_id FROM serviciocaja WHERE caja_id=$idcaja AND llamar=1) ORDER BY prioridad ASC, id ASC");
         //echo count($db->fetchArray($result)); die();
         $prioridad = 0;
         while ($row = $db->fetchArray($result)) {
@@ -184,7 +184,8 @@ class OperadorController extends ApplicationController {
             $this->ubi_id = $ubicacion_id;
             if ($prioridad == 1) {
                 $actual = $row['numero_alias'];
-                $letra = $row['letra_alias'];
+                //$letra = $row['letra_alias'];
+                $letra = $row['letra'];
                 break;
             } else {
                 $actual = $row['numero'];
