@@ -18,47 +18,50 @@ ES PARA EMITIR TURNOS NORMALES
         //SELECT nombre_ubicacion FROM servicio s, ubicacion u WHERE u.id=s.ubicacion_id GROUP BY nombre_ubicacion;
         $db = DbBase::rawConnect();
 
-
-
-
-        
         //echo $i;
         //echo $numero[4];
 
-
-        $result2 = $db->query("SELECT u.id, nombre_ubicacion FROM servicio s, ubicacion u WHERE u.id=s.ubicacion_id GROUP BY nombre_ubicacion");
+        $result2 = $db->query("SELECT DISTINCT(u.id),u.nombre_ubicacion FROM dispensadorservicio ds,servicio s,ubicacion u WHERE ds.servicio_id=s.id AND s.ubicacion_id=u.id AND ds.dispensador_id=$id_dispensador");
 
         $contador=1;
 
         while ($row = $db->fetchArray($result2)) {
             
-             $id_ubicacion = $row[0];
+            $id_ubicacion = $row[0];
             $ubicacion = $row[1];
 
 
         $i=0;
-        $gs=$db->query("SELECT DISTINCT(nombre_grupo_servicio) FROM gruposervicio g,servicio s,ubicacion u WHERE g.id=s.gruposervicio_id AND u.id=s.ubicacion_id AND ubicacion_id=$id_ubicacion");
+        $gs=$db->query("SELECT DISTINCT(g.id),g.nombre_grupo_servicio FROM gruposervicio g,servicio s,ubicacion u WHERE g.id=s.gruposervicio_id AND u.id=s.ubicacion_id AND ubicacion_id=$id_ubicacion");
          while ($row = $db->fetchArray($gs)) {
-            $nombreS[$i]=$row[0];
-           // $codigos[$i]=$row[1];
+            $codigos[$i]=$row[0];
+            $nombreS[$i]=$row[1];
+
+            //echo $codigos[$i];
+            //echo "-";
+            
+            //echo $codigos[$i];
             $i++;
             //echo $i;
 
         }
 
         for ($j=1; $j <= $i; $j++) { 
-            $gs1=$db->query("SELECT COUNT(*) FROM servicio WHERE gruposervicio_id=$j");
+
+            $gs1=$db->query("SELECT COUNT(*) FROM servicio WHERE gruposervicio_id=$codigos[0]");
              while ($row1 = $db->fetchArray($gs1)) {
             $numero[$j]=$row1[0];
             //$i++;
+            //echo $row1[0];
             }
+            //echo $j;
         }
 
-                   echo "<tr><td width=50% align='center' ><center>";
+                    echo "<tr><td width=50% align='center' ><center>";
                     echo "<table>";
                     echo "<tr><td align='center'>";
-            echo "<label style='color:white;'>".$nombreS[0]."</label>";
-            echo "</td></tr>";
+                    echo "<label style='color:white;'>".$nombreS[0]."</label>";
+                    echo "</td></tr>";
                     echo "</table>";
                     echo "</center></td></tr>";
 
