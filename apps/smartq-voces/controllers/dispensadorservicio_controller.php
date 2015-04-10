@@ -409,6 +409,10 @@ class DispensadorservicioController extends ApplicationController {
         $nombre_servicio = $this->getPostParam('nombre_servicio');
         $nombre_ubicacion = utf8_decode($this->getPostParam('nombre_ubicacion'));
 
+         $dispensador = $this->getPostParam('dispensador');
+
+         //echo("<script>console.log('PHP: ".$dispensador."');</script>");
+
         /*
         $db = DbBase::rawConnect();
         $res = $db->query("SELECT letra_alias FROM servicio WHERE id=$serv");
@@ -416,9 +420,10 @@ class DispensadorservicioController extends ApplicationController {
             $let=$ro['letra_alias'];
         }        */
 
-
         //$prioridad = $this->getPostParam('prioridad');
         $letra_alias = $this->getPostParam('letra_alias');
+
+        $prioridad=1;
 
         switch ($letra_alias) {
         case "A":
@@ -619,19 +624,50 @@ class DispensadorservicioController extends ApplicationController {
          //$data="hola";
         //echo("<script>console.log('PHP: ".$data."');</script>")
          //require_ones 'Library/Fpdf';
+
+        $db = DbBase::rawConnect();
+        $result2 = $db->query("SELECT carpeta FROM empresa");
+        while ($row2 = $db->fetchArray($result2)) {
+            $carpeta=$row2['carpeta'];
+        }
+
+        
+
+
+
+        $direccionLogo='public/img/'.$carpeta.'/sistema/logo_ticket.png';
+
+
+         $db1 = DbBase::rawConnect();
+        $result1 = $db1->query("SELECT fraseinicial FROM turnoseteo");
+        while ($row1 = $db1->fetchArray($result1)) {
+            $frase=$row1['fraseinicial'];
+        }
+
+        $impresionD=1;
+         $db2 = DbBase::rawConnect();
+        $result2 = $db2->query("SELECT impresion FROM dispensador WHERE id=$dispensador");
+        while ($row2 = $db2->fetchArray($result2)) {
+            $impresionD=$row2['impresion'];
+        }
+
+        //echo("<script>console.log('PHP: ".$impresionD."');</script>");
+        //SELECT impresion FROM dispensador WHERE id=1
+        
+        //echo("<script>console.log('PHP: ".$direccionLogo."');</script>");
          require_once 'Library/Fpdf/impresion.php';
         $pdf=new PDF_AutoPrint();
         $pdf->AddPage();
 
-        $pdf->Image('public/iess.png',30,0,70,27,'png');
+        $pdf->Image($direccionLogo,30,0,70,27,'png');
         $pdf->SetFont('Arial','',20);
-        $pdf->Text(40, 35, 'Renovar para actuar, actuar para servir.');
+        $pdf->Text(40, 35, $frase);
         $pdf->SetFont('Arial','',60);
         $pdf->Image('public/SmartQ_monocromatico_vertical.png',15,50,25,45);
         $pdf->Image('public/telefono_peopleweb.png',180,35,12,75);
         $pdf->Text(75,55,$letra . $turno);
         $pdf->SetFont('Arial','',20);
-        $pdf->Text(55,70,$palabra." => ".$nombre_ubicacion);
+        $pdf->Text(40,70,$palabra." => ".$nombre_ubicacion);
         $pdf->Text(65,80,$fecha);
         $pdf->Text(65,90,"Clientes en espera: " . $total_turnos_esperando);
         $pdf->Text(50,100,"Tiempo de espera (h/m/s): " . $tiempo_espera);
@@ -642,9 +678,13 @@ class DispensadorservicioController extends ApplicationController {
         //Open the print dialog
         $pdf->AutoPrint(false);
         //$pdf->Output();
-
-        $pdf->Output('public/filename.pdf','F');
-        return  array("esperando" => $total_turnos_esperando, "turnos" => $turno, "tiempo" => $tiempo_espera, "fecha" => $fecha);
+        if ($impresionD==1) $pdf->Output('public/filename.pdf','F');
+        else if ($impresionD==2)
+        {
+            $pdf->Output('public/filename.pdf','F');
+            $pdf->Output('public/filename2.pdf','F');
+        }
+        return  array("esperando" => $total_turnos_esperando, "turnos" => $turno, "tiempo" => $tiempo_espera, "fecha" => $fecha,"dispensador" => $impresionD);
         //return (json_encode(array("esperando" => $total_turnos_esperando, "atendidos" => $total_turnos_atendidos, "tiempo" => $tiempo_espera)));
     }
 

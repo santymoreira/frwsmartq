@@ -13,6 +13,7 @@ class Dispensador extends ActiveRecord {
     protected $descripcion;
     protected $tipo_dispensador;
     protected $usuario_id;
+    protected $impresion;
 
     /**
      * Método para establecer el valor del campo id
@@ -38,6 +39,10 @@ class Dispensador extends ActiveRecord {
         $this->usuario_id = $usuario_id;
     }
 
+        public function setImpresion($impresion) {
+        $this->impresion = $impresion;
+    }
+
     /**
      * Devuelve el valor del campo id
      * @return integer
@@ -61,6 +66,11 @@ class Dispensador extends ActiveRecord {
     public function getUsuarioId() {
         return $this->usuario_id;
     }
+
+        public function getImpresion() {
+        return $this->impresion;
+    }
+
 
     /**
      * Método inicializador de la Entidad

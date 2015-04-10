@@ -67,3 +67,21 @@ foreach($query->getResultSet() as $result) {
         ?>
     </table>
 </fieldset>
+
+<fieldset class="ui-corner-all ui-widget-content">
+    <legend>Impresión doble de ticket</legend>
+    <table border="0px"  align="left">
+        <?php
+        
+            echo "<tr><td>";
+           echo Tag::radioField("impresion",array ('simple'=>'Impresión simple'));
+            echo "</tr></td>";
+        
+        
+            echo "<tr><td>";
+            echo Tag::radioField("impresion",array ('doble'=>'Impresión doble'));
+            echo "</tr></td>";
+
+        ?>
+    </table>
+</fieldset>

@@ -76,6 +76,7 @@ class DispensadorController extends ApplicationController {
         if($dispensador) {
             Tag::displayTo('id', $dispensador->getId());
             Tag::displayTo('descripcion', $dispensador->getDescripcion());
+            //Tag::displayTo('impresion', $dispensador->getImpresion());
             $tipo_dispensador= $dispensador->getTipoDispensador();
             $value="";
             if ($tipo_dispensador=="simple")
@@ -87,6 +88,13 @@ class DispensadorController extends ApplicationController {
                     else if ($tipo_dispensador=="touch_pequenia")
                             $value="touch_pequenia";
             Tag::displayTo("radio_tipo_dispensador", $value);
+            $tipoImpresion=$dispensador->getImpresion();
+            $val="";
+            if ($tipoImpresion==1) 
+                $val="simple";
+            else if ($tipoImpresion==2) 
+                $val="doble";
+            Tag::displayTo('impresion', $val);
         }else {
             Flash::error('Registro no encontrado.');
             $this->routeTo('action: index');
@@ -103,11 +111,18 @@ class DispensadorController extends ApplicationController {
         $check_servicio= $this->getPostParam("chkservicio");
         $usuario= $this->getPostParam("usuarios");
         $tipo_dipensador= $this->getPostParam("radio_tipo_dispensador");
+        $impresion=$this->getPostParam("impresion");
         $dispensador = new Dispensador();
         $dispensador->setId($id);
         $dispensador->setDescripcion($descripcion);
         $dispensador->setTipoDispensador($tipo_dipensador);
         $dispensador->setUsuarioId($usuario);
+        if ($impresion=="simple") 
+            $dispensador->setImpresion(1);
+        else if ($impresion=="doble") {
+            $dispensador->setImpresion(2);
+        }
+        
        
         $action=($isEdit==true) ? "editar" : 'nuevo';
 
